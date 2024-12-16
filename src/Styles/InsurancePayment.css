@@ -1,0 +1,195 @@
+/* InsurancePayment.css */
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+  }
+  
+  .sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .sidebar-brand {
+    display: flex;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .sidebar-brand-blue {
+    color: #2563eb;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: #4b5563;
+    cursor: pointer;
+    gap: 0.75rem;
+  }
+  
+  .nav-item:hover, .nav-item.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .nav-item-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 300px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: #f9fafb;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    color: #9ca3af;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .notification {
+    position: relative;
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 50%;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.75rem;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  /* Table */
+  .table-container {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 500;
+    color: #4b5563;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+  }
+  
+  .table tr:hover {
+    background-color: #f9fafb;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .action-button {
+    padding: 0.25rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6b7280;
+  }
+  
+  .action-button:hover {
+    color: #2563eb;
+  }
+  
+  .action-button.delete:hover {
+    color: #ef4444;
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .pagination-info {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .pagination-button {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .pagination-button:hover:not(:disabled) {
+    background-color: #f9fafb;
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
