@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Edit, Trash } from 'lucide-react';
-import './InvoiceForm.css';
+import '../Styles/InvoiceForm.css';
 import Menu1 from '../components/Menu';
 const InvoiceForm = () => {
 

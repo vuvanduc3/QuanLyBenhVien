@@ -23,7 +23,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import './Dashboard.css';
+import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
 
 

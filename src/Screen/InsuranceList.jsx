@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Filter, RefreshCcw, ChevronLeft, ChevronRight, Edit, Trash } from 'lucide-react';
-import './InsuranceList.css';
+import '../Styles/InsuranceList.css';
 import Menu1 from '../components/Menu';
 const InsuranceList = () => {
 

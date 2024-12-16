@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Edit, Trash, ChevronLeft, ChevronRight } from 'lucide-react';
-import './PaymentList.css';
+import '../Styles/PaymentList.css';
 import Menu1 from '../components/Menu';
 const PaymentList = () => {
   
