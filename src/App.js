@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Menu1 from './components/Menu'; // Sidebar Menu
-import Dashboard from './Screen/Dashboard';
+import Dashboard from './Screen/dashboard';
 import InsuranceList from './Screen/InsuranceList';
 import InsurancePayment from './Screen/InsurancePayment';
 import PaymentList from './Screen/PaymentList';
 import InvoiceForm from './Screen/InvoiceForm';
+import AddInvoice from './Screen/AddInvoice';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/invoices" element={<InvoiceForm />} />
             <Route path="/settings" element={<h2>Cài đặt</h2>} />
             <Route path="/logout" element={<h2>Đăng Xuất</h2>} />
+            <Route path="/addinvoice" element={<AddInvoice/>} />
           </Routes>
         </div>
       </div>

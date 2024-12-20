@@ -1,79 +1,77 @@
+// App.jsx
 import React from 'react';
-import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Edit, Trash } from 'lucide-react';
+import { Bell, Search, ChevronLeft, ChevronRight, Settings, LogOut } from 'lucide-react';
 import '../Styles/InvoiceForm.css';
 import Menu1 from '../components/Menu';
+import { useNavigate } from "react-router-dom";
 import Search1 from '../components/seach_user';
 const InvoiceForm = () => {
+  const navigate = useNavigate(); // Hook để điều hướng
 
+  const handleAddBill = () => {
+    navigate("/addinvoice"); // Chuyển sang route '/them-hoa-don'
+  };
   return (
     <div className="container">
-       <Menu1/>
-
-      <div className="main-content">
+      
+      <Menu1/>
+      
+      <main className="main-content">
       <Search1/>
 
-        <div className="form-container">
-          <div className="form-header">
-            <div>
-              <div className="page-id">#ID: LH001</div>
-              <h1 className="form-title">Thêm, sửa hóa đơn</h1>
-              <div className="patient-id">Mã hồ sơ bệnh án: HSBA001</div>
-            </div>
-            <div className="action-buttons">
-              <button className="action-button">
-                <Edit size={16} />
+        <div className="content">
+          <div className="content-header">
+            <h2>Quản lý hóa đơn</h2>
+            <button className="add-btn" onClick={handleAddBill}>Thêm hóa đơn</button>
+          </div>
+
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã hóa đơn</th>
+                  <th>Mã bệnh nhân</th>
+                  <th>Mã bác sĩ</th>
+                  <th>Tổng tiền</th>
+                  <th>Ngày nhập hóa đơn</th>
+                  <th>Trạng thái</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>HD001</td>
+                  <td className="patient-id">BN001</td>
+                  <td>BS001</td>
+                  <td>135,000VND</td>
+                  <td>24/12/2021 8h30</td>
+                  <td className="status-unpaid">Chưa thanh toán</td>
+                  <td>
+                    <div className="action-buttons">
+                      <button className="action-btn">Xem hóa đơn chi tiết</button>
+                      <button className="action-btn">Sửa dữ liệu</button>
+                      <button className="action-btn">Thanh toán</button>
+                      <button className="action-btn">Xuất hóa đơn</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="pagination">
+            <span>Trang 1 của 84</span>
+            <div className="pagination-buttons">
+              <button className="page-btn">
+                <ChevronLeft size={20} />
               </button>
-              <button className="action-button delete">
-                <Trash size={16} />
+              <button className="page-btn">
+                <ChevronRight size={20} />
               </button>
             </div>
           </div>
-
-          <form>
-            <div className="form-group">
-              <label className="form-label">Mã bệnh nhân</label>
-              <select className="form-select">
-                <option>Chọn mã bệnh nhân</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Mã bác sĩ</label>
-              <select className="form-select">
-                <option>Chọn mã bác sĩ</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Ngày lập hóa đơn</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value="DateTime().Now()" 
-                disabled 
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Tổng số tiền</label>
-              <input 
-                type="text" 
-                className="form-input"
-                placeholder="Nhập tổng số tiền" 
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Trạng thái</label>
-              <select className="form-select">
-                <option>Đã thanh toán</option>
-                <option>Chưa thanh toán</option>
-                <option>Đã hủy</option>
-              </select>
-            </div>
-          </form>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
