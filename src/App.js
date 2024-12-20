@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Menu1 from './components/Menu'; // Sidebar Menu
-import Dashboard from './Screen/dashboard';
+import Dashboard from './Screen/Dashboard';
 import InsuranceList from './Screen/InsuranceList';
 import InsurancePayment from './Screen/InsurancePayment';
 import PaymentList from './Screen/PaymentList';
