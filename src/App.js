@@ -7,7 +7,7 @@ import InsurancePayment from './Screen/InsurancePayment';
 import PaymentList from './Screen/PaymentList';
 import InvoiceForm from './Screen/InvoiceForm';
 import AddInvoice from './Screen/AddInvoice';
-
+import MedicalRecordList from './Screen/HoSoBenhAn';
 function App() {
   return (
     <Router>
@@ -25,6 +25,7 @@ function App() {
             <Route path="/settings" element={<h2>Cài đặt</h2>} />
             <Route path="/logout" element={<h2>Đăng Xuất</h2>} />
             <Route path="/addinvoice" element={<AddInvoice/>} />
+            <Route path="/hosobenhan" element={<MedicalRecordList/>} />
           </Routes>
         </div>
       </div>
