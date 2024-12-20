@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Filter, RefreshCcw, ChevronLeft, ChevronRight, Edit, Trash } from 'lucide-react';
 import '../Styles/InsuranceList.css';
 import Menu1 from '../components/Menu';
+import Search1 from '../components/seach_user';
 const InsuranceList = () => {
 
   const insuranceData = [
@@ -21,18 +22,7 @@ const InsuranceList = () => {
       <Menu1/>
       {/* Main Content */}
       <div className="main-content">
-        <div className="top-header">
-          <div className="search-container">
-            <Search className="search-icon" />
-            <input type="text" placeholder="Search" className="search-input" />
-          </div>
-          <div className="user-profile">
-            <div className="notification-badge">0</div>
-            <img src="/api/placeholder/32/32" alt="User" className="user-avatar" />
-            <span>Moni Roy</span>
-            <span>Admin</span>
-          </div>
-        </div>
+        <Search1/>
 
         <h1 className="page-title">Danh sách bảo hiểm y tế</h1>
 

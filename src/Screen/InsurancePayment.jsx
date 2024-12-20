@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Edit, Trash, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../Styles/InsurancePayment.css';
 import Menu1 from '../components/Menu';
+import Search1 from '../components/seach_user';
 const InsurancePayment = () => {
   const menuItems = [
     { icon: <Clock />, text: "Lịch hẹn" },
@@ -32,23 +33,7 @@ const InsurancePayment = () => {
        <Menu1/>
       {/* Main Content */}
       <div className="main-content">
-        <div className="header">
-          <div className="search-bar">
-            <Search className="search-icon" size={20} />
-            <input type="text" placeholder="Search" className="search-input" />
-          </div>
-          <div className="user-profile">
-            <div className="notification">
-              <FileText size={20} />
-              <span className="notification-badge">0</span>
-            </div>
-            <img src="/api/placeholder/40/40" alt="User" className="avatar" />
-            <div>
-              <div>Moni Roy</div>
-              <div style={{color: '#6b7280', fontSize: '0.875rem'}}>Admin</div>
-            </div>
-          </div>
-        </div>
+      <Search1/>
 
         <h1 style={{fontSize: '1.5rem', fontWeight: 600, marginBottom: '2rem'}}>
           Quản lý chi phí bảo hiểm y tế

@@ -1,9 +1,9 @@
 import React from 'react';
-import { 
-  Clock, 
-  PackageSearch, 
-  Heart, 
-  ClipboardList, 
+import {
+  Clock,
+  PackageSearch,
+  Heart,
+  ClipboardList,
   TestTube,
   ListChecks,
   FileText,
@@ -25,7 +25,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
-
+import Search1 from '../components/seach_user';
 
 const statsData = [
   {
@@ -124,37 +124,12 @@ function SecondaryStatCard({ title, value, change, isPositive }) {
 export default function Dashboard() {
   return (
     <div className="container">
-    <Menu1/>
+      <Menu1 />
 
       {/* Main Content */}
       <div className="main-content">
         {/* Header */}
-        <div className="header">
-          <div className="search-container">
-            <Search className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Search" 
-              className="search-input"
-            />
-          </div>
-          <div className="profile">
-            <div className="notification">
-              <FileText size={20} />
-              <span className="badge">0</span>
-            </div>
-            <img 
-              src="/api/placeholder/40/40" 
-              alt="Profile" 
-              className="avatar"
-            />
-            <div className="user-info">
-              <div className="name">Moni Roy</div>
-              <div className="role">Admin</div>
-            </div>
-            <ChevronRight size={20} />
-          </div>
-        </div>
+        <Search1/>
 
         <h1 className="page-title">Dashboard</h1>
 

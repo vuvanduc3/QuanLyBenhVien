@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Edit, Trash, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../Styles/PaymentList.css';
 import Menu1 from '../components/Menu';
+import Search1 from '../components/seach_user';
 const PaymentList = () => {
   
 
@@ -23,23 +24,7 @@ const PaymentList = () => {
        <Menu1/>
 
       <div className="main-content">
-        <div className="top-header">
-          <div className="search-container">
-            <Search className="search-icon" size={20} />
-            <input type="text" placeholder="Search" className="search-input" />
-          </div>
-          <div className="user-profile">
-            <div className="notification">
-              <FileText size={20} />
-              <span className="notification-badge">0</span>
-            </div>
-            <img src="/api/placeholder/40/40" alt="User" className="avatar" />
-            <div className="user-info">
-              <span className="user-name">Moni Roy</span>
-              <span className="user-role">Admin</span>
-            </div>
-          </div>
-        </div>
+      <Search1/>
 
         <h1 className="page-title">Danh sách thanh toán</h1>
 

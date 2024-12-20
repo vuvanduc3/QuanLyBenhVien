@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Edit, Trash } from 'lucide-react';
 import '../Styles/InvoiceForm.css';
 import Menu1 from '../components/Menu';
+import Search1 from '../components/seach_user';
 const InvoiceForm = () => {
 
   return (
@@ -9,23 +10,7 @@ const InvoiceForm = () => {
        <Menu1/>
 
       <div className="main-content">
-        <div className="top-header">
-          <div className="search-box">
-            <Search className="search-icon" size={20} />
-            <input type="text" placeholder="Search" className="search-input" />
-          </div>
-          <div className="user-profile">
-            <div className="notification">
-              <FileText size={20} />
-              <span className="notification-badge">0</span>
-            </div>
-            <img src="/api/placeholder/40/40" alt="User" className="avatar" />
-            <div>
-              <div>Moni Roy</div>
-              <div>Admin</div>
-            </div>
-          </div>
-        </div>
+      <Search1/>
 
         <div className="form-container">
           <div className="form-header">
