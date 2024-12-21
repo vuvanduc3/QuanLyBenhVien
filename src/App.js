@@ -8,6 +8,7 @@ import PaymentList from './Screen/PaymentList';
 import InvoiceForm from './Screen/InvoiceForm';
 import AddInvoice from './Screen/AddInvoice';
 import MedicalRecordList from './Screen/HoSoBenhAn';
+import DonThuoc from './Screen/DonThuoc';
 function App() {
   return (
     <Router>
@@ -18,7 +19,7 @@ function App() {
             <Route path="/dashboad" element={<Dashboard/>} />
             <Route path="/medicines" element={<InsuranceList />} />
             <Route path="/medical-records" element={<h2>Hồ sơ bệnh án</h2>} />
-            <Route path="/prescriptions" element={<h2>Đơn thuốc</h2>} />
+            <Route path="/donthuoc" element={<DonThuoc/>} />
             <Route path="/insurance-payment" element={<InsurancePayment />} />
             <Route path="/payments" element={<PaymentList />} />
             <Route path="/invoices" element={<InvoiceForm />} />
