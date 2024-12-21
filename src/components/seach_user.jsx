@@ -15,7 +15,7 @@ export default function Search1() {
             <FileText size={20} />
             <span className="notification-badge">0</span>
         </div>
-        <img src="/api/placeholder/40/40" alt="User" className="avatar" />
+        <img src="/faviton.jpg" alt="User" className="avatar" />
         <div className="user-info">
             <span className="user-name">Moni Roy</span>
             <span className="user-role">Admin</span>

@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 const QuanLyThuoc = () => {
     const navigate = useNavigate(); // Hook để điều hướng
     const handleChangeThuoc = () => {
-        navigate("/themsuaxoathuoc"); // Chuyển sang route '/them-hoa-don'
+        navigate("/themsuaxoathuoc"); 
 
     };
     return (
