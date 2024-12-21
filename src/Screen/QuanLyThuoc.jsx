@@ -1,26 +1,28 @@
-// App.js
-import React from 'react';
-import {
-    Search, Bell, LogOut, Settings, Calendar, FileText,
-    Users, CreditCard, PieChart, Activity, Database,
-    FilePlus, Bookmark, Clock, ChevronLeft, ChevronRight,
-    Filter, Edit, Trash2
-} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Edit, Trash2, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import '../Styles/QuanLyThuoc.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
 
-import { useNavigate } from "react-router-dom";
-
 const QuanLyThuoc = () => {
+    const [thuocs, setThuocs] = useState([]);
     const navigate = useNavigate(); // Hook để điều hướng
-    const handleChangeThuoc = () => {
-        navigate("/themsuaxoathuoc"); 
 
+    // Fetch dữ liệu thuốc từ API
+    useEffect(() => {
+        fetch('http://localhost:5000/api/thuoc') // Địa chỉ API backend
+            .then((response) => response.json())
+            .then((data) => setThuocs(data)) // Cập nhật state thuocs
+            .catch((error) => console.error('Error fetching data: ', error));
+    }, []);
+
+    const handleChangeThuoc = () => {
+        navigate("/themsuaxoathuoc");
     };
+
     return (
         <div className="container">
-
             <Menu1 />
 
             <main className="main-content">
@@ -65,20 +67,23 @@ const QuanLyThuoc = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>LH001</td>
-                                <td>Thuốc A</td>
-                                <td>BS001</td>
-                                <td>8h30 AM</td>
-                                <td><span className="quantity">100</span></td>
-                                <td>100,000 VND</td>
-                                <td>
-                                    <div className="actions">
-                                        <button className="btn-edit"><Edit /></button>
-                                        <button className="btn-delete"><Trash2 /></button>
-                                    </div>
-                                </td>
-                            </tr>
+                            {/* Hiển thị danh sách thuốc */}
+                            {thuocs.map((thuoc) => (
+                                <tr key={thuoc.ID}>
+                                    <td>{thuoc.ID}</td>
+                                    <td>{thuoc.TenThuoc}</td>
+                                    <td>{thuoc.SDT}</td>
+                                    <td>{thuoc.MoTa}</td>
+                                    <td><span className="quantity">{thuoc.SoLuong}</span></td>
+                                    <td>{thuoc.GiaThuoc.toLocaleString()} VND</td>
+                                    <td>
+                                        <div className="actions">
+                                            <button className="btn-edit"><Edit /></button>
+                                            <button className="btn-delete"><Trash2 /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
 
@@ -89,7 +94,6 @@ const QuanLyThuoc = () => {
                             <button><ChevronRight /></button>
                         </div>
                     </div>
-
                 </div>
             </main>
         </div>
