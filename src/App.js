@@ -9,6 +9,8 @@ import InvoiceForm from './Screen/InvoiceForm';
 import AddInvoice from './Screen/AddInvoice';
 import MedicalRecordList from './Screen/HoSoBenhAn';
 import DonThuoc from './Screen/DonThuoc';
+import QuanLyThuoc from './Screen/QuanLyThuoc';
+import ThemSuaXoaThuoc from './Screen/CRUDThuoc';
 function App() {
   return (
     <Router>
@@ -27,6 +29,8 @@ function App() {
             <Route path="/logout" element={<h2>Đăng Xuất</h2>} />
             <Route path="/addinvoice" element={<AddInvoice/>} />
             <Route path="/hosobenhan" element={<MedicalRecordList/>} />
+            <Route path="/quanlythuoc" element={<QuanLyThuoc/>} />
+            <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
           </Routes>
         </div>
       </div>

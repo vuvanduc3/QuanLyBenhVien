@@ -14,6 +14,7 @@ const menuItems = [
   { text: "Chi phí bảo hiểm y tế", icon: <Shield size={20} />, path: "/insurance-payment" },
   { text: "Thanh toán", icon: <Wallet size={20} />, path: "/payments" },
   { text: "Hóa đơn", icon: <FileText size={20} />, path: "/invoices" },
+  { text: "Quản lý thuốc", icon: <ClipboardList size={20} />, path: "/quanlythuoc" },
   { text: "Đăng Xuất", icon: <LogOut size={20} />, path: "/logout" }
 ];
 
