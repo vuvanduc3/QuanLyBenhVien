@@ -1,32 +1,49 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const sql = require('mssql');
+const fs = require('fs');
+const path = require('path');
+
+// Đọc cấu hình từ file config.txt
+const configFilePath = path.join(__dirname, 'config.txt');
+function loadConfig(filePath) {
+    const config = {};
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const lines = fileContent.split('\n');
+
+    lines.forEach(line => {
+        const [key, value] = line.split('=').map(item => item.trim());
+        if (key && value) {
+            config[key] = value;
+        }
+    });
+
+    return config;
+}
+const config = loadConfig(configFilePath);
 
 // SQL Server configuration
 const dbConfig = {
-    user: 'sa',
-    password: '123',
-    server: 'DESKTOP-PNANGIK',
-    database: 'QuanLyBenhVien',
+    user: config.DB_USER,
+    password: config.DB_PASSWORD,
+    server: config.DB_SERVER,
+    database: config.DB_DATABASE,
     options: {
-        encrypt: true,
-        trustServerCertificate: true,
+        encrypt: true, // Bật mã hóa
+        trustServerCertificate: true, // Bypass xác thực chứng chỉ nếu server nội bộ
     }
 };
 
 const app = express();
 
 // Middleware
-app.use(express.json()); // Use express.json instead of bodyParser
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// CORS configuration
 app.use(cors());
 
 // Request logging middleware
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     console.log('Request Body:', req.body);
     next();
 });
@@ -42,13 +59,30 @@ let pool;
 async function connectToDatabase() {
     try {
         pool = await sql.connect(dbConfig);
-        console.log('Connected to SQL Server');
+        console.log('✅ Kết nối SQL Server thành công!');
     } catch (err) {
-        console.error('Database connection failed:', err);
-        process.exit(1);
+        console.error('❌ Kết nối SQL Server thất bại:', err.message);
+        process.exit(1); // Dừng server nếu kết nối thất bại
     }
 }
 connectToDatabase();
+
+// API: Lấy danh sách thuốc
+app.get('/api/thuoc', async (req, res) => {
+    try {
+        const result = await pool.request().query('SELECT * FROM Thuoc');
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error('❌ Lỗi lấy dữ liệu thuốc:', err.message);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy dữ liệu từ database',
+        });
+    }
+});
 
 // API: Get medicines
 app.get('/api/thuoc', async (req, res) => {
