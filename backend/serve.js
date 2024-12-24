@@ -29,8 +29,8 @@ const dbConfig = {
     server: config.DB_SERVER,
     database: config.DB_DATABASE,
     options: {
-        encrypt: true, // Bật mã hóa
-        trustServerCertificate: true, // Bypass xác thực chứng chỉ nếu server nội bộ
+        encrypt: true,
+        trustServerCertificate: true,
     }
 };
 
@@ -44,13 +44,9 @@ app.use(cors());
 // Request logging middleware
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    console.log('Request Body:', req.body);
-    next();
-});
-
-// Response header middleware
-app.use((req, res, next) => {
-    res.header('Content-Type', 'application/json');
+    if (req.method !== 'GET') {
+        console.log('Request Body:', req.body);
+    }
     next();
 });
 
@@ -60,9 +56,18 @@ async function connectToDatabase() {
     try {
         pool = await sql.connect(dbConfig);
         console.log('✅ Kết nối SQL Server thành công!');
+        
+        // Kiểm tra kết nối và structure của bảng Thuoc
+        const tableCheck = await pool.request().query(`
+            SELECT TOP 1 ID, TenThuoc, SDT, MoTa, SoLuong, GiaThuoc 
+            FROM Thuoc 
+            ORDER BY ID DESC
+        `);
+        console.log('Database structure check passed');
+        console.log('Last record:', tableCheck.recordset[0]);
     } catch (err) {
         console.error('❌ Kết nối SQL Server thất bại:', err.message);
-        process.exit(1); // Dừng server nếu kết nối thất bại
+        process.exit(1);
     }
 }
 connectToDatabase();
@@ -70,7 +75,7 @@ connectToDatabase();
 // API: Lấy danh sách thuốc
 app.get('/api/thuoc', async (req, res) => {
     try {
-        const result = await pool.request().query('SELECT * FROM Thuoc');
+        const result = await pool.request().query('SELECT * FROM Thuoc ORDER BY ID DESC');
         res.status(200).json({
             success: true,
             data: result.recordset,
@@ -79,21 +84,7 @@ app.get('/api/thuoc', async (req, res) => {
         console.error('❌ Lỗi lấy dữ liệu thuốc:', err.message);
         res.status(500).json({
             success: false,
-            message: 'Lỗi khi lấy dữ liệu từ database',
-        });
-    }
-});
-
-// API: Get medicines
-app.get('/api/thuoc', async (req, res) => {
-    try {
-        const result = await pool.request().query('SELECT * FROM Thuoc');
-        res.json(result.recordset);
-    } catch (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).json({
-            success: false,
-            message: 'Lỗi khi lấy dữ liệu từ database'
+            message: 'Lỗi khi lấy dữ liệu từ database: ' + err.message
         });
     }
 });
@@ -113,6 +104,14 @@ app.post('/api/thuoc', async (req, res) => {
             });
         }
 
+        // Validate code format
+        if (!code.match(/^T\d{3}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Mã thuốc không đúng định dạng (phải là T và 3 số)'
+            });
+        }
+
         // Check for existing medicine
         const checkResult = await pool.request()
             .input('code', sql.VarChar(10), code)
@@ -126,10 +125,10 @@ app.post('/api/thuoc', async (req, res) => {
         }
 
         // Insert new medicine
-        await pool.request()
+        const insertResult = await pool.request()
             .input('code', sql.VarChar(10), code)
             .input('name', sql.NVarChar(100), name)
-            .input('phone', sql.NVarChar(15), phone || null)
+            .input('phone', sql.VarChar(15), phone || null)
             .input('description', sql.NVarChar(255), description || null)
             .input('quantity', sql.Int, Number(quantity))
             .input('price', sql.Decimal(18, 2), Number(price))
@@ -149,7 +148,6 @@ app.post('/api/thuoc', async (req, res) => {
     } catch (err) {
         console.error('Error adding medicine:', err);
         
-        // Handle specific SQL errors
         if (err.number === 2627) {
             return res.status(400).json({
                 success: false,
@@ -160,6 +158,49 @@ app.post('/api/thuoc', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Lỗi server khi thêm thuốc: ' + err.message
+        });
+    }
+});
+
+// API: Lấy mã thuốc tiếp theo
+// API: Lấy mã thuốc tiếp theo
+app.get('/api/thuoc/next-code', async (req, res) => {
+    try {
+        console.log('Fetching next medicine code...');
+        
+        const result = await pool.request()
+            .query('SELECT TOP 1 ID FROM Thuoc ORDER BY ID DESC');
+            
+        console.log('Query result:', result.recordset);
+        
+        let nextCode = 'T005'; // Mã mặc định nếu không có dữ liệu
+        
+        if (result.recordset && result.recordset.length > 0) {
+            const lastCode = result.recordset[0].ID;
+            console.log('Last code found:', lastCode);
+            
+            // Xử lý cho cả hai format T0004 và T004
+            if (lastCode && lastCode.startsWith('T')) {
+                // Lấy phần số và loại bỏ các số 0 ở đầu
+                const numPart = parseInt(lastCode.substring(1).replace(/^0+/, ''));
+                if (!isNaN(numPart)) {
+                    // Format mới: Txxx (không có số 0 ở đầu)
+                    nextCode = `T${String(numPart + 1).padStart(3, '0')}`;
+                    console.log('Generated next code:', nextCode);
+                }
+            }
+        }
+        
+        res.status(200).json({
+            success: true,
+            nextCode: nextCode
+        });
+        
+    } catch (err) {
+        console.error('Error in next-code API:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy mã thuốc tiếp theo: ' + err.message
         });
     }
 });
