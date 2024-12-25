@@ -1,0 +1,204 @@
+.detail-container {
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.detail-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background: #e0e0e0;
+}
+
+.detail-card {
+    padding: 2rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-row label {
+    flex: 0 0 150px;
+    font-weight: 600;
+    color: #666;
+}
+
+.detail-row span {
+    flex: 1;
+}
+
+.detail-row.description {
+    flex-direction: column;
+}
+
+.detail-row.description label {
+    margin-bottom: 0.5rem;
+}
+
+.detail-row.description p {
+    margin: 0;
+    line-height: 1.5;
+    color: #444;
+}
+
+.quantity {
+    color: #2196f3;
+    font-weight: 600;
+}
+
+.price {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.error, .not-found {
+    text-align: center;
+    padding: 2rem;
+    color: #f44336;
+    font-size: 1.2rem;
+}
+/* Thêm vào file CSS hiện có */
+.edit-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-button:hover {
+    background: #1976d2;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.save-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background: #388e3c;
+}
+
+.cancel-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background: #d32f2f;
+}
+
+.edit-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+textarea.edit-input {
+    width: 100%;
+    resize: vertical;
+}
+.detail-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    justify-content: space-between; /* Thêm dòng này */
+}
+
+/* Thêm container cho phần bên trái */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Style cho nút chỉnh sửa */
+.edit-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: auto; /* Đảm bảo nút nằm bên phải */
+}
+
+/* Style cho nhóm nút chỉnh sửa/hủy */
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto; /* Đảm bảo nút nằm bên phải */
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../Styles/CRUDThuoc.css';
@@ -14,20 +14,52 @@ const ThemSuaXoaThuoc = () => {
         price: '',
         phone: ''
     });
-    
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    
+
+    useEffect(() => {
+        console.log('Component mounted, fetching initial code...');
+        fetchNextCode();
+    }, []);
+
+    const fetchNextCode = async () => {
+        try {
+            console.log('Fetching next code from API...');
+            const response = await fetch('http://localhost:5000/api/thuoc/next-code');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('API response:', data);
+
+            if (data.success) {
+                console.log('Setting new code:', data.nextCode);
+                setFormData(prev => ({
+                    ...prev,
+                    code: data.nextCode
+                }));
+            } else {
+                console.error('API returned error:', data.message);
+                toast.error('Không thể lấy mã thuốc tự động: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error in fetchNextCode:', error);
+            toast.error('Lỗi khi lấy mã thuốc tự động: ' + error.message);
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: value
         }));
-        // Xóa thông báo lỗi khi user bắt đầu nhập lại
         setError(null);
     };
-    
+
     const validateForm = () => {
         if (!formData.code) {
             setError('Vui lòng nhập mã thuốc');
@@ -47,19 +79,19 @@ const ThemSuaXoaThuoc = () => {
         }
         return true;
     };
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         
         try {
-            // Kiểm tra dữ liệu trước khi gửi
-            if (!formData.code || !formData.name || !formData.quantity || !formData.price) {
-                toast.error('Vui lòng điền đầy đủ thông tin bắt buộc!');
+            if (!validateForm()) {
                 setLoading(false);
                 return;
             }
-    
+
+            console.log('Submitting form with data:', formData);
+
             const response = await fetch('http://localhost:5000/api/thuoc', {
                 method: 'POST',
                 headers: {
@@ -75,33 +107,38 @@ const ThemSuaXoaThuoc = () => {
                 })
             });
             
-            // Kiểm tra response có phải là JSON không
             const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 throw new Error("Server không trả về dữ liệu JSON hợp lệ");
             }
-    
+
             const data = await response.json();
+            console.log('Server response:', data);
             
             if (!response.ok) {
                 throw new Error(data.message || 'Có lỗi xảy ra khi thêm thuốc');
             }
             
-            // Hiển thị thông báo thành công
-            toast.success('🎉 Thêm thuốc thành công!');
+            console.log('Successfully added medicine, fetching next code...');
+            const nextCodeResponse = await fetch('http://localhost:5000/api/thuoc/next-code');
+            const nextCodeData = await nextCodeResponse.json();
             
-            // Reset form
-            setFormData({
-                code: '',
-                name: '',
-                description: '',
-                quantity: '',
-                price: '',
-                phone: ''
-            });
+            if (nextCodeData.success) {
+                setFormData({
+                    code: nextCodeData.nextCode,
+                    name: '',
+                    description: '',
+                    quantity: '',
+                    price: '',
+                    phone: ''
+                });
+                toast.success('🎉 Thêm thuốc thành công!');
+            } else {
+                throw new Error('Không thể lấy mã thuốc mới');
+            }
             
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error in form submission:', error);
             toast.error(`Lỗi: ${error.message}`);
         } finally {
             setLoading(false);
@@ -122,7 +159,7 @@ const ThemSuaXoaThuoc = () => {
                 pauseOnHover
                 theme="light"
             />
-            
+
             <Menu1 />
             <main className="main-content">
                 <Search1 />
@@ -130,17 +167,19 @@ const ThemSuaXoaThuoc = () => {
                     <div className="card-header">
                         <h2 className="card-title">Thêm sửa xóa thuốc</h2>
                     </div>
+
+                    {error && <div className="error-message">{error}</div>}
+
                     <form onSubmit={handleSubmit} className="medicine-form">
                         <div className="form-group">
                             <label>Mã thuốc <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="code"
-                                placeholder="Nhập mã thuốc"
                                 value={formData.code}
-                                onChange={handleChange}
                                 className="form-control"
                                 required
+                                readOnly
                             />
                         </div>
 
@@ -212,8 +251,8 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-actions">
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="add-button"
                                 disabled={loading}
                             >
