@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Trash2, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { Edit, Trash2, ChevronLeft, ChevronRight, Filter, Search } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../Styles/QuanLyThuoc.css';
-import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
+import Search1 from '../components/seach_user';
 
 const QuanLyThuoc = () => {
     const [thuocs, setThuocs] = useState([]);
+    const [filteredThuocs, setFilteredThuocs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const itemsPerPage = 10;
-    
+
+    // State cho tìm kiếm và lọc
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filters, setFilters] = useState({
+        sortBy: '',
+        sortOrder: 'asc',
+        minPrice: '',
+        maxPrice: '',
+        minQuantity: '',
+        maxQuantity: ''
+    });
+
     const navigate = useNavigate();
 
     const fetchThuocs = async () => {
@@ -24,6 +36,7 @@ const QuanLyThuoc = () => {
             const data = await response.json();
             if (data.success && Array.isArray(data.data)) {
                 setThuocs(data.data);
+                setFilteredThuocs(data.data);
                 setTotalPages(Math.ceil(data.data.length / itemsPerPage));
             } else {
                 setError('Dữ liệu không hợp lệ');
@@ -40,6 +53,64 @@ const QuanLyThuoc = () => {
     useEffect(() => {
         fetchThuocs();
     }, []);
+
+    // Xử lý tìm kiếm và lọc
+    useEffect(() => {
+        let result = [...thuocs];
+
+        // Tìm kiếm
+        if (searchTerm) {
+            result = result.filter(thuoc =>
+                thuoc.TenThuoc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                thuoc.ID.toString().includes(searchTerm) ||
+                thuoc.SDT.includes(searchTerm)
+            );
+        }
+
+        // Lọc theo giá
+        if (filters.minPrice) {
+            result = result.filter(thuoc => thuoc.GiaThuoc >= parseInt(filters.minPrice));
+        }
+        if (filters.maxPrice) {
+            result = result.filter(thuoc => thuoc.GiaThuoc <= parseInt(filters.maxPrice));
+        }
+
+        // Lọc theo số lượng
+        if (filters.minQuantity) {
+            result = result.filter(thuoc => thuoc.SoLuong >= parseInt(filters.minQuantity));
+        }
+        if (filters.maxQuantity) {
+            result = result.filter(thuoc => thuoc.SoLuong <= parseInt(filters.maxQuantity));
+        }
+
+        // Sắp xếp
+        if (filters.sortBy) {
+            result.sort((a, b) => {
+                let compareResult = 0;
+                switch (filters.sortBy) {
+                    case 'id':
+                        compareResult = a.ID - b.ID;
+                        break;
+                    case 'name':
+                        compareResult = a.TenThuoc.localeCompare(b.TenThuoc);
+                        break;
+                    case 'price':
+                        compareResult = a.GiaThuoc - b.GiaThuoc;
+                        break;
+                    case 'quantity':
+                        compareResult = a.SoLuong - b.SoLuong;
+                        break;
+                    default:
+                        break;
+                }
+                return filters.sortOrder === 'desc' ? -compareResult : compareResult;
+            });
+        }
+
+        setFilteredThuocs(result);
+        setTotalPages(Math.ceil(result.length / itemsPerPage));
+        setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
+    }, [searchTerm, filters, thuocs]);
 
     const handleDelete = async (id) => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa thuốc này không?')) {
@@ -72,14 +143,13 @@ const QuanLyThuoc = () => {
         navigate('/themsuaxoathuoc');
     };
 
-    // Tính toán các thuốc cho trang hiện tại
+    // Lấy thuốc cho trang hiện tại
     const getCurrentPageItems = () => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        return thuocs.slice(startIndex, endIndex);
+        return filteredThuocs.slice(startIndex, endIndex);
     };
 
-    // Xử lý chuyển trang
     const handlePreviousPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -90,6 +160,19 @@ const QuanLyThuoc = () => {
         if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1);
         }
+    };
+
+    // Reset tất cả bộ lọc
+    const handleResetFilters = () => {
+        setSearchTerm('');
+        setFilters({
+            sortBy: '',
+            sortOrder: 'asc',
+            minPrice: '',
+            maxPrice: '',
+            minQuantity: '',
+            maxQuantity: ''
+        });
     };
 
     if (loading) {
@@ -106,6 +189,16 @@ const QuanLyThuoc = () => {
 
             <main className="main-content">
                 <Search1 />
+
+                <input
+                    type="text"
+                    placeholder="Tìm kiếm theo tên, ID hoặc SĐT..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
+                />
+
+
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Quản lý thuốc</h2>
@@ -113,26 +206,70 @@ const QuanLyThuoc = () => {
                             Thêm thuốc
                         </button>
                     </div>
+
                     <div className="filters">
                         <div className="filter-group">
                             <Filter />
-                            <select>
-                                <option>Mã</option>
+                            <select
+                                value={filters.sortBy}
+                                onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+                            >
+                                <option value="">Sắp xếp theo</option>
+                               
+                                <option value="price">Giá thuốc</option>
+                                <option value="quantity">Số lượng</option>
                             </select>
-                            <select>
-                                <option>Giá thuốc</option>
+
+                            <select
+                                value={filters.sortOrder}
+                                onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value })}
+                            >
+                                <option value="asc">Tăng dần</option>
+                                <option value="desc">Giảm dần</option>
                             </select>
-                            <select>
-                                <option>Tên thuốc</option>
-                            </select>
-                            <select>
-                                <option>Số lượng</option>
-                            </select>
+
+                            <div className="filter-price">
+                                <input
+                                    type="number"
+                                    placeholder="Giá từ"
+                                    value={filters.minPrice}
+                                    onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                                    className="filter-input"
+                                />
+                                <input
+                                    type="number"
+                                    placeholder="Giá đến"
+                                    value={filters.maxPrice}
+                                    onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                                    className="filter-input"
+                                />
+                            </div>
+
+                            <div className="filter-quantity">
+                                <input
+                                    type="number"
+                                    placeholder="SL từ"
+                                    value={filters.minQuantity}
+                                    onChange={(e) => setFilters({ ...filters, minQuantity: e.target.value })}
+                                    className="filter-input"
+                                />
+                                <input
+                                    type="number"
+                                    placeholder="SL đến"
+                                    value={filters.maxQuantity}
+                                    onChange={(e) => setFilters({ ...filters, maxQuantity: e.target.value })}
+                                    className="filter-input"
+                                />
+                            </div>
                         </div>
+
                         <div className="actions">
-                            <button className="btn-reset">Reset Filter</button>
+                            <button className="btn-reset" onClick={handleResetFilters}>
+                                Reset Filter
+                            </button>
                         </div>
                     </div>
+
                     <table className="table">
                         <thead>
                             <tr>
@@ -148,7 +285,7 @@ const QuanLyThuoc = () => {
                         <tbody>
                             {getCurrentPageItems().length > 0 ? (
                                 getCurrentPageItems().map((thuoc) => (
-                                    <tr 
+                                    <tr
                                         key={thuoc.ID}
                                         onClick={() => navigate(`/chi-tiet-thuoc/${thuoc.ID}`)}
                                         style={{ cursor: 'pointer' }}
@@ -161,7 +298,7 @@ const QuanLyThuoc = () => {
                                         <td>{thuoc.GiaThuoc.toLocaleString()} VND</td>
                                         <td>
                                             <div className="actions">
-                                                <button 
+                                                <button
                                                     className="btn-edit"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
@@ -170,7 +307,7 @@ const QuanLyThuoc = () => {
                                                 >
                                                     <Edit />
                                                 </button>
-                                                <button 
+                                                <button
                                                     className="btn-delete"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
@@ -195,14 +332,14 @@ const QuanLyThuoc = () => {
                     <div className="pagination">
                         <span>Trang {currentPage} của {totalPages}</span>
                         <div className="pagination-buttons">
-                            <button 
+                            <button
                                 onClick={handlePreviousPage}
                                 disabled={currentPage === 1}
                                 className={currentPage === 1 ? 'disabled' : ''}
                             >
                                 <ChevronLeft />
                             </button>
-                            <button 
+                            <button
                                 onClick={handleNextPage}
                                 disabled={currentPage === totalPages}
                                 className={currentPage === totalPages ? 'disabled' : ''}

@@ -7,8 +7,7 @@ export default function Search1() {
     return (
 <div className="top-header">
     <div className="search-container">
-        <Search className="search-icon" size={20} />
-        <input type="text" placeholder="Search" className="search-input" />
+       
     </div>
     <div className="user-profile">
         <div className="notification">
