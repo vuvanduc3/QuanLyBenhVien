@@ -8,7 +8,10 @@
     --border-color: #E5E7EB;
     --bg-color: #F3F4F6;
   }
-  
+  .btn-delete:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
   * {
     margin: 0;
     padding: 0;

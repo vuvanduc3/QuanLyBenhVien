@@ -1,36 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Trash2, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify'; // Thêm import này
+import 'react-toastify/dist/ReactToastify.css'; // Thêm import này
 import '../Styles/QuanLyThuoc.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
 
 const QuanLyThuoc = () => {
-    const [thuocs, setThuocs] = useState([]); // Lưu danh sách thuốc
-    const [loading, setLoading] = useState(true); // Trạng thái tải dữ liệu
-    const [error, setError] = useState(null); // Lưu lỗi nếu có
+    const [thuocs, setThuocs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false); // Thêm state cho trạng thái xóa
     const navigate = useNavigate();
 
-    // Fetch dữ liệu thuốc từ API
+    // Hàm fetch danh sách thuốc
+    const fetchThuocs = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/thuoc');
+            const data = await response.json();
+            if (data.success && Array.isArray(data.data)) {
+                setThuocs(data.data);
+            } else {
+                setError('Dữ liệu không hợp lệ');
+                console.error('Invalid data format:', data);
+            }
+        } catch (err) {
+            setError('Lỗi khi tải dữ liệu từ API');
+            console.error('Error fetching data:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // useEffect để load dữ liệu ban đầu
     useEffect(() => {
-        fetch('http://localhost:5000/api/thuoc')
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success && Array.isArray(data.data)) {
-                    setThuocs(data.data); // Chỉ lưu mảng `data`
-                } else {
-                    setError('Dữ liệu không hợp lệ');
-                    console.error('Invalid data format:', data);
-                }
-            })
-            .catch((err) => {
-                setError('Lỗi khi tải dữ liệu từ API');
-                console.error('Error fetching data:', err);
-            })
-            .finally(() => {
-                setLoading(false); // Kết thúc trạng thái tải
-            });
+        fetchThuocs();
     }, []);
+
+    // Hàm xử lý xóa thuốc
+    const handleDelete = async (id) => {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa thuốc này không?')) {
+            return;
+        }
+
+        setIsDeleting(true);
+        try {
+            const response = await fetch(`http://localhost:5000/api/thuoc/${id}`, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                toast.success('Xóa thuốc thành công!');
+                // Cập nhật lại danh sách thuốc
+                fetchThuocs();
+            } else {
+                throw new Error(data.message || 'Có lỗi xảy ra khi xóa thuốc');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error(`Lỗi: ${error.message}`);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     // Xử lý chuyển hướng khi thêm thuốc
     const handleChangeThuoc = () => {
@@ -93,29 +128,40 @@ const QuanLyThuoc = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Array.isArray(thuocs) && thuocs.length > 0 ? (
-                                thuocs.map((thuoc) => (
-                                    <tr key={thuoc.ID}>
-                                        <td>{thuoc.ID}</td>
-                                        <td>{thuoc.TenThuoc}</td>
-                                        <td>{thuoc.SDT}</td>
-                                        <td>{thuoc.MoTa}</td>
-                                        <td><span className="quantity">{thuoc.SoLuong}</span></td>
-                                        <td>{thuoc.GiaThuoc.toLocaleString()} VND</td>
-                                        <td>
-                                            <div className="actions">
-                                                <button className="btn-edit"><Edit /></button>
-                                                <button className="btn-delete"><Trash2 /></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="7" className="no-data">Không có dữ liệu</td>
+                        {Array.isArray(thuocs) && thuocs.length > 0 ? (
+                            thuocs.map((thuoc) => (
+                                <tr 
+                                key={thuoc.ID} 
+                                onClick={() => navigate(`/chi-tiet-thuoc/${thuoc.ID}`)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                    <td>{thuoc.ID}</td>
+                                    <td>{thuoc.TenThuoc}</td>
+                                    <td>{thuoc.SDT}</td>
+                                    <td>{thuoc.MoTa}</td>
+                                    <td><span className="quantity">{thuoc.SoLuong}</span></td>
+                                    <td>{thuoc.GiaThuoc.toLocaleString()} VND</td>
+                                    <td>
+                                        <div className="actions">
+                                            <button className="btn-edit" onClick={() => navigate(`/chi-tiet-thuoc/${thuoc.ID}`)}><Edit /></button>
+                                            <button 
+                                                className="btn-delete"
+                                                onClick={() => handleDelete(thuoc.ID)}
+                                                disabled={isDeleting}
+                                            >
+                                                <Trash2 />
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            )}
-                        </tbody>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7" className="no-data">Không có dữ liệu</td>
+                            </tr>
+                        )}
+                    </tbody>
+
                     </table>
 
                     <div className="pagination">

@@ -163,7 +163,6 @@ app.post('/api/thuoc', async (req, res) => {
 });
 
 // API: Lấy mã thuốc tiếp theo
-// API: Lấy mã thuốc tiếp theo
 app.get('/api/thuoc/next-code', async (req, res) => {
     try {
         console.log('Fetching next medicine code...');
@@ -204,7 +203,134 @@ app.get('/api/thuoc/next-code', async (req, res) => {
         });
     }
 });
+// API: Delete medicine
+app.delete('/api/thuoc/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log('Deleting medicine with ID:', id);
 
+        // Kiểm tra thuốc tồn tại
+        const checkResult = await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query('SELECT ID FROM Thuoc WHERE ID = @id');
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Không tìm thấy thuốc với mã ${id}`
+            });
+        }
+
+        // Thực hiện xóa
+        await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query('DELETE FROM Thuoc WHERE ID = @id');
+
+        console.log('Medicine deleted successfully:', id);
+        
+        res.status(200).json({
+            success: true,
+            message: 'Xóa thuốc thành công'
+        });
+        
+    } catch (err) {
+        console.error('Error deleting medicine:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi xóa thuốc: ' + err.message
+        });
+    }
+});
+// API: Get medicine detail by ID
+app.get('/api/thuoc/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const result = await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query(`
+                SELECT * FROM Thuoc 
+                WHERE ID = @id
+            `);
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy thuốc'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: result.recordset[0]
+        });
+        
+    } catch (err) {
+        console.error('Error fetching medicine detail:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy thông tin thuốc'
+        });
+    }
+});
+// API: Update medicine
+app.put('/api/thuoc/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, phone, description, quantity, price } = req.body;
+
+        // Input validation
+        if (!name || !quantity || !price) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng điền đầy đủ thông tin bắt buộc'
+            });
+        }
+
+        // Check if medicine exists
+        const checkResult = await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query('SELECT ID FROM Thuoc WHERE ID = @id');
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Không tìm thấy thuốc với mã ${id}`
+            });
+        }
+
+        // Update medicine
+        await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .input('name', sql.NVarChar(100), name)
+            .input('phone', sql.NVarChar(15), phone || null)
+            .input('description', sql.NVarChar(255), description || null)
+            .input('quantity', sql.Int, Number(quantity))
+            .input('price', sql.Decimal(18, 2), Number(price))
+            .query(`
+                UPDATE Thuoc 
+                SET TenThuoc = @name,
+                    SDT = @phone,
+                    MoTa = @description,
+                    SoLuong = @quantity,
+                    GiaThuoc = @price
+                WHERE ID = @id
+            `);
+
+        res.status(200).json({
+            success: true,
+            message: 'Cập nhật thuốc thành công',
+            data: { id, name, phone, description, quantity, price }
+        });
+        
+    } catch (err) {
+        console.error('Error updating medicine:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi cập nhật thuốc: ' + err.message
+        });
+    }
+});
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
