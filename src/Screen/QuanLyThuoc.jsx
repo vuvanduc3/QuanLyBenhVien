@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Trash2, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
-import { ToastContainer, toast } from 'react-toastify'; // Thêm import này
-import 'react-toastify/dist/ReactToastify.css'; // Thêm import này
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../Styles/QuanLyThuoc.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
@@ -11,16 +11,20 @@ const QuanLyThuoc = () => {
     const [thuocs, setThuocs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isDeleting, setIsDeleting] = useState(false); // Thêm state cho trạng thái xóa
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const itemsPerPage = 10;
+    
     const navigate = useNavigate();
 
-    // Hàm fetch danh sách thuốc
     const fetchThuocs = async () => {
         try {
             const response = await fetch('http://localhost:5000/api/thuoc');
             const data = await response.json();
             if (data.success && Array.isArray(data.data)) {
                 setThuocs(data.data);
+                setTotalPages(Math.ceil(data.data.length / itemsPerPage));
             } else {
                 setError('Dữ liệu không hợp lệ');
                 console.error('Invalid data format:', data);
@@ -33,12 +37,10 @@ const QuanLyThuoc = () => {
         }
     };
 
-    // useEffect để load dữ liệu ban đầu
     useEffect(() => {
         fetchThuocs();
     }, []);
 
-    // Hàm xử lý xóa thuốc
     const handleDelete = async (id) => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa thuốc này không?')) {
             return;
@@ -54,7 +56,6 @@ const QuanLyThuoc = () => {
 
             if (data.success) {
                 toast.success('Xóa thuốc thành công!');
-                // Cập nhật lại danh sách thuốc
                 fetchThuocs();
             } else {
                 throw new Error(data.message || 'Có lỗi xảy ra khi xóa thuốc');
@@ -67,17 +68,34 @@ const QuanLyThuoc = () => {
         }
     };
 
-    // Xử lý chuyển hướng khi thêm thuốc
     const handleChangeThuoc = () => {
         navigate('/themsuaxoathuoc');
     };
 
-    // Hiển thị khi đang tải dữ liệu
+    // Tính toán các thuốc cho trang hiện tại
+    const getCurrentPageItems = () => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return thuocs.slice(startIndex, endIndex);
+    };
+
+    // Xử lý chuyển trang
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
     if (loading) {
         return <div className="loading">Đang tải dữ liệu...</div>;
     }
 
-    // Hiển thị nếu có lỗi
     if (error) {
         return <div className="error">{error}</div>;
     }
@@ -128,51 +146,74 @@ const QuanLyThuoc = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        {Array.isArray(thuocs) && thuocs.length > 0 ? (
-                            thuocs.map((thuoc) => (
-                                <tr 
-                                key={thuoc.ID} 
-                                onClick={() => navigate(`/chi-tiet-thuoc/${thuoc.ID}`)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                    <td>{thuoc.ID}</td>
-                                    <td>{thuoc.TenThuoc}</td>
-                                    <td>{thuoc.SDT}</td>
-                                    <td>{thuoc.MoTa}</td>
-                                    <td><span className="quantity">{thuoc.SoLuong}</span></td>
-                                    <td>{thuoc.GiaThuoc.toLocaleString()} VND</td>
-                                    <td>
-                                        <div className="actions">
-                                            <button className="btn-edit" onClick={() => navigate(`/chi-tiet-thuoc/${thuoc.ID}`)}><Edit /></button>
-                                            <button 
-                                                className="btn-delete"
-                                                onClick={() => handleDelete(thuoc.ID)}
-                                                disabled={isDeleting}
-                                            >
-                                                <Trash2 />
-                                            </button>
-                                        </div>
-                                    </td>
+                            {getCurrentPageItems().length > 0 ? (
+                                getCurrentPageItems().map((thuoc) => (
+                                    <tr 
+                                        key={thuoc.ID}
+                                        onClick={() => navigate(`/chi-tiet-thuoc/${thuoc.ID}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <td>{thuoc.ID}</td>
+                                        <td>{thuoc.TenThuoc}</td>
+                                        <td>{thuoc.SDT}</td>
+                                        <td>{thuoc.MoTa}</td>
+                                        <td><span className="quantity">{thuoc.SoLuong}</span></td>
+                                        <td>{thuoc.GiaThuoc.toLocaleString()} VND</td>
+                                        <td>
+                                            <div className="actions">
+                                                <button 
+                                                    className="btn-edit"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        navigate(`/chi-tiet-thuoc/${thuoc.ID}`);
+                                                    }}
+                                                >
+                                                    <Edit />
+                                                </button>
+                                                <button 
+                                                    className="btn-delete"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(thuoc.ID);
+                                                    }}
+                                                    disabled={isDeleting}
+                                                >
+                                                    <Trash2 />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" className="no-data">Không có dữ liệu</td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="7" className="no-data">Không có dữ liệu</td>
-                            </tr>
-                        )}
-                    </tbody>
-
+                            )}
+                        </tbody>
                     </table>
 
                     <div className="pagination">
-                        <span>Trang 1 của 84</span>
+                        <span>Trang {currentPage} của {totalPages}</span>
                         <div className="pagination-buttons">
-                            <button><ChevronLeft /></button>
-                            <button><ChevronRight /></button>
+                            <button 
+                                onClick={handlePreviousPage}
+                                disabled={currentPage === 1}
+                                className={currentPage === 1 ? 'disabled' : ''}
+                            >
+                                <ChevronLeft />
+                            </button>
+                            <button 
+                                onClick={handleNextPage}
+                                disabled={currentPage === totalPages}
+                                className={currentPage === totalPages ? 'disabled' : ''}
+                            >
+                                <ChevronRight />
+                            </button>
                         </div>
                     </div>
                 </div>
             </main>
+            <ToastContainer />
         </div>
     );
 };
