@@ -331,6 +331,271 @@ app.put('/api/thuoc/:id', async (req, res) => {
         });
     }
 });
+// API: Lấy mã bệnh nhân tiếp theo
+app.get('/api/medical-records/next-patient-code', async (req, res) => {
+    try {
+        const result = await pool.request()
+            .query('SELECT TOP 1 MaBenhNhan FROM HoSoBenhAn ORDER BY MaBenhNhan DESC');
+            
+        let nextCode = 'BN048'; // Mã mặc định nếu không có dữ liệu
+        
+        if (result.recordset && result.recordset.length > 0) {
+            const lastCode = result.recordset[0].MaBenhNhan;
+            if (lastCode && lastCode.startsWith('BN')) {
+                // Lấy phần số và tăng lên 1
+                const numPart = parseInt(lastCode.substring(2));
+                if (!isNaN(numPart)) {
+                    nextCode = `BN${String(numPart + 1).padStart(3, '0')}`;
+                }
+            }
+        }
+        
+        res.status(200).json({
+            success: true,
+            nextCode: nextCode
+        });
+        
+    } catch (err) {
+        console.error('Error generating next patient code:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi tạo mã bệnh nhân mới'
+        });
+    }
+});
+// API: Lấy mã lịch hẹn tiếp theo (đặt trước các routes khác)
+app.get('/api/medical-records/next-appointment-code', async (req, res) => {
+    try {
+        const result = await pool.request()
+            .query('SELECT TOP 1 MaLichHen FROM HoSoBenhAn ORDER BY MaLichHen DESC');
+            
+        let nextCode = 'LH049'; // Bắt đầu từ LH049
+        
+        if (result.recordset && result.recordset.length > 0) {
+            const lastCode = result.recordset[0].MaLichHen;
+            console.log('Last appointment code:', lastCode);
+            
+            if (lastCode && lastCode.startsWith('LH')) {
+                const numPart = parseInt(lastCode.substring(2));
+                if (!isNaN(numPart)) {
+                    nextCode = `LH${String(numPart + 1).padStart(3, '0')}`;
+                    console.log('Generated next appointment code:', nextCode);
+                }
+            }
+        }
+        
+        res.status(200).json({
+            success: true,
+            nextCode: nextCode
+        });
+        
+    } catch (err) {
+        console.error('Error generating next appointment code:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi tạo mã lịch hẹn mới'
+        });
+    }
+});
+// API: Get all medical records
+app.get('/api/medical-records', async (req, res) => {
+    try {
+        const result = await pool.request()
+            .query('SELECT * FROM HoSoBenhAn ORDER BY NgayLap DESC');
+        
+        res.status(200).json({
+            success: true,
+            data: result.recordset
+        });
+    } catch (err) {
+        console.error('Error fetching medical records:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy danh sách hồ sơ bệnh án: ' + err.message
+        });
+    }
+});
+
+// API: Get medical record by ID
+app.get('/api/medical-records/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const result = await pool.request()
+            .input('id', sql.Int, id)
+            .query('SELECT * FROM HoSoBenhAn WHERE ID = @id');
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy hồ sơ bệnh án'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: result.recordset[0]
+        });
+    } catch (err) {
+        console.error('Error fetching medical record:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy thông tin hồ sơ bệnh án: ' + err.message
+        });
+    }
+});
+
+// API: Create new medical record
+app.post('/api/medical-records', async (req, res) => {
+    try {
+        const { maBenhNhan, maLichHen, bacSi, chanDoan, ngayLap, action } = req.body;
+
+        // Input validation
+        if (!maBenhNhan || !maLichHen || !bacSi || !chanDoan || !ngayLap || !action) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng điền đầy đủ thông tin bắt buộc'
+            });
+        }
+
+        const result = await pool.request()
+            .input('maBenhNhan', sql.NVarChar(50), maBenhNhan)
+            .input('maLichHen', sql.NVarChar(50), maLichHen)
+            .input('bacSi', sql.NVarChar(100), bacSi)
+            .input('chanDoan', sql.NVarChar(sql.MAX), chanDoan)
+            .input('ngayLap', sql.Date, new Date(ngayLap))
+            .input('action', sql.NVarChar(50), action)
+            .query(`
+                INSERT INTO HoSoBenhAn (MaBenhNhan, MaLichHen, BacSi, ChanDoan, NgayLap, Action)
+                VALUES (@maBenhNhan, @maLichHen, @bacSi, @chanDoan, @ngayLap, @action);
+                SELECT SCOPE_IDENTITY() AS ID;
+            `);
+
+        res.status(201).json({
+            success: true,
+            message: 'Thêm hồ sơ bệnh án thành công',
+            data: {
+                id: result.recordset[0].ID,
+                maBenhNhan,
+                maLichHen,
+                bacSi,
+                chanDoan,
+                ngayLap,
+                action
+            }
+        });
+    } catch (err) {
+        console.error('Error creating medical record:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi thêm hồ sơ bệnh án: ' + err.message
+        });
+    }
+});
+
+// API: Update medical record
+app.put('/api/medical-records/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { maBenhNhan, maLichHen, bacSi, chanDoan, ngayLap, action } = req.body;
+
+        // Input validation
+        if (!maBenhNhan || !maLichHen || !bacSi || !chanDoan || !ngayLap || !action) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng điền đầy đủ thông tin bắt buộc'
+            });
+        }
+
+        // Check if record exists
+        const checkResult = await pool.request()
+            .input('id', sql.Int, id)
+            .query('SELECT ID FROM HoSoBenhAn WHERE ID = @id');
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy hồ sơ bệnh án'
+            });
+        }
+
+        // Update record
+        await pool.request()
+            .input('id', sql.Int, id)
+            .input('maBenhNhan', sql.NVarChar(50), maBenhNhan)
+            .input('maLichHen', sql.NVarChar(50), maLichHen)
+            .input('bacSi', sql.NVarChar(100), bacSi)
+            .input('chanDoan', sql.NVarChar(sql.MAX), chanDoan)
+            .input('ngayLap', sql.Date, new Date(ngayLap))
+            .input('action', sql.NVarChar(50), action)
+            .query(`
+                UPDATE HoSoBenhAn 
+                SET MaBenhNhan = @maBenhNhan,
+                    MaLichHen = @maLichHen,
+                    BacSi = @bacSi,
+                    ChanDoan = @chanDoan,
+                    NgayLap = @ngayLap,
+                    Action = @action
+                WHERE ID = @id
+            `);
+
+        res.status(200).json({
+            success: true,
+            message: 'Cập nhật hồ sơ bệnh án thành công',
+            data: {
+                id,
+                maBenhNhan,
+                maLichHen,
+                bacSi,
+                chanDoan,
+                ngayLap,
+                action
+            }
+        });
+    } catch (err) {
+        console.error('Error updating medical record:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi cập nhật hồ sơ bệnh án: ' + err.message
+        });
+    }
+});
+
+// API: Delete medical record
+app.delete('/api/medical-records/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Check if record exists
+        const checkResult = await pool.request()
+            .input('id', sql.Int, id)
+            .query('SELECT ID FROM HoSoBenhAn WHERE ID = @id');
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy hồ sơ bệnh án'
+            });
+        }
+
+        // Delete record
+        await pool.request()
+            .input('id', sql.Int, id)
+            .query('DELETE FROM HoSoBenhAn WHERE ID = @id');
+
+        res.status(200).json({
+            success: true,
+            message: 'Xóa hồ sơ bệnh án thành công'
+        });
+    } catch (err) {
+        console.error('Error deleting medical record:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi xóa hồ sơ bệnh án: ' + err.message
+        });
+    }
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
