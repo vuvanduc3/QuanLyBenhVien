@@ -154,3 +154,7 @@
         width: 100%;
     }
 }
+.readonly-input {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}

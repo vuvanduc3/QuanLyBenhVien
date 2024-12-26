@@ -364,3 +364,135 @@ td {
   border-top: 1px solid var(--border-color);
   vertical-align: top; /* Aligns content to top of cell */
 }
+/* Styles for filters section */
+.filters-section {
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filters-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-toggle-button,
+.clear-filters-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: white;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-toggle-button:hover {
+  background-color: #f3f4f6;
+}
+
+.clear-filters-button {
+  color: #dc2626;
+}
+
+.clear-filters-button:hover {
+  background-color: #fee2e2;
+  border-color: #dc2626;
+}
+
+.filters-container {
+  padding: 16px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  transition: all 0.2s;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.filter-group select {
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Results summary */
+.results-summary {
+  margin-top: 16px;
+  color: #6b7280;
+  font-size: 14px;
+  text-align: right;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .filter-row {
+      flex-direction: column;
+      gap: 16px;
+  }
+
+  .filters-header {
+      flex-direction: column;
+      gap: 12px;
+  }
+
+  .filter-toggle-button,
+  .clear-filters-button {
+      width: 100%;
+      justify-content: center;
+  }
+}
+
+/* Make sure inputs have proper styles */
+input[type="date"] {
+  min-height: 38px; /* Ensure consistent height with other inputs */
+  font-family: inherit;
+}
+
+/* Enhance table headers for better visibility */
+.table-container th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #1f2937;
+}

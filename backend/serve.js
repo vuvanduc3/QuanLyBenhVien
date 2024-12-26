@@ -331,7 +331,72 @@ app.put('/api/thuoc/:id', async (req, res) => {
         });
     }
 });
-
+// API: Lấy mã bệnh nhân tiếp theo
+app.get('/api/medical-records/next-patient-code', async (req, res) => {
+    try {
+        const result = await pool.request()
+            .query('SELECT TOP 1 MaBenhNhan FROM HoSoBenhAn ORDER BY MaBenhNhan DESC');
+            
+        let nextCode = 'BN048'; // Mã mặc định nếu không có dữ liệu
+        
+        if (result.recordset && result.recordset.length > 0) {
+            const lastCode = result.recordset[0].MaBenhNhan;
+            if (lastCode && lastCode.startsWith('BN')) {
+                // Lấy phần số và tăng lên 1
+                const numPart = parseInt(lastCode.substring(2));
+                if (!isNaN(numPart)) {
+                    nextCode = `BN${String(numPart + 1).padStart(3, '0')}`;
+                }
+            }
+        }
+        
+        res.status(200).json({
+            success: true,
+            nextCode: nextCode
+        });
+        
+    } catch (err) {
+        console.error('Error generating next patient code:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi tạo mã bệnh nhân mới'
+        });
+    }
+});
+// API: Lấy mã lịch hẹn tiếp theo (đặt trước các routes khác)
+app.get('/api/medical-records/next-appointment-code', async (req, res) => {
+    try {
+        const result = await pool.request()
+            .query('SELECT TOP 1 MaLichHen FROM HoSoBenhAn ORDER BY MaLichHen DESC');
+            
+        let nextCode = 'LH049'; // Bắt đầu từ LH049
+        
+        if (result.recordset && result.recordset.length > 0) {
+            const lastCode = result.recordset[0].MaLichHen;
+            console.log('Last appointment code:', lastCode);
+            
+            if (lastCode && lastCode.startsWith('LH')) {
+                const numPart = parseInt(lastCode.substring(2));
+                if (!isNaN(numPart)) {
+                    nextCode = `LH${String(numPart + 1).padStart(3, '0')}`;
+                    console.log('Generated next appointment code:', nextCode);
+                }
+            }
+        }
+        
+        res.status(200).json({
+            success: true,
+            nextCode: nextCode
+        });
+        
+    } catch (err) {
+        console.error('Error generating next appointment code:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi tạo mã lịch hẹn mới'
+        });
+    }
+});
 // API: Get all medical records
 app.get('/api/medical-records', async (req, res) => {
     try {
@@ -530,6 +595,7 @@ app.delete('/api/medical-records/:id', async (req, res) => {
         });
     }
 });
+
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
@@ -11,11 +11,39 @@ const AddMedicalRecord = () => {
         maLichHen: '',
         bacSi: '',
         chanDoan: '',
-        ngayLap: '',
+        ngayLap: new Date().toISOString().slice(0, 16),
         action: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        // Lấy cả mã bệnh nhân và mã lịch hẹn khi component được load
+        fetchNextCodes();
+    }, []);
+
+    const fetchNextCodes = async () => {
+        try {
+            // Lấy mã bệnh nhân
+            const patientResponse = await fetch('http://localhost:5000/api/medical-records/next-patient-code');
+            const patientData = await patientResponse.json();
+            
+            // Lấy mã lịch hẹn
+            const appointmentResponse = await fetch('http://localhost:5000/api/medical-records/next-appointment-code');
+            const appointmentData = await appointmentResponse.json();
+            
+            if (patientData.success && appointmentData.success) {
+                setFormData(prev => ({
+                    ...prev,
+                    maBenhNhan: patientData.nextCode,
+                    maLichHen: appointmentData.nextCode
+                }));
+            }
+        } catch (err) {
+            console.error('Error fetching next codes:', err);
+            setError('Lỗi khi lấy mã tự động. Vui lòng thử lại.');
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -77,28 +105,26 @@ const AddMedicalRecord = () => {
                     <form onSubmit={handleSubmit} className="add-record-form">
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="maBenhNhan">Mã bệnh nhân *</label>
+                                <label htmlFor="maBenhNhan">Mã bệnh nhân</label>
                                 <input
                                     type="text"
                                     id="maBenhNhan"
                                     name="maBenhNhan"
                                     value={formData.maBenhNhan}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Nhập mã bệnh nhân"
+                                    readOnly
+                                    className="readonly-input"
                                 />
                             </div>
                             
                             <div className="form-group">
-                                <label htmlFor="maLichHen">Mã lịch hẹn *</label>
+                                <label htmlFor="maLichHen">Mã lịch hẹn</label>
                                 <input
                                     type="text"
                                     id="maLichHen"
                                     name="maLichHen"
                                     value={formData.maLichHen}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Nhập mã lịch hẹn"
+                                    readOnly
+                                    className="readonly-input"
                                 />
                             </div>
                         </div>
@@ -164,7 +190,7 @@ const AddMedicalRecord = () => {
                             <button 
                                 type="button" 
                                 className="cancel-button"
-                                onClick={() => navigate('/medical-records')}
+                                onClick={() => navigate('/hosobenhan')}
                             >
                                 Hủy bỏ
                             </button>
