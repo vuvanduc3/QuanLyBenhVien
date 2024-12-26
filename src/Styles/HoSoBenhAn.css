@@ -60,7 +60,38 @@
     padding-top: 24px;
     border-top: 1px solid var(--border-color);
   }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
   
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+  }.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+  .add-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
   .nav-section h2 {
     padding: 0 12px;
     margin-bottom: 16px;
@@ -295,3 +326,41 @@
     flex: 1;
     padding: 1rem;
   }
+  /* Add these new styles to your HoSoBenhAn.css file */
+
+.action-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-buttons-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+/* Update existing action button styles */
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  flex: 1; /* Makes buttons in each row take equal width */
+}
+
+/* Your existing button color classes remain the same */
+.action-btn.green { background: var(--success-color); }
+.action-btn.red { background: var(--danger-color); }
+.action-btn.brown { background: var(--warning-color); }
+
+/* Adjust table cell padding for better button layout */
+td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  vertical-align: top; /* Aligns content to top of cell */
+}
