@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Menu1 from '../components/Menu';
 import '../Styles/ChiTietThuoc.css';
+import Search1 from '../components/seach_user';
 
 const ChiTietThuoc = () => {
     const [thuoc, setThuoc] = useState(null);
@@ -97,6 +98,7 @@ const ChiTietThuoc = () => {
             <ToastContainer position="top-right" />
             <Menu1 />
             <main className="main-content">
+                <Search1/>
                 <div className="detail-container">
                     <div className="detail-header">
                         <div className="header-left">
