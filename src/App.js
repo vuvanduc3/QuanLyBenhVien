@@ -12,6 +12,7 @@ import DonThuoc from './Screen/DonThuoc';
 import QuanLyThuoc from './Screen/QuanLyThuoc';
 import ThemSuaXoaThuoc from './Screen/CRUDThuoc';
 import ChiTietThuoc from './Screen/ChiTietThuoc';
+import QuanLyVatTu from './Screen/QuanLyVatTu';
 function App() {
   return (
     <Router>
@@ -33,6 +34,7 @@ function App() {
             <Route path="/quanlythuoc" element={<QuanLyThuoc/>} />
             <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
             <Route path="/chi-tiet-thuoc/:id" element={<ChiTietThuoc/>} />
+            <Route path="/quanlyvattu" element={<QuanLyVatTu/>} />
           </Routes>
         </div>
       </div>

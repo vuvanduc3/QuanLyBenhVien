@@ -59,9 +59,9 @@ async function connectToDatabase() {
         
         // Kiểm tra kết nối và structure của bảng Thuoc
         const tableCheck = await pool.request().query(`
-            SELECT TOP 1 ID, TenThuoc, SDT, MoTa, SoLuong, GiaThuoc 
-            FROM Thuoc 
-            ORDER BY ID DESC
+            SELECT TOP 1 MaVatTu, TenVatTu
+            FROM VatTuYTe 
+            ORDER BY MaVatTu DESC
         `);
         console.log('Database structure check passed');
         console.log('Last record:', tableCheck.recordset[0]);
@@ -71,6 +71,8 @@ async function connectToDatabase() {
     }
 }
 connectToDatabase();
+
+
 
 // API: Lấy danh sách thuốc
 app.get('/api/thuoc', async (req, res) => {
@@ -328,6 +330,22 @@ app.put('/api/thuoc/:id', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Lỗi khi cập nhật thuốc: ' + err.message
+        });
+    }
+});
+// API: Lấy danh sách vật tư 
+app.get('/api/vattu', async (req, res) => {
+    try {
+        const result = await pool.request().query('SELECT * FROM VatTuYTe ORDER BY ID DESC');
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error('❌ Lỗi lấy dữ liệu Vật tư:', err.message);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy dữ liệu từ database: ' + err.message
         });
     }
 });
