@@ -11,6 +11,7 @@ import MedicalRecordList from './Screen/HoSoBenhAn';
 import DonThuoc from './Screen/DonThuoc';
 import QuanLyThuoc from './Screen/QuanLyThuoc';
 import ThemSuaXoaThuoc from './Screen/CRUDThuoc';
+import QuanLyNguoiDung from './Screen/QuanLyNguoiDung';
 function App() {
   return (
     <Router>
@@ -31,6 +32,7 @@ function App() {
             <Route path="/hosobenhan" element={<MedicalRecordList/>} />
             <Route path="/quanlythuoc" element={<QuanLyThuoc/>} />
             <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
+            <Route path="/quanlynguoidung" element={<QuanLyNguoiDung/>} />
           </Routes>
         </div>
       </div>

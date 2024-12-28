@@ -1,0 +1,224 @@
+/* Toàn bộ container */
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f7fc;
+}
+
+/* Header và menu */
+.main-content {
+    width: 100%;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+/* Tên trang */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Nút thêm người dùng */
+.add-button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.add-button:hover {
+    background-color: #45a049;
+}
+
+/* Modal thêm người dùng */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-actions button {
+    padding: 8px 15px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.modal-actions button:first-child {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.modal-actions button:last-child {
+    background-color: #f44336;
+    color: white;
+}
+
+.modal-actions button:hover {
+    opacity: 0.8;
+}
+
+/* Table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td { 
+    padding: 15px; text-align: center; /* Căn giữa nội dung */ 
+    vertical-align: middle; /* Căn giữa theo chiều dọc */ 
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+}
+
+.table td {
+    font-size: 14px;
+    color: #555;
+}
+
+.table .no-data {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+}
+
+.table .actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Thêm kiểu dáng cho hình ảnh người dùng */
+.table .user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+.table .btn-edit,
+.table .btn-delete {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.table .btn-edit {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.table .btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.table .btn-edit:hover,
+.table .btn-delete:hover {
+    opacity: 0.8;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination span {
+    font-size: 14px;
+    color: #555;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.pagination-buttons button {
+    padding: 8px;
+    background-color: #ddd;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination-buttons button:hover {
+    background-color: #ccc;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #333;
+}
+
+/* Thêm style cho các thành phần khác nếu cần */

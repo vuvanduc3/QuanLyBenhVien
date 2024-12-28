@@ -11,6 +11,8 @@ const QuanLyThuoc = () => {
     const [error, setError] = useState(null); // Lưu lỗi nếu có
     const navigate = useNavigate();
 
+   
+
     // Fetch dữ liệu thuốc từ API
     useEffect(() => {
         fetch('http://localhost:5000/api/thuoc')
