@@ -8,8 +8,10 @@
 /* Header và menu */
 .main-content {
     width: 100%;
-    padding: 20px;
+    padding: 16px;
     background-color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 /* Tên trang */
@@ -17,28 +19,34 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .card-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     color: #333;
+    letter-spacing: 0.5px;
 }
 
 /* Nút thêm người dùng */
 .add-button {
-    padding: 8px 15px;
+    padding: 8px 16px; /* Giảm kích thước nút */
     background-color: #4CAF50;
     color: white;
-    border: none;
-    border-radius: 4px;
+    border: 2px solid #4CAF50; /* Thêm viền */
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 14px; /* Giảm kích thước chữ */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho nút */
+    transition: all 0.3s ease;
 }
 
+/* Hiệu ứng hover cho nút thêm người dùng */
 .add-button:hover {
     background-color: #45a049;
+    opacity: 0.8;
+    transform: scale(1.05);
 }
 
 /* Modal thêm người dùng */
@@ -48,56 +56,67 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
     background-color: #fff;
     padding: 30px;
-    border-radius: 5px;
+    border-radius: 8px;
     width: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .modal-content h3 {
-    margin-bottom: 20px;
-    font-size: 20px;
+    margin-bottom: 16px;
+    font-size: 22px;
     font-weight: 600;
     color: #333;
+    text-align: center;
 }
 
 .modal-content label {
     display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
+    margin-bottom: 6px;
+    font-size: 13px;
     font-weight: 500;
     color: #555;
 }
 
-.modal-content input {
+.modal-content input,
+.modal-content select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: border-color 0.3s ease;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    border-color: #4CAF50;
+    outline: none;
 }
 
 .modal-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 .modal-actions button {
-    padding: 8px 15px;
-    margin-left: 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 8px 16px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font-size: 15px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho nút */
 }
 
 .modal-actions button:first-child {
@@ -121,20 +140,24 @@
     margin-top: 20px;
 }
 
-.table th, .table td { 
-    padding: 15px; text-align: center; /* Căn giữa nội dung */ 
-    vertical-align: middle; /* Căn giữa theo chiều dọc */ 
+.table th, .table td {
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
     border-bottom: 1px solid #ddd;
+    font-size: 15px;
+    color: #555;
+    font-weight: 500;
 }
 
 .table th {
     background-color: #f2f2f2;
     font-weight: 600;
+    text-transform: uppercase;
 }
 
 .table td {
-    font-size: 14px;
-    color: #555;
+    background-color: #fff;
 }
 
 .table .no-data {
@@ -146,39 +169,55 @@
 .table .actions {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-/* Thêm kiểu dáng cho hình ảnh người dùng */
 .table .user-image {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
 }
 
-.table .btn-edit,
-.table .btn-delete {
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
+/* Nút Edit */
 .table .btn-edit {
+    padding: 8px 16px; /* Giảm kích thước */
+    border: 2px solid #4CAF50; /* Thêm viền */
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px; /* Giảm kích thước chữ */
     background-color: #4CAF50;
     color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho nút */
+    transition: all 0.3s ease;
 }
 
+/* Hiệu ứng hover cho nút Edit */
+.table .btn-edit:hover {
+    background-color: #388E3C;
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+/* Nút Delete */
 .table .btn-delete {
+    padding: 8px 16px; /* Giảm kích thước */
+    border: 2px solid #f44336; /* Thêm viền */
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px; /* Giảm kích thước chữ */
     background-color: #f44336;
     color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho nút */
+    transition: all 0.3s ease;
 }
 
-.table .btn-edit:hover,
+/* Hiệu ứng hover cho nút Delete */
 .table .btn-delete:hover {
+    background-color: #e53935;
     opacity: 0.8;
+    transform: scale(1.05);
 }
 
 /* Pagination */
@@ -190,25 +229,29 @@
 }
 
 .pagination span {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
 }
 
 .pagination-buttons {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .pagination-buttons button {
-    padding: 8px;
+    padding: 6px 12px;
     background-color: #ddd;
-    border: none;
-    border-radius: 4px;
+    border: 2px solid #ddd; /* Thêm viền */
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho nút */
 }
 
 .pagination-buttons button:hover {
     background-color: #ccc;
+    transform: scale(1.05);
 }
 
 /* Loading spinner */
@@ -217,8 +260,73 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 20px;
+    font-size: 18px;
     color: #333;
 }
 
-/* Thêm style cho các thành phần khác nếu cần */
+/* Container cho các nút */
+.role-switcher {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+/* Nút vai trò */
+.role-btn {
+    padding: 8px 16px; /* Giảm kích thước nút */
+    font-size: 14px; /* Giảm kích thước chữ */
+    font-weight: 600;
+    border: 2px solid transparent; /* Thêm viền */
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #f4f7fc;
+    color: #333;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho nút */
+}
+
+/* Nút active */
+.role-btn.active {
+    color: white;
+    font-weight: 700;
+}
+
+/* Nút Bệnh nhân */
+.role-btn:nth-child(1) {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.role-btn:nth-child(1).active {
+    background-color: #388E3C;
+}
+
+/* Nút Bác sĩ */
+.role-btn:nth-child(2) {
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+
+.role-btn:nth-child(2).active {
+    background-color: #1976D2;
+}
+
+/* Hiệu ứng hover */
+.role-btn:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+/* Responsive - điều chỉnh cho các màn hình nhỏ */
+@media (max-width: 768px) {
+    .role-switcher {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .role-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
