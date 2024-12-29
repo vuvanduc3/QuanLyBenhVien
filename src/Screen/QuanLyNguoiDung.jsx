@@ -211,7 +211,7 @@ const QuanLyNguoiDungScreen = () => {
                 VaiTro: user.VaiTro || '',
                 DiaChi: user.DiaChi || '',
                 Tuoi: user.Tuoi || '',
-                GioiTinh: user.GioiTinh || '',
+                GioiTinh: user.GioiTinh || '', // Giới tính lấy giá trị từ người dùng
                 ChuyenMon: user.ChuyenMon || '',
                 PhongKham: user.PhongKham || ''
             });
@@ -225,12 +225,13 @@ const QuanLyNguoiDungScreen = () => {
                 VaiTro: '',
                 DiaChi: '',
                 Tuoi: '',
-                GioiTinh: '',
+                GioiTinh: '', // Giới tính mặc định là trống khi thêm mới
                 ChuyenMon: '',
                 PhongKham: ''
             });
         }
     };
+
 
     const filterUsersByRole = (role) => {
         return users.filter(user => user.VaiTro === role);
@@ -332,7 +333,7 @@ const QuanLyNguoiDungScreen = () => {
                                         <label>Giới tính:</label>
                                         <select
                                             name="GioiTinh"
-                                            value={formData.GioiTinh}
+                                            value={formData.GioiTinh} // Chọn giới tính hiện tại
                                             onChange={handleInputChange}
                                         >
                                             <option value="">Chọn giới tính</option>
@@ -342,6 +343,7 @@ const QuanLyNguoiDungScreen = () => {
                                         </select>
                                     </>
                                 )}
+
 
                                 {formData.VaiTro === 'Bác sĩ' && (
                                     <>
