@@ -9,6 +9,7 @@ const QuanLyNguoiDungScreen = () => {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState('add'); // 'add' hoặc 'edit'
+    const [imageURL, setImageURL] = useState('https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg');
     const [currentUserId, setCurrentUserId] = useState(null);
     const [formData, setFormData] = useState({
         Hinh: '',
@@ -24,6 +25,9 @@ const QuanLyNguoiDungScreen = () => {
         PhongKham: '',
     });
     const [viewRole, setViewRole] = useState('Bệnh nhân'); // Default view is "Bệnh nhân"
+    const [searchTerm, setSearchTerm] = useState(""); // State để lưu từ khóa tìm kiếm
+    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+    const itemsPerPage = 2; // Số lượng người dùng trên mỗi trang
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -45,8 +49,6 @@ const QuanLyNguoiDungScreen = () => {
         };
         fetchUsers();
     }, []);
-
-
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -232,15 +234,35 @@ const QuanLyNguoiDungScreen = () => {
         }
     };
 
-
+    // Lọc người dùng theo vai trò
     const filterUsersByRole = (role) => {
         return users.filter(user => user.VaiTro === role);
     };
 
-    console.log('Users:', users); // In ra dữ liệu trước khi lọc
-    const filteredUsers = filterUsersByRole(viewRole);
-    console.log('Filtered Users:', filteredUsers); // In ra dữ liệu đã lọc
+    // Tìm kiếm người dùng theo từ khóa
+    const searchUsers = (term) => {
+        return users.filter(user =>
+            Object.values(user).some(value =>
+                String(value).toLowerCase().includes(term.toLowerCase())
+            )
+        );
+    };
 
+    // Kết quả tìm kiếm hoặc lọc theo vai trò
+    const filteredResults = searchTerm ? searchUsers(searchTerm) : filterUsersByRole(viewRole);
+    // Phân trang
+    const indexOfLastUser = currentPage * itemsPerPage;
+    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+    const currentUsers = filteredResults.slice(indexOfFirstUser, indexOfLastUser);
+
+
+    const handleSave = () => {
+        // Cập nhật hình ảnh khi nhấn "Lưu"
+        setImageURL(formData.Hinh || 'https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg'); // Nếu không có URL, dùng 'default_image_url'
+    };
+
+    // Cập nhật trang
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <div className="container">
@@ -268,34 +290,92 @@ const QuanLyNguoiDungScreen = () => {
                         <div className="modal">
                             <div className="modal-content">
                                 <h3>{modalType === 'add' ? 'Thêm người dùng' : 'Chỉnh sửa người dùng'}</h3>
-                                <label>Hình URL:</label>
-                                <input
-                                    type="text"
-                                    name="Hinh"
-                                    value={formData.Hinh}
-                                    onChange={handleInputChange}
-                                />
-                                <label>Tên đầy đủ:</label>
-                                <input
-                                    type="text"
-                                    name="TenDayDu"
-                                    value={formData.TenDayDu}
-                                    onChange={handleInputChange}
-                                />
-                                <label>Email:</label>
-                                <input
-                                    type="email"
-                                    name="Email"
-                                    value={formData.Email}
-                                    onChange={handleInputChange}
-                                />
-                                <label>SĐT:</label>
-                                <input
-                                    type="text"
-                                    name="SDT"
-                                    value={formData.SDT}
-                                    onChange={handleInputChange}
-                                />
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <img
+                                            src={imageURL} // Hiển thị hình ảnh từ state imageURL
+                                            alt="Hình"
+                                            className="user-image-demo"
+                                        />
+                                    </div>
+                                    <div style={{ display: "flex", alignItems: 'center' }}>
+                                        <div style={{ width: "90%", marginRight: "10px" }}>
+                                            <label>Hình URL</label>
+                                            <input
+                                                type="text"
+                                                name="Hinh"
+                                                value={formData.Hinh}
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
+                                        <button
+                                            style={{
+                                                width: '10%',
+                                                marginTop: '15px',
+                                                padding: "10px 20px",
+                                                border: "none",
+                                                height: "40px",
+                                                borderRadius: "6px",
+                                                fontSize: "14px",
+                                                fontWeight: 'bolder',
+                                                cursor: "pointer",
+                                                transition: "background-color 0.3s ease",
+                                                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                                                backgroundColor: "#16a2de",
+                                                color: 'white',
+                                            }}
+                                            onClick={handleSave} // Khi bấm "Lưu", thay đổi hình ảnh
+                                        >
+                                            Cập nhật
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div style={{ fontSize: "11px", paddingBottom: "15px", color: '#a6adba', fontWeight: 'bolder' }}>Thông tin chính</div>
+                                <div style={{ display: "flex" }}>
+                                    <div style={{ width: "50%", marginRight: "30px" }} >
+                                        <label>Mã người dùng</label>
+                                        <input
+                                            type="text"
+                                            name="TenDayDu"
+                                            value="Tự động tăng"
+                                            readonly
+                                        />
+                                    </div>
+                                    <div style={{ width: "50%" }}>
+                                        <label>Tên đầy đủ</label>
+                                        <input
+                                            type="text"
+                                            name="TenDayDu"
+                                            value={formData.TenDayDu}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+
+
+                                <div style={{ display: "flex" }}>
+                                    <div style={{ width: "50%", marginRight: "30px" }}>
+                                        <label>E-mail</label>
+                                        <input
+                                            type="email"
+                                            name="Email"
+                                            value={formData.Email}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div style={{ width: "50%" }}>
+                                        <label>Số điện thoại</label>
+                                        <input
+                                            type="text"
+                                            name="SDT"
+                                            value={formData.SDT}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+
+
                                 <label>CCCD:</label>
                                 <input
                                     type="text"
@@ -303,6 +383,9 @@ const QuanLyNguoiDungScreen = () => {
                                     value={formData.CCCD}
                                     onChange={handleInputChange}
                                 />
+
+                                <div style={{ fontSize: "11px", paddingBottom: "15px", color: '#a6adba', fontWeight: 'bolder' }}>Thông tin Thêm</div>
+
                                 <label>Vai trò:</label>
                                 <select
                                     name="VaiTro"
@@ -314,8 +397,34 @@ const QuanLyNguoiDungScreen = () => {
                                     <option value="Bác sĩ">Bác sĩ</option>
                                 </select>
 
+
+
                                 {formData.VaiTro === 'Bệnh nhân' && (
                                     <>
+                                        <div style={{ display: "flex" }}>
+                                            <div style={{ width: "50%", marginRight: "30px" }}>
+                                                <label>Giới tính:</label>
+                                                <select
+                                                    name="GioiTinh"
+                                                    value={formData.GioiTinh} // Chọn giới tính hiện tại
+                                                    onChange={handleInputChange}
+                                                >
+                                                    <option value="">Chọn giới tính</option>
+                                                    <option value="Nam">Nam</option>
+                                                    <option value="Nữ">Nữ</option>
+                                                    <option value="Khác">Khác</option>
+                                                </select>
+                                            </div>
+                                            <div style={{ width: "50%" }}>
+                                                <label>Tuổi:</label>
+                                                <input
+                                                    type="number"
+                                                    name="Tuoi"
+                                                    value={formData.Tuoi}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
                                         <label>Địa chỉ:</label>
                                         <input
                                             type="text"
@@ -323,24 +432,8 @@ const QuanLyNguoiDungScreen = () => {
                                             value={formData.DiaChi}
                                             onChange={handleInputChange}
                                         />
-                                        <label>Tuổi:</label>
-                                        <input
-                                            type="number"
-                                            name="Tuoi"
-                                            value={formData.Tuoi}
-                                            onChange={handleInputChange}
-                                        />
-                                        <label>Giới tính:</label>
-                                        <select
-                                            name="GioiTinh"
-                                            value={formData.GioiTinh} // Chọn giới tính hiện tại
-                                            onChange={handleInputChange}
-                                        >
-                                            <option value="">Chọn giới tính</option>
-                                            <option value="Nam">Nam</option>
-                                            <option value="Nữ">Nữ</option>
-                                            <option value="Khác">Khác</option>
-                                        </select>
+
+
                                     </>
                                 )}
 
@@ -373,6 +466,18 @@ const QuanLyNguoiDungScreen = () => {
                             </div>
                         </div>
                     )}
+
+                    {/* Input tìm kiếm */}
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Bảng người dùng */}
                     <table className="table">
                         <thead>
                             <tr>
@@ -405,9 +510,8 @@ const QuanLyNguoiDungScreen = () => {
                                     <td colSpan="13">Đang tải dữ liệu...</td>
                                 </tr>
                             ) : (
-                                // Lọc người dùng theo vai trò chỉ một lần
-                                filterUsersByRole(viewRole).length > 0 ? (
-                                    filterUsersByRole(viewRole).map(user => (
+                                filteredResults.length > 0 ? (
+                                    currentUsers.map(user => (
                                         <tr key={user.ID}>
                                             <td>{user.ID}</td>
                                             <td><img src={user.Hinh || 'default_image_url'} alt="Hình" className="user-image" /></td>
@@ -438,16 +542,29 @@ const QuanLyNguoiDungScreen = () => {
                                         </tr>
                                     ))
                                 ) : (
-                                    // Thông báo khi không có dữ liệu người dùng
                                     <tr>
-                                        <td colSpan="13">Không có người dùng trong hệ thống</td>
+                                        <td colSpan="13">Không có kết quả tìm kiếm</td>
                                     </tr>
                                 )
                             )}
                         </tbody>
 
-
                     </table>
+
+                    {/* Phân trang */}
+                    <div className="pagination">
+                        <button
+                            onClick={() => paginate(currentPage - 1)}
+                            disabled={currentPage === 1}>
+                            Trước
+                        </button>
+                        <span>{currentPage}</span>
+                        <button
+                            onClick={() => paginate(currentPage + 1)}
+                            disabled={currentPage * itemsPerPage >= filteredResults.length}>
+                            Sau
+                        </button>
+                    </div>
                 </div>
             </main>
         </div>

@@ -65,36 +65,36 @@
 
 .modal-content {
     background-color: #fff;
-    padding: 30px;
+    padding:15px 40px;
     border-radius: 8px;
-    width: 400px;
+    width: 1200px;  /* Tăng chiều rộng modal */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .modal-content h3 {
-    margin-bottom: 16px;
-    font-size: 22px;
-    font-weight: 600;
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 700;
     color: #333;
     text-align: center;
 }
 
 .modal-content label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     color: #555;
 }
 
 .modal-content input,
 .modal-content select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 16px;
+    padding: 12px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     transition: border-color 0.3s ease;
 }
 
@@ -106,17 +106,18 @@
 
 .modal-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 16px;
 }
 
 .modal-actions button {
-    padding: 8px 16px;
-    border: 2px solid transparent;
+    padding: 10px 20px;
+    border: none;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho nút */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .modal-actions button:first-child {
@@ -132,6 +133,8 @@
 .modal-actions button:hover {
     opacity: 0.8;
 }
+
+
 
 /* Table */
 .table {
@@ -329,4 +332,49 @@
         width: 100%;
         margin-bottom: 10px;
     }
+}
+
+.user-image-demo {
+    width: 130px;
+    height: 130px;
+    padding: 5px;
+    border: 10px solid black; /* Viền đen */
+    border-radius: 50%; /* Bo viền để tạo hình tròn */
+    object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Tăng độ sâu bóng */
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.pagination button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    font-size: 18px;
+    font-weight: bold;
 }
