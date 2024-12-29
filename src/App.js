@@ -11,9 +11,7 @@ import MedicalRecordList from './Screen/HoSoBenhAn';
 import DonThuoc from './Screen/DonThuoc';
 import QuanLyThuoc from './Screen/QuanLyThuoc';
 import ThemSuaXoaThuoc from './Screen/CRUDThuoc';
-import ChiTietThuoc from './Screen/ChiTietThuoc';
-import AddMedicalRecord from './Screen/AddHSBA';
-import MedicalRecordDetail from './Screen/ChiTietHSBA';
+import QuanLyNguoiDung from './Screen/QuanLyNguoiDung';
 function App() {
   return (
     <Router>
@@ -34,9 +32,7 @@ function App() {
             <Route path="/hosobenhan" element={<MedicalRecordList/>} />
             <Route path="/quanlythuoc" element={<QuanLyThuoc/>} />
             <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
-            <Route path="/chi-tiet-thuoc/:id" element={<ChiTietThuoc/>} />
-            <Route path="/hosobenhan/add" element={<AddMedicalRecord />} />
-            <Route path="/chitiethsba/:id" element={<MedicalRecordDetail />} />
+            <Route path="/quanlynguoidung" element={<QuanLyNguoiDung/>} />
           </Routes>
         </div>
       </div>
