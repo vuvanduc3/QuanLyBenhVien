@@ -959,6 +959,238 @@ app.delete('/api/medical-records/:id', async (req, res) => {
         });
     }
 });
+
+
+//-----------------------//
+// API: Lấy danh sách vật tư 
+app.get('/api/vattu', async (req, res) => {
+    try {
+        const result = await pool.request().query('SELECT * FROM VatTuYTe ORDER BY MaVatTu DESC');
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error('❌ Lỗi lấy dữ liệu Vật tư:', err.message);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy dữ liệu từ database: ' + err.message
+        });
+    }
+});
+
+// API: Thêm vật tư 
+app.post('/api/vattu', async (req, res) => {
+    try {
+        console.log('Received request to add vật tư:', req.body);
+
+        const { code,tenVatTu, loaiVatTu, donViTinh, soLuong, giaTien } = req.body;
+
+        // Input validation
+        if (!code ||!tenVatTu || !loaiVatTu || !donViTinh || !soLuong || !giaTien) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng điền đầy đủ thông tin bắt buộc'
+            });
+        }
+
+        // Validate data types
+        if (typeof soLuong !== 'number' || soLuong <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Số lượng phải là số dương'
+            });
+        }
+
+        if (typeof giaTien !== 'number' || giaTien <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Giá tiền phải là số dương'
+            });
+        }
+
+        // Insert new vật tư
+        const insertResult = await pool.request()
+        .input('code', sql.VarChar(10), code)
+            .input('tenVatTu', sql.NVarChar(100), tenVatTu)
+            .input('loaiVatTu', sql.NVarChar(255), loaiVatTu)
+            .input('donViTinh', sql.NVarChar(50), donViTinh)
+            .input('soLuong', sql.Int, soLuong)
+            .input('giaTien', sql.Decimal(18, 2), giaTien)
+            .query(`
+                INSERT INTO VatTuYTe (MaVatTu,TenVatTu, LoaiVatTu, DonViTinh, SoLuong, GiaTien)
+                VALUES (@code,@tenVatTu, @loaiVatTu, @donViTinh, @soLuong, @giaTien)
+            `);
+
+        console.log('Vật tư added successfully:', tenVatTu);
+
+        res.status(201).json({
+            success: true,
+            message: 'Thêm vật tư thành công',
+            data: { code,tenVatTu, loaiVatTu, donViTinh, soLuong, giaTien }
+        });
+
+    } catch (err) {
+        console.error('Error adding vật tư:', err);
+
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi server khi thêm vật tư: ' + err.message
+        });
+    }
+});
+
+app.get('/api/vattu/next-code', async (req, res) => {
+    try {
+        const result = await pool.request()
+            .query('SELECT TOP 1 MaVatTu FROM VatTuYTe ORDER BY MaVatTu DESC');
+        
+        let nextCode = 'VT005'; // Default code
+        if (result.recordset.length > 0) {
+            const lastCode = result.recordset[0].MaVatTu;
+            const numericPart = parseInt(lastCode.substring(2), 10);
+            nextCode = `VT${String(numericPart + 1).padStart(3, '0')}`;
+        }
+        
+        res.status(200).json({ success: true, nextCode });
+    } catch (err) {
+        console.error('Error fetching next code:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// API: Delete medicine
+app.delete('/api/vattu/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log('Deleting medicine with ID:', id);
+
+        // Kiểm tra thuốc tồn tại
+        const checkResult = await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query('SELECT MaVatTu FROM VatTuYTe WHERE MaVatTu = @id');
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Không tìm thấy thuốc với mã ${id}`
+            });
+        }
+
+        // Thực hiện xóa
+        await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query('DELETE FROM VatTuYTe WHERE MaVatTu = @id');
+
+        console.log('Medicine deleted successfully:', id);
+        
+        res.status(200).json({
+            success: true,
+            message: 'Xóa thuốc thành công'
+        });
+        
+    } catch (err) {
+        console.error('Error deleting medicine:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi xóa thuốc: ' + err.message
+        });
+    }
+});
+// API: Get medicine detail by ID
+app.get('/api/vattu/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const result = await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query(`
+                SELECT * FROM VatTuYTe 
+                WHERE MaVatTu = @id
+            `);
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy vật tư'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: result.recordset[0]
+        });
+        
+    } catch (err) {
+        console.error('Error fetching medicine detail:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy thông tin thuốc'
+        });
+    }
+});
+
+// API: Cập nhật vật tư 
+
+app.put('/api/vattu/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {tenvattu,loaivattu, donvitinh,soluong,giatien } = req.body;
+
+        // Input validation
+        if (!tenvattu || !loaivattu || !donvitinh || !soluong || !giatien) {
+            console.log('Missing fields in request body:', req.body);
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng điền đầy đủ thông tin bắt buộc'
+            });
+        }
+
+        // Check if medicine exists
+        const checkResult = await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .query('SELECT MaVatTu FROM VatTuYTe WHERE MaVatTu = @id');
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Không tìm thấy thuốc với mã ${id}`
+            });
+        }
+
+        // Update medicine
+        await pool.request()
+            .input('id', sql.VarChar(10), id)
+            .input('tenvattu', sql.NVarChar(100), tenvattu)
+            .input('loaivattu', sql.NVarChar(255), loaivattu)
+            .input('donvitinh', sql.NVarChar(50), donvitinh)
+            .input('soluong', sql.Int, Number(soluong))
+            .input('giatien', sql.Decimal(18, 2), Number(giatien))
+            .query(`
+                UPDATE VatTuYTe 
+                SET TenVatTu = @tenvattu,
+                    LoaiVatTu = @loaivattu,
+                    DonViTinh = @donvitinh,
+                    SoLuong = @soluong,
+                    GiaTien = @giatien
+                WHERE MaVatTu = @id
+            `);
+
+        res.status(200).json({
+            success: true,
+            message: 'Cập nhật thuốc thành công',
+            data: { id, name: tenvattu, phone: loaivattu, description: donvitinh, quantity: soluong, price: giatien }
+        });
+        
+    } catch (err) {
+        console.error('Error updating medicine:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi cập nhật thuốc: ' + err.message
+        });
+    }
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -15,6 +15,10 @@ import QuanLyNguoiDung from './Screen/QuanLyNguoiDung';
 import ChiTietThuoc from './Screen/ChiTietThuoc';
 import AddMedicalRecord from './Screen/AddHSBA';
 import MedicalRecordDetail from './Screen/ChiTietHSBA';
+
+import QuanLyVatTu from './Screen/QuanLyVatTu';
+import ChiTietVatTu from './Screen/ChiTietVatTu';
+import CRUDVatTu from './Screen/CRUDVatTu';
 function App() {
   return (
     <Router>
@@ -41,6 +45,9 @@ function App() {
             <Route path="/chi-tiet-thuoc/:id" element={<ChiTietThuoc/>} />
             <Route path="/hosobenhan/add" element={<AddMedicalRecord />} />
             <Route path="/chitiethsba/:id" element={<MedicalRecordDetail />} />
+            <Route path="/quanlyvattu" element={<QuanLyVatTu/>} />
+            <Route path="/chi-tiet-vat-tu/:id" element={<ChiTietVatTu/>} />
+            <Route path="/them-vat-tu" element={<CRUDVatTu/>} />
           </Routes>
         </div>
       </div>
