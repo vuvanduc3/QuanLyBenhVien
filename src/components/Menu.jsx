@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Calendar, 
   Pill, 
@@ -7,6 +7,7 @@ import {
   TestTube, 
   History, 
   Receipt, 
+  Stethoscope,
   FileSpreadsheet, 
   Shield, 
   Wallet, 
@@ -30,8 +31,9 @@ const menuItems = [
 const pageItems = [
   { text: "Page", header: true },
   { text: "Hóa đơn", icon: <Receipt size={20} />, path: "/invoices" },
-  { text: "Hóa đơn chi tiết", icon: <FileSpreadsheet size={20} />, path: "/hoa-don-chi-tiet", highlight: true },  
+  { text: "Hóa đơn chi tiết", icon: <FileSpreadsheet size={20} />, path: "/hoa-don-chi-tiet" },  
   { text: "Bảo hiểm y tế", icon: <Shield size={20} />, path: "/medicines" },
+  { text: "Vật tư y tế", icon: <Stethoscope size={20} />, path: "/quanlyvattu" },
   { text: "Quản lý BHYT chi trả", icon: <BadgeDollarSign size={20} />, path: "/insurance-payment" },
   { text: "Thanh toán", icon: <Wallet size={20} />, path: "/payments" },
   { text: "Tổng hợp chi phí", icon: <Receipt size={20} />, path: "/cost-summary" },
@@ -46,6 +48,12 @@ const bottomItems = [
 ];
 
 export default function Menu() {
+  const [selectedPath, setSelectedPath] = useState(window.location.pathname);
+
+  const handleSelect = (path) => {
+    setSelectedPath(path);
+  };
+
   return (
     <div className="sidebar">
       <div className="sidebar-header">
@@ -58,7 +66,12 @@ export default function Menu() {
       <nav className="sidebar-nav">
         <div className="nav-section">
           {menuItems.map((item, index) => (
-            <a key={index} href={item.path} className="nav-item">
+            <a 
+              key={index} 
+              href={item.path} 
+              className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
+              onClick={() => handleSelect(item.path)}
+            >
               {item.icon}
               <span className="nav-item-text">{item.text}</span>
             </a>
@@ -71,8 +84,9 @@ export default function Menu() {
             !item.header && (
               <a 
                 key={index} 
-                href={item.path}
-                className={`nav-item ${item.highlight ? 'highlight' : ''}`}
+                href={item.path} 
+                className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
+                onClick={() => handleSelect(item.path)}
               >
                 {item.icon}
                 <span className="nav-item-text">{item.text}</span>
@@ -84,7 +98,12 @@ export default function Menu() {
 
       <div className="sidebar-footer">
         {bottomItems.map((item, index) => (
-          <a key={index} href={item.path} className="nav-item">
+          <a 
+            key={index} 
+            href={item.path} 
+            className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
+            onClick={() => handleSelect(item.path)}
+          >
             {item.icon}
             <span className="nav-item-text">{item.text}</span>
           </a>

@@ -60,21 +60,14 @@ async function connectToDatabase() {
         
         // Kiểm tra kết nối và structure của bảng Thuoc
         const tableCheck = await pool.request().query(`
-            SELECT TOP 1 ID, TenThuoc, SDT, MoTa, SoLuong, GiaThuoc 
-            FROM Thuoc 
-            ORDER BY ID DESC
+            SELECT TOP 1 MaVatTu, TenVatTu, LoaiVatTu,DonViTinh,SoLuong,GiaTien
+            FROM VatTuYTe 
+            ORDER BY MaVatTu DESC
         `);
         console.log('Database structure check passed');
         console.log('Last record:', tableCheck.recordset[0]);
     } catch (err) {
-        console.error('❌ Lỗi kết nối SQL Server:', err);
-        if (err.code === 'ELOGIN') {
-            console.error('Lỗi đăng nhập: Kiểm tra lại tên người dùng và mật khẩu.');
-        } else if (err.code === 'ETIMEOUT') {
-            console.error('Lỗi timeout: Kiểm tra kết nối mạng hoặc cổng.');
-        } else {
-            console.error('Lỗi khác:', err.message);
-        }
+        console.error('❌ Kết nối SQL Server thất bại:', err.message);
         process.exit(1);
     }
 }
