@@ -19,6 +19,10 @@ import MedicalRecordDetail from './Screen/ChiTietHSBA';
 import QuanLyVatTu from './Screen/QuanLyVatTu';
 import ChiTietVatTu from './Screen/ChiTietVatTu';
 import CRUDVatTu from './Screen/CRUDVatTu';
+
+import HoaDonChiTiet from './Screen/QuanLyHoaDonChiTiet';
+
+
 function App() {
   return (
     <Router>
@@ -48,6 +52,7 @@ function App() {
             <Route path="/quanlyvattu" element={<QuanLyVatTu/>} />
             <Route path="/chi-tiet-vat-tu/:id" element={<ChiTietVatTu/>} />
             <Route path="/them-vat-tu" element={<CRUDVatTu/>} />
+            <Route path="/hoa-don-chi-tiet" element={<HoaDonChiTiet/>} />
           </Routes>
         </div>
       </div>

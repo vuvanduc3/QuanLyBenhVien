@@ -1,0 +1,498 @@
+/* styles.css */
+:root {
+    --primary-color: #4461F2;
+    --success-color: #3CB371;
+    --danger-color: #DC3545;
+    --warning-color: #B87759;
+    --text-color: #333;
+    --border-color: #E5E7EB;
+    --bg-color: #F3F4F6;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-color);
+  }
+  
+  .container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background: white;
+    border-right: 1px solid var(--border-color);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo {
+    padding: 0 24px;
+    margin-bottom: 32px;
+  }
+  
+  .logo h1 {
+    font-size: 24px;
+  }
+  
+  .blue {
+    color: var(--primary-color);
+  }
+  
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 12px;
+  }
+  
+  .nav-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+  }.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+  .add-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  .nav-section h2 {
+    padding: 0 12px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .nav-item:hover {
+    background: var(--bg-color);
+  }
+  
+  .nav-item.active {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    background: var(--bg-color);
+    min-width: 0;
+  }
+  
+  .header {
+    background: white;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .search-container {
+    position: relative;
+    width: 400px;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+  }
+  
+  .search-container input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  .notifications {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--danger-color);
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .user-info {
+    line-height: 1.3;
+  }
+  
+  .name {
+    font-weight: 500;
+  }
+  
+  .role {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  /* Content Area */
+  .content {
+    padding: 24px;
+  }
+  
+  .page-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .patient-info {
+    margin-bottom: 24px;
+    display: flex;
+    gap: 24px;
+    color: #666;
+  }
+  
+  /* Table */
+  .table-container {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  td {
+    padding: 16px;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .patient-id {
+    color: var(--primary-color);
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.2s;
+  }
+  
+  .action-btn:hover {
+    opacity: 0.9;
+  }
+  
+  .action-btn.green {
+    background: var(--success-color);
+  }
+  
+  .action-btn.red {
+    background: var(--danger-color);
+  }
+  
+  .action-btn.brown {
+    background: var(--warning-color);
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    color: #666;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .pagination-controls button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    background: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .pagination-controls button:hover {
+    background: var(--bg-color);
+  }
+  .container {
+    display: flex;
+    min-height: 100vh;
+  }
+  .main-content {
+    flex: 1;
+    padding: 1rem;
+  }
+  /* Add these new styles to your HoSoBenhAn.css file */
+
+.action-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-buttons-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+/* Update existing action button styles */
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  flex: 1; /* Makes buttons in each row take equal width */
+}
+
+/* Your existing button color classes remain the same */
+.action-btn.green { background: var(--success-color); }
+.action-btn.red { background: var(--danger-color); }
+.action-btn.brown { background: var(--warning-color); }
+
+/* Adjust table cell padding for better button layout */
+td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  vertical-align: top; /* Aligns content to top of cell */
+}
+/* Styles for filters section */
+.filters-section {
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filters-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-toggle-button,
+.clear-filters-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: white;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-toggle-button:hover {
+  background-color: #f3f4f6;
+}
+
+.clear-filters-button {
+  color: #dc2626;
+}
+
+.clear-filters-button:hover {
+  background-color: #fee2e2;
+  border-color: #dc2626;
+}
+
+.filters-container {
+  padding: 16px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  transition: all 0.2s;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.filter-group select {
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Results summary */
+.results-summary {
+  margin-top: 16px;
+  color: #6b7280;
+  font-size: 14px;
+  text-align: right;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .filter-row {
+      flex-direction: column;
+      gap: 16px;
+  }
+
+  .filters-header {
+      flex-direction: column;
+      gap: 12px;
+  }
+
+  .filter-toggle-button,
+  .clear-filters-button {
+      width: 100%;
+      justify-content: center;
+  }
+}
+
+/* Make sure inputs have proper styles */
+input[type="date"] {
+  min-height: 38px; /* Ensure consistent height with other inputs */
+  font-family: inherit;
+}
+
+/* Enhance table headers for better visibility */
+.table-container th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #1f2937;
+}
