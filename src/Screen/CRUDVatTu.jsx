@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../Styles/CRUDThuoc.css';
+import '../Styles/CRUDVatTu.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
 
