@@ -1,28 +1,32 @@
 ﻿create table VatTuYTe (
-MaVatTu int primary key identity(1,1),
+MaVatTu VarChar(10) primary key,
 TenVatTu nvarchar(100) not null,
 LoaiVatTu NVARCHAR(255) NOT NULL,
 DonViTinh NVARCHAR(50) NOT NULL,
 SoLuong INT NOT NULL,
 GiaTien DECIMAL(18,2) NOT NULL
 )
+
 --------Them vật tư --------------
 create procedure ThemVatTu
+@MaVatTu VarChar(10), 
 @TenVatTu nvarchar(100),
 @LoaiVatTu nvarchar(255),
 @DonViTinh nvarchar(50),
-@SoLuong int ,
+@SoLuong int,
 @GiaTien Decimal(18,2)
 as
 begin 
-insert into VatTuYTe(TenVatTu,LoaiVatTu,DonViTinh,SoLuong,GiaTien)
-values (@TenVatTu,@LoaiVatTu, @DonViTinh, @SoLuong,@GiaTien);
+    insert into VatTuYTe(MaVatTu, TenVatTu, LoaiVatTu, DonViTinh, SoLuong, GiaTien)
+    values (@MaVatTu, @TenVatTu, @LoaiVatTu, @DonViTinh, @SoLuong, @GiaTien);
 end;
+
+
 
 
 ---------- xóa Vật tư ----------------
 create procedure XoaVatTu
-@MaVatTu int 
+@MaVatTu VarChar(10) 
 as
 begin 
 delete from VatTuYTe 
@@ -31,7 +35,7 @@ end;
 
 ----------- Sửa Vật tư ------------------
 create procedure SuaVatTu
-@MaVatTu int,
+@MaVatTu VarChar(10),
 @TenVatTu nvarchar(100),
 @LoaiVatTu nvarchar(255),
 @DonViTinh nvarchar(50),
@@ -74,12 +78,15 @@ BEGIN
     EXEC sp_executesql @SQL;
 END;
 --------------------------------------------------
-exec ThemVatTu 'khẩu trang','y tế','Hộp',100,2000.00;
-exec ThemVatTu 'Cồn','y tế','Lọ',100,2000.00;
-exec ThemVatTu 'Máy đo huyết áp','y tế','Cái',100,2000.00;
-exec ThemVatTu 'Máy thở','y tế','Cái',100,2000.00;
+exec ThemVatTu 'VT001', 'khẩu trang', 'y tế', 'Hộp', 100, 2000.00;
+exec ThemVatTu 'VT002', 'Cồn', 'y tế', 'Lọ', 100, 2000.00;
+exec ThemVatTu 'VT003', 'Máy đo huyết áp', 'y tế', 'Cái', 100, 2000.00;
+exec ThemVatTu 'VT004', 'Máy thở', 'y tế', 'Cái', 100, 2000.00;
+exec ThemVatTu 'VT005', 'khẩu trang', 'y te', 'Hộp', 100, 2000.00;
 
+exec ThemVatTu 'VT006', 'khau trang', 'y te', 'Hop', 100, 2000.00;
  ---------- 
 select * from VatTuYTe
 
 
+DROP PROCEDURE IF EXISTS SuaVatTu;

@@ -13,6 +13,8 @@ import QuanLyThuoc from './Screen/QuanLyThuoc';
 import ThemSuaXoaThuoc from './Screen/CRUDThuoc';
 import ChiTietThuoc from './Screen/ChiTietThuoc';
 import QuanLyVatTu from './Screen/QuanLyVatTu';
+import ChiTietVatTu from './Screen/ChiTietVatTu';
+import CRUDVatTu from './Screen/CRUDVatTu';
 function App() {
   return (
     <Router>
@@ -35,6 +37,8 @@ function App() {
             <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
             <Route path="/chi-tiet-thuoc/:id" element={<ChiTietThuoc/>} />
             <Route path="/quanlyvattu" element={<QuanLyVatTu/>} />
+            <Route path="/chi-tiet-vat-tu/:id" element={<ChiTietVatTu/>} />
+            <Route path="/them-vat-tu" element={<CRUDVatTu/>} />
           </Routes>
         </div>
       </div>
