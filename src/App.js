@@ -11,6 +11,8 @@ import MedicalRecordList from './Screen/HoSoBenhAn';
 import DonThuoc from './Screen/DonThuoc';
 import QuanLyThuoc from './Screen/QuanLyThuoc';
 import ThemSuaXoaThuoc from './Screen/CRUDThuoc';
+import EditPayment from './Screen/EditPayment.jsx';
+
 function App() {
   return (
     <Router>
@@ -31,6 +33,7 @@ function App() {
             <Route path="/hosobenhan" element={<MedicalRecordList/>} />
             <Route path="/quanlythuoc" element={<QuanLyThuoc/>} />
             <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
+            <Route path="/EditPayment/:paymentId" element={<EditPayment/>} />
           </Routes>
         </div>
       </div>
