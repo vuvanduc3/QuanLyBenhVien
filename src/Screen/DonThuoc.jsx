@@ -8,9 +8,15 @@ import {
 import '../Styles/DonThuoc.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
 
 
 const DonThuoc = () => {
+
+    const navigate = useNavigate();
+    const handleChangeDonThuoc = () => {
+                navigate('/cruddonthuoc');
+       };
     const [activeTab] = useState('prescriptions');
     const [page, setPage] = useState(1);
     const totalPages = 84;
@@ -47,7 +53,7 @@ const DonThuoc = () => {
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Đơn thuốc</h2>
-                        <button className="add-button">
+                        <button className="add-button" onClick={handleChangeDonThuoc}>
                             Thêm đơn thuốc
                         </button>
                     </div>
@@ -79,7 +85,7 @@ const DonThuoc = () => {
                                         <td>x{prescription.quantity}</td>
                                         <td>
                                             <div className="action-buttons">
-                                                <button className="edit-button">
+                                                <button className="edit-button" onClick={handleChangeDonThuoc}>
                                                     <PenSquare size={16} />
                                                 </button>
                                                 <button className="delete-button">
