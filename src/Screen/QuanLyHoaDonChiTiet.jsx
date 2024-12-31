@@ -5,13 +5,19 @@ import '../Styles/QuanLyHoaDonChiTiet.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 
-
 const HoaDonChiTiet = () => {
     const navigate = useNavigate();
     const [hoaDonChiTiet, setHoaDonChiTiet] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; // Số lượng mục trên mỗi trang
+    const [filterVisible, setFilterVisible] = useState(false);
+    const [filters, setFilters] = useState({
+        maBenhNhan: '',
+        maBacSi: '',
+        sortBy: '',
+        sortOrder: '',
+    });
+    const itemsPerPage = 10;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,56 +37,44 @@ const HoaDonChiTiet = () => {
         fetchData();
     }, []);
 
-    // Lọc danh sách hóa đơn chi tiết theo truy vấn tìm kiếm
-    const filteredData = hoaDonChiTiet.filter(item => {
-        const query = searchQuery.toLowerCase();
-        return (
-            item.TenDichVu.toLowerCase().includes(query) ||
-            item.SoLuong.toString().includes(query) ||
-            item.DonGia.toString().includes(query)
-        );
-    });
+    const resetFilters = () => {
+        setFilters({
+            maBenhNhan: '',
+            maBacSi: '',
+            sortBy: '',
+            sortOrder: '',
+        });
+        setSearchQuery('');
+    };
 
-    // Tính toán số trang và phân trang
+    const filteredData = hoaDonChiTiet
+        .filter(item => {
+            const query = searchQuery.toLowerCase();
+            return (
+                item.TenDichVu.toLowerCase().includes(query) ||
+                item.SoLuong.toString().includes(query) ||
+                item.DonGia.toString().includes(query)
+            ) && (
+                (!filters.maBenhNhan || item.MaBenhNhan?.includes(filters.maBenhNhan)) &&
+                (!filters.maBacSi || item.MaBacSi?.includes(filters.maBacSi))
+            );
+        })
+        .sort((a, b) => {
+            if (!filters.sortBy) return 0;
+            const fieldA = a[filters.sortBy];
+            const fieldB = b[filters.sortBy];
+            if (filters.sortOrder === 'asc') {
+                return fieldA > fieldB ? 1 : -1;
+            } else {
+                return fieldA < fieldB ? 1 : -1;
+            }
+        });
+
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const paginatedData = filteredData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
-
-    // Chuyển hướng khi nhấn nút "Thêm hóa đơn chi tiết"
-    const handleAddClick = () => {
-        navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'add' } });
-    };
-
-    const handleEditClick = (item) => {
-        navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'edit', item } });
-    };
-
-    const chuyenTrangTraCuuVaNhapHoaDon = (item) => {
-        navigate('/tra-cuu-va-nhap-hoa-don');
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            const response = await fetch(`http://localhost:5000/api/hoadonchitiet/${id}`, { method: 'DELETE' });
-            const data = await response.json();
-            if (data.success) {
-                setHoaDonChiTiet(hoaDonChiTiet.filter(item => item.MaChiTiet !== id));
-            } else {
-                throw new Error(data.message);
-            }
-        } catch (err) {
-            console.error('Lỗi khi xóa:', err.message);
-        }
-    };
-
-    // Điều hướng trang
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
 
     return (
         <div className="container">
@@ -94,10 +88,48 @@ const HoaDonChiTiet = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                <button className="filter-toggle-button" onClick={() => setFilterVisible(!filterVisible)}>
+                    {filterVisible ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
+                </button>
+                {filterVisible && (
+                    <div className="filters">
+                        <input
+                            type="text"
+                            placeholder="Lọc theo mã bệnh nhân"
+                            value={filters.maBenhNhan}
+                            onChange={(e) => setFilters({ ...filters, maBenhNhan: e.target.value })}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Lọc theo mã bác sĩ"
+                            value={filters.maBacSi}
+                            onChange={(e) => setFilters({ ...filters, maBacSi: e.target.value })}
+                        />
+                        <select
+                            value={filters.sortBy}
+                            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+                        >
+                            <option value="">Sắp xếp theo</option>
+                            <option value="MaChiTiet">Mã hóa đơn</option>
+                            <option value="DonGia">Đơn giá</option>
+                        </select>
+                        <select
+                            value={filters.sortOrder}
+                            onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value })}
+                        >
+                            <option value="">Thứ tự</option>
+                            <option value="asc">Tăng dần</option>
+                            <option value="desc">Giảm dần</option>
+                        </select>
+                        <button className="reset-button" onClick={resetFilters}>
+                            Reset bộ lọc
+                        </button>
+                    </div>
+                )}
                 <div className="content">
                     <div className="card-header">
                         <h2 className="page-title">Danh sách hóa đơn chi tiết</h2>
-                        <button className="add-button" onClick={handleAddClick}>
+                        <button className="add-button" onClick={() => navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'add' } })}>
                             Thêm hóa đơn chi tiết
                         </button>
                     </div>
@@ -124,22 +156,18 @@ const HoaDonChiTiet = () => {
                                         <td>{item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td>{(item.SoLuong * item.DonGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td>
-                                            <div className="action-buttons-container">
-                                                <div className="action-buttons-container">
-                                                    <div className="action-buttons-row">
-                                                        <button className="action-btn green" onClick={() => handleEditClick(item)}>Sửa</button>
-                                                        <button className="action-btn red" onClick={() => handleDelete(item.MaChiTiet)}>Xóa</button>
-                                                    </div>
-                                                </div>
-                                                <div className="action-buttons-container">
-                                                <div className="action-buttons-row">
-                                                    <button className="action-btn brown" onClick={chuyenTrangTraCuuVaNhapHoaDon} >
-                                                        Tra cứu và nhập hóa đơn
-                                                    </button>
-
-                                                </div>
-                                            </div>
-                                            </div>
+                                            <button className="action-btn green" onClick={() => navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'edit', item } })}>Sửa</button>
+                                            <button className="action-btn red" onClick={() => {
+                                                fetch(`http://localhost:5000/api/hoadonchitiet/${item.MaChiTiet}`, { method: 'DELETE' })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            setHoaDonChiTiet(hoaDonChiTiet.filter(hd => hd.MaChiTiet !== item.MaChiTiet));
+                                                        } else {
+                                                            throw new Error(data.message);
+                                                        }
+                                                    }).catch(err => console.error('Lỗi:', err.message));
+                                            }}>Xóa</button>
                                         </td>
                                     </tr>
                                 ))}
@@ -149,8 +177,12 @@ const HoaDonChiTiet = () => {
                     <div className="pagination">
                         <span>Trang {currentPage} của {totalPages}</span>
                         <div className="pagination-controls">
-                            <button className="action-btn green" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft size={20} /></button>
-                            <button className="action-btn green" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}><ChevronRight size={20} /></button>
+                            <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+                                <ChevronLeft size={20} />
+                            </button>
+                            <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                                <ChevronRight size={20} />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -160,3 +192,4 @@ const HoaDonChiTiet = () => {
 };
 
 export default HoaDonChiTiet;
+
