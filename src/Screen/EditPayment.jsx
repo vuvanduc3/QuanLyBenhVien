@@ -18,15 +18,18 @@ const EditPayment = () => {
     maBaoHiemChiTra: "",
     soTienBaoHiemChiTra: "",
   });
+  
+  console.log("formData",formData);
 
   const bankCode = "vietcombank";
   const accountNumber = "1024753410";
   const template = "compact2";
-  const [totalPrice, setTotalPrice] = useState(0);
   const accountName = "HO%20QUANG%20TRUONG";
-  const [qrGenerated, setQrGenerated] = useState(false); // State quản lý việc tạo mã QR
-  const [qrUrl, setQrUrl] = useState(""); // Lưu URL mã QR
+  const [qrGenerated, setQrGenerated] = useState(false);
+  const [qrUrl, setQrUrl] = useState("");
+  const [count, setCount] = useState(0);
 
+  console.log(count,"count")
   useEffect(() => {
     let api = `http://localhost:5000/api/ChiTietThanhToan/${paymentId}`;
     fetch(api)
@@ -50,9 +53,9 @@ const EditPayment = () => {
               : "",
           });
           setFormData({
-            phuongThucThanhToan: payment.paymentMethod || "",
+            phuongThucThanhToan: payment.paymentMethod !== undefined ? payment.paymentMethod : "",
             maGiaoDich: payment.transactionId || "",
-            trangThaiThanhToan: payment.status || "",
+            trangThaiThanhToan: payment.status !== undefined ? payment.status : "",
             cccdCmnd: payment.cccd || "",
             soTienThanhToan: payment.amount || "",
             ngayThanhToan: payment.paymentDate
@@ -69,21 +72,21 @@ const EditPayment = () => {
       .catch((err) => {
         console.error("Error fetching data:", err);
       });
-    setTotalPrice(formData.soTienThanhToan);
-  }, [paymentId, formData.soTienThanhToan]);
+  }, [paymentId,count]);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value, // Cập nhật giá trị của input tương ứng
+      [name]: value,
     }));
   };
 
   const handleGenerateQRCode = () => {
-    const generatedQrUrl = `https://img.vietqr.io/image/${bankCode}-${accountNumber}-${template}.jpg?amount=${totalPrice}&addInfo=${paymentId}&accountName=${accountName}`;
+    const generatedQrUrl = `https://img.vietqr.io/image/${bankCode}-${accountNumber}-${template}.jpg?amount=${paymentData.amount}&addInfo=${paymentId}&accountName=${accountName}`;
     setQrUrl(generatedQrUrl);
-    setQrGenerated(true); // Đánh dấu rằng mã QR đã được tạo
+    setQrGenerated(true);
   };
 
   const formatDate = (isoString) => {
@@ -98,6 +101,44 @@ const EditPayment = () => {
       return "";
     }
   };
+
+  const formatCurrency = (value) => {
+    return value.toLocaleString("vi-VN");
+  };
+
+  const handleSavePayment = () => {
+    const updatedPaymentData = {
+      paymentMethod: formData.phuongThucThanhToan,
+      transactionId: formData.maGiaoDich,
+      status: parseInt(formData.trangThaiThanhToan, 10),
+      cccd: formData.cccdCmnd,
+      paymentDate: formData.ngayThanhToan || null,
+    };
+  
+    fetch(`http://localhost:5000/api/ChiTietThanhToan/${paymentId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedPaymentData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setCount(count + 1);
+          alert('Cập nhật thông tin thanh toán thành công!');
+          console.log('Payment information updated:', data);
+        } else {
+          alert('Cập nhật thất bại: ' + data.message);
+          console.error('Error:', data.message);
+        }
+      })
+      .catch((error) => {
+        alert('Có lỗi xảy ra khi cập nhật thanh toán!');
+        console.error('Error updating payment:', error);
+      });
+  };
+  
 
   return (
     <div className="container">
@@ -136,8 +177,8 @@ const EditPayment = () => {
                     disabled={paymentData?.status === 1}
                   >
                     <option value="">Chọn phương thức</option>
-                    <option value="1">Tiền mặt</option>
-                    <option value="0">QR</option>
+                    <option value="1">Tiền mặt 1</option>
+                    <option value="0">QR 0</option>
                   </select>
                 </div>
                 <div className="EditPayment_paymentColInput">
@@ -148,9 +189,9 @@ const EditPayment = () => {
                   </label>
                   <input
                     placeholder="Nhập số tiền thanh toán"
-                    type="number"
+                    type="text"
                     name="soTienThanhToan"
-                    value={formData.soTienThanhToan}
+                    value={formatCurrency(formData.soTienThanhToan)}
                     onChange={handleChange}
                     disabled={true}
                   />
@@ -159,7 +200,7 @@ const EditPayment = () => {
 
               {formData.phuongThucThanhToan === "0" && (
                 <>
-                  <div style={{flexDirection: 'row'}}>
+                  <div style={{ flexDirection: "row" }}>
                     <button
                       className="EditPayment_QRSubmit"
                       type="button"
@@ -210,9 +251,9 @@ const EditPayment = () => {
                     disabled={paymentData?.status === 1}
                   >
                     <option value="">Chọn trạng thái</option>
-                    <option value="1">Hoàn thành</option>
-                    <option value="2">Đang chờ xử lý</option>
-                    <option value="0">Không thành công</option>
+                    <option value="1">Hoàn thành 1</option>
+                    <option value="2">Đang chờ xử lý 2</option>
+                    <option value="0">Không thành công 0</option>
                   </select>
                 </div>
 
@@ -270,8 +311,12 @@ const EditPayment = () => {
                 />
               </div>
             </div>
-            <button className="EditPayment_paymentSubmit" type="button">
-              Save
+            <button
+              className="EditPayment_paymentSubmit"
+              type="button"
+              onClick={handleSavePayment}
+            >
+              Lưu
             </button>
           </div>
         </div>

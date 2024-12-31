@@ -136,19 +136,19 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
-  .table {
+  .table_paymentList {
     width: 100%;
     border-collapse: collapse;
   }
   
-  .table th {
+  .table_paymentList th {
     text-align: left;
     color: #4b5563;
     border-bottom: 1px solid #e5e7eb;
     font-size: 13px;
   }
   
-  .table td {
+  .table_paymentList td {
     border-bottom: 1px solid #e5e7eb;
     font-size: 13px;
   }
@@ -244,6 +244,13 @@
   .status-filter {
     padding: 8px;
     font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .payment_search-input{
+    padding: 8px;
+    width: 300px;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
