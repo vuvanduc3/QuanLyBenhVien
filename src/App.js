@@ -29,9 +29,7 @@ import XetNghiem from './Screen/XetNghiem';
 import CRUDXetNghiem from './Screen/CRUDXetNghiem';
 import CRUDDonThuoc from './Screen/CRUDDonThuoc';
 
-
-
-import EditPayment from './Screen/EditPayment.jsx';
+import EditPayment from './Screen/EditPayment';
 
 function App() {
   return (
