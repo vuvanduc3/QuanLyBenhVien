@@ -1266,3 +1266,71 @@ app.delete('/api/hoadonchitiet/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Lỗi khi xóa hóa đơn chi tiết: ' + err.message });
     }
 });
+
+// API lấy danh sách ThanhToan với phân trang
+app.get('/api/ThanhToan', async (req, res) => {
+    const { page = 1, limit = 5, status } = req.query;
+    try {
+        const offset = (page - 1) * limit;
+        let whereClause = '';
+        if (status !== undefined) {
+            whereClause = `WHERE status = ${status}`;
+        }
+
+        const query = `
+            SELECT * FROM ThanhToan
+            ${whereClause}
+            ORDER BY paymentCreateDate DESC
+            OFFSET ${offset} ROWS
+            FETCH NEXT ${limit} ROWS ONLY;
+        `;
+
+        const totalQuery = `
+            SELECT COUNT(*) AS total
+            FROM ThanhToan
+            ${whereClause};
+        `;
+
+        // Thực hiện truy vấn
+        const result = await pool.request().query(query);
+        const total = await pool.request().query(totalQuery);
+
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+            total: total.recordset[0].total,
+        });
+    } catch (err) {
+        console.error('❌ Lỗi lấy dữ liệu:', err.message);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy dữ liệu từ database',
+        });
+    }
+});
+
+// API lấy một ThanhToan theo paymentId
+app.get('/api/ChiTietThanhToan/:paymentId', async (req, res) => {
+    const paymentId = req.params.paymentId; // Lấy paymentId từ tham số URL
+    
+    try {
+        // Truy vấn cơ sở dữ liệu để lấy thanh toán với paymentId
+        const query = `SELECT * FROM ThanhToan WHERE id = @paymentId`;
+        
+        // Thực hiện truy vấn
+        const result = await pool.request()
+            .input('paymentId', sql.Int, paymentId) // Dùng SQL Injection bảo vệ
+            .query(query);
+
+        // Kiểm tra nếu có kết quả
+        if (result.recordset.length > 0) {
+            res.json({ success: true, data: result.recordset[0] });
+        } else {
+            res.status(404).json({ success: false, message: 'Không tìm thấy thanh toán với ID đã cho' });
+        }
+    } catch (err) {
+        console.error('Lỗi truy vấn:', err.message);
+        res.status(500).json({ success: false, message: 'Lỗi truy vấn cơ sở dữ liệu' });
+    }
+});
+
