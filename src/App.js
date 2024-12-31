@@ -21,6 +21,8 @@ import ChiTietVatTu from './Screen/ChiTietVatTu';
 import CRUDVatTu from './Screen/CRUDVatTu';
 
 import HoaDonChiTiet from './Screen/QuanLyHoaDonChiTiet';
+import CRUDHoaDonChiTiet from './Screen/CRUDHoaDonChiTiet';
+
 
 
 function App() {
@@ -53,6 +55,8 @@ function App() {
             <Route path="/chi-tiet-vat-tu/:id" element={<ChiTietVatTu/>} />
             <Route path="/them-vat-tu" element={<CRUDVatTu/>} />
             <Route path="/hoa-don-chi-tiet" element={<HoaDonChiTiet/>} />
+            <Route path="themSuaXoaHoaDonChiTiet" element={<CRUDHoaDonChiTiet/>} />
+
           </Routes>
         </div>
       </div>

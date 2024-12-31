@@ -1195,3 +1195,74 @@ const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
+
+// API: Lấy danh sách thuốc
+app.get('/api/hoadonchitiet', async (req, res) => {
+    try {
+        const result = await pool.request().query('SELECT * FROM HoaDonChiTiet ORDER BY MaChiTiet DESC');
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error('❌ Lỗi lấy dữ liệu thuốc:', err.message);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi khi lấy dữ liệu từ database: ' + err.message
+        });
+    }
+});
+
+// API thêm hóa đơn chi tiết
+app.post('/api/hoadonchitiet', async (req, res) => {
+    const { MaHoaDon, TenDichVu, SoLuong, DonGia } = req.body;
+    try {
+        await pool
+            .request()
+            .input('MaHoaDon', MaHoaDon)
+            .input('TenDichVu', TenDichVu)
+            .input('SoLuong', SoLuong)
+            .input('DonGia', DonGia)
+            .query('INSERT INTO HoaDonChiTiet (MaHoaDon, TenDichVu, SoLuong, DonGia) VALUES (@MaHoaDon, @TenDichVu, @SoLuong, @DonGia)');
+
+        res.status(201).json({ success: true, message: 'Thêm hóa đơn chi tiết thành công!' });
+    } catch (err) {
+        console.error('❌ Lỗi thêm hóa đơn chi tiết:', err.message);
+        res.status(500).json({ success: false, message: 'Lỗi khi thêm hóa đơn chi tiết: ' + err.message });
+    }
+});
+
+// API sửa hóa đơn chi tiết
+app.put('/api/hoadonchitiet/:id', async (req, res) => {
+    const { id } = req.params;
+    const { TenDichVu, SoLuong, DonGia } = req.body;
+    try {
+        await pool
+            .request()
+            .input('MaChiTiet', id)
+            .input('TenDichVu', TenDichVu)
+            .input('SoLuong', SoLuong)
+            .input('DonGia', DonGia)
+            .query('UPDATE HoaDonChiTiet SET TenDichVu = @TenDichVu, SoLuong = @SoLuong, DonGia = @DonGia WHERE MaChiTiet = @MaChiTiet');
+
+        res.status(200).json({ success: true, message: 'Cập nhật hóa đơn chi tiết thành công!' });
+    } catch (err) {
+        console.error('❌ Lỗi sửa hóa đơn chi tiết:', err.message);
+        res.status(500).json({ success: false, message: 'Lỗi khi sửa hóa đơn chi tiết: ' + err.message });
+    }
+});
+
+// API xóa hóa đơn chi tiết
+app.delete('/api/hoadonchitiet/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await pool.request().input('MaChiTiet', id).query('DELETE FROM HoaDonChiTiet WHERE MaChiTiet = @MaChiTiet');
+
+        res.status(200).json({ success: true, message: 'Xóa hóa đơn chi tiết thành công!' });
+    } catch (err) {
+        console.error('❌ Lỗi xóa hóa đơn chi tiết:', err.message);
+        res.status(500).json({ success: false, message: 'Lỗi khi xóa hóa đơn chi tiết: ' + err.message });
+    }
+});
