@@ -206,6 +206,13 @@ CREATE TABLE VienPhi (
     NgayThanhToan DATE
 );
 
+INSERT INTO VienPhi (MaBenhNhan, TongTien, TinhTrang, NgayThanhToan)
+VALUES 
+(1, 500000, N'Đã thanh toán', '2024-12-31'),
+(2, 300000, N'Chưa thanh toán', NULL),
+(3, 450000, N'Đã thanh toán', '2024-12-30');
+
+
 --31/12/2024
 CREATE TABLE HoaDonChiTiet (
     MaChiTiet INT PRIMARY KEY IDENTITY(1,1), -- Mã chi tiết (khóa chính, tự động tăng)
