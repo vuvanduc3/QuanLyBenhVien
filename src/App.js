@@ -25,6 +25,10 @@ import CRUDHoaDonChiTiet from './Screen/CRUDHoaDonChiTiet';
 import TraCuuVaNhapHoaDonCT from './Screen/TraCuuVaNhapHoaDonCT';
 import CRUDTraCuuVaNhapHoaDonChiTiet from './Screen/CRUDTraCuuVaNhapHoaDonChiTiet';
 
+import XetNghiem from './Screen/XetNghiem';
+import CRUDXetNghiem from './Screen/CRUDXetNghiem';
+import CRUDDonThuoc from './Screen/CRUDDonThuoc';
+
 
 
 function App() {
@@ -60,6 +64,10 @@ function App() {
             <Route path="themSuaXoaHoaDonChiTiet" element={<CRUDHoaDonChiTiet/>} />
             <Route path="tra-cuu-va-nhap-hoa-don" element={<TraCuuVaNhapHoaDonCT/>} />
             <Route path="crud-tra-cuu-va-nhap-hoa-don-chi-tiet" element={<CRUDTraCuuVaNhapHoaDonChiTiet/>} />
+
+            <Route path="xet-nghiem" element={<XetNghiem/>} />
+            <Route path="crud-xet-nghiem" element={<CRUDXetNghiem/>} />
+            <Route path="/cruddonthuoc" element={<CRUDDonThuoc/>} />
 
           </Routes>
         </div>
