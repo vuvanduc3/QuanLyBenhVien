@@ -11,6 +11,26 @@ import MedicalRecordList from './Screen/HoSoBenhAn';
 import DonThuoc from './Screen/DonThuoc';
 import QuanLyThuoc from './Screen/QuanLyThuoc';
 import ThemSuaXoaThuoc from './Screen/CRUDThuoc';
+import QuanLyNguoiDung from './Screen/QuanLyNguoiDung';
+import ChiTietThuoc from './Screen/ChiTietThuoc';
+import AddMedicalRecord from './Screen/AddHSBA';
+import MedicalRecordDetail from './Screen/ChiTietHSBA';
+
+import QuanLyVatTu from './Screen/QuanLyVatTu';
+import ChiTietVatTu from './Screen/ChiTietVatTu';
+import CRUDVatTu from './Screen/CRUDVatTu';
+
+import HoaDonChiTiet from './Screen/QuanLyHoaDonChiTiet';
+import CRUDHoaDonChiTiet from './Screen/CRUDHoaDonChiTiet';
+import TraCuuVaNhapHoaDonCT from './Screen/TraCuuVaNhapHoaDonCT';
+import CRUDTraCuuVaNhapHoaDonChiTiet from './Screen/CRUDTraCuuVaNhapHoaDonChiTiet';
+
+import XetNghiem from './Screen/XetNghiem';
+import CRUDXetNghiem from './Screen/CRUDXetNghiem';
+import CRUDDonThuoc from './Screen/CRUDDonThuoc';
+
+
+
 import EditPayment from './Screen/EditPayment.jsx';
 
 function App() {
@@ -33,6 +53,24 @@ function App() {
             <Route path="/hosobenhan" element={<MedicalRecordList/>} />
             <Route path="/quanlythuoc" element={<QuanLyThuoc/>} />
             <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
+            <Route path="/quanlynguoidung" element={<QuanLyNguoiDung/>} />
+            <Route path="/quanlythuoc" element={<QuanLyThuoc/>} />
+            <Route path="/themsuaxoathuoc" element={<ThemSuaXoaThuoc/>} />
+            <Route path="/chi-tiet-thuoc/:id" element={<ChiTietThuoc/>} />
+            <Route path="/hosobenhan/add" element={<AddMedicalRecord />} />
+            <Route path="/chitiethsba/:id" element={<MedicalRecordDetail />} />
+            <Route path="/quanlyvattu" element={<QuanLyVatTu/>} />
+            <Route path="/chi-tiet-vat-tu/:id" element={<ChiTietVatTu/>} />
+            <Route path="/them-vat-tu" element={<CRUDVatTu/>} />
+            <Route path="/hoa-don-chi-tiet" element={<HoaDonChiTiet/>} />
+            <Route path="themSuaXoaHoaDonChiTiet" element={<CRUDHoaDonChiTiet/>} />
+            <Route path="tra-cuu-va-nhap-hoa-don" element={<TraCuuVaNhapHoaDonCT/>} />
+            <Route path="crud-tra-cuu-va-nhap-hoa-don-chi-tiet" element={<CRUDTraCuuVaNhapHoaDonChiTiet/>} />
+
+            <Route path="xet-nghiem" element={<XetNghiem/>} />
+            <Route path="crud-xet-nghiem" element={<CRUDXetNghiem/>} />
+            <Route path="/cruddonthuoc" element={<CRUDDonThuoc/>} />
+
             <Route path="/EditPayment/:paymentId" element={<EditPayment/>} />
           </Routes>
         </div>

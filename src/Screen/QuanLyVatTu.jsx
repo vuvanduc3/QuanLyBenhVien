@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Edit, Trash2, ChevronLeft, ChevronRight, Filter, Search } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../Styles/QuanLyThuoc.css';
+import '../Styles/QuanLyVatTu.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 
-const QuanLyThuoc = () => {
-    const [thuocs, setThuocs] = useState([]);
-    const [filteredThuocs, setFilteredThuocs] = useState([]);
+const QuanLyVatTu = () => {
+    const [vattu, setVatTu] = useState([]);
+    const [filteredVatTu, setFilteredVatTu] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -30,15 +30,13 @@ const QuanLyThuoc = () => {
 
     const navigate = useNavigate();
 
-   
-
-    const fetchThuocs = async () => {
+    const fetchvattus = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/thuoc');
+            const response = await fetch('http://localhost:5000/api/vattu');
             const data = await response.json();
             if (data.success && Array.isArray(data.data)) {
-                setThuocs(data.data);
-                setFilteredThuocs(data.data);
+                setVatTu(data.data);
+                setFilteredVatTu(data.data);
                 setTotalPages(Math.ceil(data.data.length / itemsPerPage));
             } else {
                 setError('Dữ liệu không hợp lệ');
@@ -53,36 +51,36 @@ const QuanLyThuoc = () => {
     };
 
     useEffect(() => {
-        fetchThuocs();
+        fetchvattus();
     }, []);
 
     // Xử lý tìm kiếm và lọc
     useEffect(() => {
-        let result = [...thuocs];
+        let result = [...vattu];
 
         // Tìm kiếm
         if (searchTerm) {
-            result = result.filter(thuoc =>
-                thuoc.TenThuoc.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                thuoc.ID.toString().includes(searchTerm) ||
-                thuoc.SDT.includes(searchTerm)
+            result = result.filter(vattu =>
+                vattu.TenVatTu.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                vattu.MaVatTu.toString().includes(searchTerm) ||
+                vattu.LoaiVatTu.includes(searchTerm)
             );
         }
 
         // Lọc theo giá
         if (filters.minPrice) {
-            result = result.filter(thuoc => thuoc.GiaThuoc >= parseInt(filters.minPrice));
+            result = result.filter(vattu => vattu.GiaTien >= parseInt(filters.minPrice));
         }
         if (filters.maxPrice) {
-            result = result.filter(thuoc => thuoc.GiaThuoc <= parseInt(filters.maxPrice));
+            result = result.filter(vattu => vattu.GiaTien <= parseInt(filters.maxPrice));
         }
 
         // Lọc theo số lượng
         if (filters.minQuantity) {
-            result = result.filter(thuoc => thuoc.SoLuong >= parseInt(filters.minQuantity));
+            result = result.filter(vattu => vattu.SoLuong >= parseInt(filters.minQuantity));
         }
         if (filters.maxQuantity) {
-            result = result.filter(thuoc => thuoc.SoLuong <= parseInt(filters.maxQuantity));
+            result = result.filter(vattu => vattu.SoLuong <= parseInt(filters.maxQuantity));
         }
 
         // Sắp xếp
@@ -91,13 +89,13 @@ const QuanLyThuoc = () => {
                 let compareResult = 0;
                 switch (filters.sortBy) {
                     case 'id':
-                        compareResult = a.ID - b.ID;
+                        compareResult = a.MaVatTu - b.MaVatTu;
                         break;
                     case 'name':
-                        compareResult = a.TenThuoc.localeCompare(b.TenThuoc);
+                        compareResult = a.TenVatTu.localeCompare(b.TenVatTu);
                         break;
                     case 'price':
-                        compareResult = a.GiaThuoc - b.GiaThuoc;
+                        compareResult = a.GiaTien - b.GiaTien;
                         break;
                     case 'quantity':
                         compareResult = a.SoLuong - b.SoLuong;
@@ -109,29 +107,41 @@ const QuanLyThuoc = () => {
             });
         }
 
-        setFilteredThuocs(result);
+        setFilteredVatTu(result);
         setTotalPages(Math.ceil(result.length / itemsPerPage));
         setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
-    }, [searchTerm, filters, thuocs]);
+    }, [searchTerm, filters, vattu]);
 
     const handleDelete = async (id) => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa thuốc này không?')) {
             return;
         }
-
+    
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/thuoc/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/vattu/${id}`, {
                 method: 'DELETE',
             });
-
-            const data = await response.json();
-
-            if (data.success) {
-                toast.success('Xóa thuốc thành công!');
-                fetchThuocs();
+    
+            // Kiểm tra mã trạng thái HTTP
+            console.log('HTTP Status:', response.status); // In mã trạng thái HTTP
+    
+            if (!response.ok) {
+                throw new Error(`Lỗi từ API: ${response.statusText}`);
+            }
+    
+            // Kiểm tra xem phản hồi có phải là JSON không
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                if (data.success) {
+                    toast.success('Xóa thuốc thành công!');
+                    fetchvattus();
+                } else {
+                    throw new Error(data.message || 'Có lỗi xảy ra khi xóa thuốc');
+                }
             } else {
-                throw new Error(data.message || 'Có lỗi xảy ra khi xóa thuốc');
+                throw new Error('Phản hồi không phải JSON');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -140,16 +150,18 @@ const QuanLyThuoc = () => {
             setIsDeleting(false);
         }
     };
+    
+    
 
-    const handleChangeThuoc = () => {
-        navigate('/themsuaxoathuoc');
+    const handleChangevattu = () => {
+        navigate('/them-vat-tu');
     };
 
     // Lấy thuốc cho trang hiện tại
     const getCurrentPageItems = () => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        return filteredThuocs.slice(startIndex, endIndex);
+        return filteredVatTu.slice(startIndex, endIndex);
     };
 
     const handlePreviousPage = () => {
@@ -194,7 +206,7 @@ const QuanLyThuoc = () => {
 
                 <input
                     type="text"
-                    placeholder="Tìm kiếm theo tên, ID hoặc SĐT..."
+                    placeholder="Tìm kiếm theo tên, ID ..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="search-input"
@@ -203,9 +215,9 @@ const QuanLyThuoc = () => {
 
                 <div className="content">
                     <div className="card-header">
-                        <h2 className="card-title">Quản lý thuốc</h2>
-                        <button className="add-button" onClick={handleChangeThuoc}>
-                            Thêm thuốc
+                        <h2 className="card-title">Quản lý vật tư</h2>
+                        <button className="add-button" onClick={handleChangevattu}>
+                            Thêm vật tư 
                         </button>
                     </div>
 
@@ -276,35 +288,35 @@ const QuanLyThuoc = () => {
                         <thead>
                             <tr>
                                 <th>#ID</th>
-                                <th>Tên thuốc</th>
-                                <th>SĐT liên hệ</th>
-                                <th>Mô tả</th>
+                                <th>Tên</th>
+                                <th>Loại vật tư</th>
+                                <th>Đơn vị tính</th>
                                 <th>Số lượng</th>
-                                <th>Giá thuốc</th>
+                                <th>Giá tiền</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {getCurrentPageItems().length > 0 ? (
-                                getCurrentPageItems().map((thuoc) => (
+                                getCurrentPageItems().map((vattu) => (
                                     <tr
-                                        key={thuoc.ID}
-                                        onClick={() => navigate(`/chi-tiet-thuoc/${thuoc.ID}`)}
+                                        key={vattu.MaVatTu}
+                                        onClick={() => navigate(`/chi-tiet-vattu/${vattu.MaVatTu}`)}
                                         style={{ cursor: 'pointer' }}
                                     >
-                                        <td>{thuoc.ID}</td>
-                                        <td>{thuoc.TenThuoc}</td>
-                                        <td>{thuoc.SDT}</td>
-                                        <td>{thuoc.MoTa}</td>
-                                        <td><span className="quantity">{thuoc.SoLuong}</span></td>
-                                        <td>{thuoc.GiaThuoc.toLocaleString()} VND</td>
+                                        <td>{vattu.MaVatTu}</td>
+                                        <td>{vattu.TenVatTu}</td>
+                                        <td>{vattu.LoaiVatTu}</td>
+                                        <td>{vattu.DonViTinh}</td>
+                                        <td><span className="quantity">{vattu.SoLuong}</span></td>
+                                        <td>{vattu.GiaTien.toLocaleString()} VND</td>
                                         <td>
                                             <div className="actions">
                                                 <button
                                                     className="btn-edit"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        navigate(`/chi-tiet-thuoc/${thuoc.ID}`);
+                                                        navigate(`/chi-tiet-vat-tu/${vattu.MaVatTu}`);
                                                     }}
                                                 >
                                                     <Edit />
@@ -313,7 +325,7 @@ const QuanLyThuoc = () => {
                                                     className="btn-delete"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handleDelete(thuoc.ID);
+                                                        handleDelete(vattu.MaVatTu);
                                                     }}
                                                     disabled={isDeleting}
                                                 >
@@ -357,4 +369,4 @@ const QuanLyThuoc = () => {
     );
 };
 
-export default QuanLyThuoc;
+export default QuanLyVatTu;

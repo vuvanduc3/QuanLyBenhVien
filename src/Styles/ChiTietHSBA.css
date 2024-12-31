@@ -1,0 +1,237 @@
+/* MedicalRecordDetail.css */
+.detail-content {
+    padding: 24px;
+    background-color: #f3f4f6;
+    min-height: calc(100vh - 64px);
+}
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-left h2 {
+    font-size: 24px;
+    color: #111827;
+    font-weight: 600;
+}
+
+.record-id {
+    background-color: #e5e7eb;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.edit-button,
+.back-button,
+.save-button,
+.cancel-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-button {
+    background-color: #4f46e5;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #4338ca;
+}
+
+.back-button {
+    background-color: #6b7280;
+    color: white;
+}
+
+.back-button:hover {
+    background-color: #4b5563;
+}
+
+.save-button {
+    background-color: #059669;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #047857;
+}
+
+.cancel-button {
+    background-color: #dc2626;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #b91c1c;
+}
+
+.detail-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+}
+
+/* View Mode Styles */
+.detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-row {
+    display: flex;
+    gap: 24px;
+}
+
+.info-group {
+    flex: 1;
+}
+
+.info-group.full-width {
+    flex: 2;
+}
+
+.info-group label {
+    display: block;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.info-group p {
+    font-size: 16px;
+    color: #111827;
+    margin: 0;
+}
+
+.diagnosis {
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.action-tag {
+    display: inline-block;
+    background-color: #eef2ff;
+    color: #4f46e5;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 14px;
+}
+
+/* Edit Mode Styles */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 24px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group.full-width {
+    flex: 2;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Loading and Error States */
+.loading,
+.error,
+.not-found {
+    text-align: center;
+    padding: 48px;
+    font-size: 18px;
+}
+
+.error {
+    color: #dc2626;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .header-actions button {
+        flex: 1;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .info-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+}

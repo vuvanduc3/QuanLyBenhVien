@@ -1,4 +1,3 @@
-/* styles.css */
 :root {
   --primary-color: #4461F2;
   --success-color: #3CB371;
@@ -8,33 +7,35 @@
   --border-color: #E5E7EB;
   --bg-color: #F3F4F6;
 }
-.btn-delete:disabled {
-  opacity: 0.5;
+.required {
+  color: red;
+  margin-left: 3px;
+}
+
+.form-control:invalid {
+  border-color: #ff4d4f;
+}
+/* Thêm vào CRUDThuoc.css */
+.Toastify__toast {
+font-family: 'Arial', sans-serif;
+border-radius: 8px;
+}
+
+.Toastify__toast--success {
+background: #4caf50;
+}
+
+.Toastify__toast--error {
+background: #f44336;
+}
+
+.Toastify__toast-body {
+font-size: 14px;
+padding: 8px;
+}
+.add-button:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-}.pagination {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-top: 1rem;
-padding: 1rem;
-}
-
-.pagination-buttons button {
-padding: 0.5rem;
-margin: 0 0.25rem;
-border: 1px solid #ddd;
-border-radius: 4px;
-background: white;
-cursor: pointer;
-}
-
-.pagination-buttons button:hover:not(.disabled) {
-background: #f0f0f0;
-}
-
-.pagination-buttons button.disabled {
-opacity: 0.5;
-cursor: not-allowed;
 }
 * {
   margin: 0;
@@ -351,245 +352,71 @@ td {
   flex: 1;
   padding: 1rem;
 }
+.content {
+  padding: 1.5rem;
+}
 
-.search-bar {
-  padding: 1rem;
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
   background: white;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.search-input-container {
-  position: relative;
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.medicine-form {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  color: #666;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.search-input {
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-control {
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: var(--bg-gray);
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 3rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+  transition: all 0.2s;
 }
 
-.search-input:focus {
+.form-control:focus {
   outline: none;
-  border-color: #4a90e2;
+  border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}.add-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.filters {
-background: white;
-padding: 1rem;
-border-radius: 8px;
-margin-bottom: 1rem;
-display: flex;
-justify-content: space-between;
-align-items: center;
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.filter-group {
-display: flex;
-align-items: center;
-gap: 1rem;
-flex-wrap: wrap;
-flex: 1;
-}
-
-.filter-group select {
-padding: 0.5rem;
-border: 1px solid #ddd;
-border-radius: 4px;
-min-width: 120px;
-cursor: pointer;
-background-color: white;
-font-size: 0.9rem;
-}
-
-.filter-group select:focus {
-outline: none;
-border-color: #4a90e2;
-}
-
-.filter-price, .filter-quantity {
-display: flex;
-gap: 0.5rem;
-align-items: center;
-}
-
-.filter-input {
-width: 100px;
-padding: 0.5rem;
-border: 1px solid #ddd;
-border-radius: 4px;
-font-size: 0.9rem;
-}
-
-.filter-input::-webkit-outer-spin-button,
-.filter-input::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-
-.filter-input[type=number] {
--moz-appearance: textfield;
-}
-
-.filter-input:focus {
-outline: none;
-border-color: #4a90e2;
-}
-
-.actions {
-display: flex;
-gap: 1rem;
-margin-left: 1rem;
-}
-
-.btn-reset {
-padding: 0.5rem 1rem;
-background-color: #f8f9fa;
-border: 1px solid #ddd;
-border-radius: 4px;
-cursor: pointer;
-font-size: 0.9rem;
-color: #666;
-transition: all 0.2s ease;
-white-space: nowrap;
-}
-
-.btn-reset:hover {
-background-color: #e9ecef;
-border-color: #c1c1c1;
-}
-
-.btn-reset:active {
-background-color: #dde0e3;
-}
-
-.table {
-width: 100%;
-background: white;
-border-radius: 8px;
-border-collapse: collapse;
-margin-bottom: 1rem;
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.table th {
-background-color: #f8f9fa;
-padding: 1rem;
-text-align: left;
-font-weight: 600;
-color: #444;
-border-bottom: 2px solid #dee2e6;
-}
-
-.table td {
-padding: 1rem;
-border-bottom: 1px solid #dee2e6;
-color: #666;
-}
-
-.table tbody tr:hover {
-background-color: #f8f9fa;
-}
-
-.table .quantity {
-background-color: #e8f5e9;
-color: #2e7d32;
-padding: 0.25rem 0.5rem;
-border-radius: 4px;
-font-weight: 500;
-}
-
-.table .actions {
-display: flex;
-gap: 0.5rem;
-}
-
-.table .btn-edit,
-.table .btn-delete {
-padding: 0.5rem;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-transition: all 0.2s ease;
-}
-
-.table .btn-edit {
-background-color: #e3f2fd;
-color: #1976d2;
-}
-
-.table .btn-edit:hover {
-background-color: #bbdefb;
-}
-
-.table .btn-delete {
-background-color: #ffebee;
-color: #d32f2f;
-}
-
-.table .btn-delete:hover {
-background-color: #ffcdd2;
-}
-
-.table .btn-delete:disabled {
-opacity: 0.5;
-cursor: not-allowed;
-}
-
-.table .no-data {
-text-align: center;
-color: #666;
-padding: 2rem;
-font-style: italic;
-}
-
-.pagination {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 1rem;
-background: white;
-border-radius: 8px;
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.pagination span {
-color: #666;
-}
-
-.pagination-buttons {
-display: flex;
-gap: 0.5rem;
-}
-
-.pagination-buttons button {
-padding: 0.5rem;
-border: 1px solid #ddd;
-border-radius: 4px;
-background: white;
-cursor: pointer;
-transition: all 0.2s ease;
-}
-
-.pagination-buttons button:hover:not(.disabled) {
-background-color: #f8f9fa;
-border-color: #c1c1c1;
-}
-
-.pagination-buttons button.disabled {
-opacity: 0.5;
-cursor: not-allowed;
-pointer-events: none;
+.add-button:hover {
+  background-color: var(--primary-hover);
 }

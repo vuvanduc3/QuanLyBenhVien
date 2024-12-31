@@ -14,7 +14,70 @@
     padding: 0;
     box-sizing: border-box;
   }
+  .content-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+  }
   
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  /* Đảm bảo các button nằm thẳng hàng và giãn đều */
+  .div-buttons {
+      margin-bottom:10px;
+      display: flex;               /* Sử dụng flexbox */
+       /* Giãn đều các button */
+      gap: 10px;                    /* Khoảng cách giữa các button (tuỳ chỉnh) */
+      width: 100%;                  /* Đảm bảo container chiếm toàn bộ chiều rộng */
+  }
+
+  .div-container {
+      display: flex;               /* Sử dụng flexbox */
+      flex-direction: column;      /* Đặt các phần tử con theo chiều dọc */
+      gap: 10px;                   /* Khoảng cách giữa các span */
+  }
+    .danhmuc-button.active {
+        background-color: #6c757d; /* Màu nền khi button được chọn */
+        color: white; /* Màu chữ khi button được chọn */
+    }
+
+  /* Tuỳ chỉnh kiểu button */
+  .danhmuc-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+  }
+
+  .danhmuc-button:hover {
+      background-color: #e0e0e0;   /* Hiệu ứng hover */
+  }
+
+  .add-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  .add-button:hover {
+    background-color: #1d4ed8;
+  }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: var(--text-color);
@@ -60,38 +123,7 @@
     padding-top: 24px;
     border-top: 1px solid var(--border-color);
   }
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
   
-  .card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #111827;
-  }.search-input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 3rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    margin-bottom: 30px;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: #4a90e2;
-}
-  .add-button {
-    background-color: #2563eb;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    transition: background-color 0.2s;
-  }
   .nav-section h2 {
     padding: 0 12px;
     margin-bottom: 16px;
@@ -155,7 +187,122 @@
     border-radius: 8px;
     font-size: 14px;
   }
-  
+  /* Table Styles */
+.table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-gray);
+}
+
+.table td {
+  padding: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.quantity {
+  background: #dbeafe;
+  color: var(--primary-color);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.table .actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit, .btn-delete {
+  padding: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-edit {
+  color: var(--primary-color);
+}
+
+.btn-delete {
+  color: #ef4444;
+}
+/* Filters */
+.filters {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-group select {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 120px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}.btn-reset {
+  color: #ef4444;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-edit:hover, .btn-delete:hover {
+  background: var(--bg-gray);
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pagination span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination-buttons button {
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
   .header-actions {
     display: flex;
     align-items: center;
@@ -326,173 +473,4 @@
     flex: 1;
     padding: 1rem;
   }
-  /* Add these new styles to your HoSoBenhAn.css file */
-
-.action-buttons-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.action-buttons-row {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-start;
-}
-
-/* Update existing action button styles */
-.action-btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  color: white;
-  transition: opacity 0.2s;
-  white-space: nowrap;
-  flex: 1; /* Makes buttons in each row take equal width */
-}
-
-/* Your existing button color classes remain the same */
-.action-btn.green { background: var(--success-color); }
-.action-btn.red { background: var(--danger-color); }
-.action-btn.brown { background: var(--warning-color); }
-
-/* Adjust table cell padding for better button layout */
-td {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border-color);
-  vertical-align: top; /* Aligns content to top of cell */
-}
-/* Styles for filters section */
-.filters-section {
-  background-color: white;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.filters-header {
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.filter-toggle-button,
-.clear-filters-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  background-color: white;
-  color: #4b5563;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.filter-toggle-button:hover {
-  background-color: #f3f4f6;
-}
-
-.clear-filters-button {
-  color: #dc2626;
-}
-
-.clear-filters-button:hover {
-  background-color: #fee2e2;
-  border-color: #dc2626;
-}
-
-.filters-container {
-  padding: 16px;
-}
-
-.filter-row {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 16px;
-}
-
-.filter-row:last-child {
-  margin-bottom: 0;
-}
-
-.filter-group {
-  flex: 1;
-  min-width: 0;
-}
-
-.filter-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.filter-group input,
-.filter-group select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #111827;
-  transition: all 0.2s;
-}
-
-.filter-group input:focus,
-.filter-group select:focus {
-  outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.filter-group select {
-  background-color: white;
-  cursor: pointer;
-}
-
-/* Results summary */
-.results-summary {
-  margin-top: 16px;
-  color: #6b7280;
-  font-size: 14px;
-  text-align: right;
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .filter-row {
-      flex-direction: column;
-      gap: 16px;
-  }
-
-  .filters-header {
-      flex-direction: column;
-      gap: 12px;
-  }
-
-  .filter-toggle-button,
-  .clear-filters-button {
-      width: 100%;
-      justify-content: center;
-  }
-}
-
-/* Make sure inputs have proper styles */
-input[type="date"] {
-  min-height: 38px; /* Ensure consistent height with other inputs */
-  font-family: inherit;
-}
-
-/* Enhance table headers for better visibility */
-.table-container th {
-  background-color: #f8fafc;
-  font-weight: 600;
-  color: #1f2937;
-}
+  
