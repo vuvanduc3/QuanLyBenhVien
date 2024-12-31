@@ -22,6 +22,8 @@ import CRUDVatTu from './Screen/CRUDVatTu';
 
 import HoaDonChiTiet from './Screen/QuanLyHoaDonChiTiet';
 import CRUDHoaDonChiTiet from './Screen/CRUDHoaDonChiTiet';
+import TraCuuVaNhapHoaDonCT from './Screen/TraCuuVaNhapHoaDonCT';
+import CRUDTraCuuVaNhapHoaDonChiTiet from './Screen/CRUDTraCuuVaNhapHoaDonChiTiet';
 
 
 
@@ -56,6 +58,8 @@ function App() {
             <Route path="/them-vat-tu" element={<CRUDVatTu/>} />
             <Route path="/hoa-don-chi-tiet" element={<HoaDonChiTiet/>} />
             <Route path="themSuaXoaHoaDonChiTiet" element={<CRUDHoaDonChiTiet/>} />
+            <Route path="tra-cuu-va-nhap-hoa-don" element={<TraCuuVaNhapHoaDonCT/>} />
+            <Route path="crud-tra-cuu-va-nhap-hoa-don-chi-tiet" element={<CRUDTraCuuVaNhapHoaDonChiTiet/>} />
 
           </Routes>
         </div>
