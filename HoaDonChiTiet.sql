@@ -216,6 +216,8 @@ CREATE TABLE HoaDonChiTiet (
     ThanhTien AS (SoLuong * DonGia)         -- Thành tiền (cột tính toán)
 );
 
+
+
 -- Thêm dữ liệu vào bảng HoaDonChiTiet
 INSERT INTO HoaDonChiTiet (MaHoaDon, TenDichVu, SoLuong, DonGia)
 VALUES 
