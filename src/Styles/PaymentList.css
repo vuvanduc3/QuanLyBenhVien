@@ -136,22 +136,21 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
-  .table {
+  .table_paymentList {
     width: 100%;
     border-collapse: collapse;
   }
   
-  .table th {
-    padding: 12px 16px;
+  .table_paymentList th {
     text-align: left;
-    font-weight: 500;
     color: #4b5563;
     border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
   }
   
-  .table td {
-    padding: 12px 16px;
+  .table_paymentList td {
     border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
   }
   
   .status-badge {
@@ -165,6 +164,16 @@
   .status-completed {
     background-color: #dcfce7;
     color: #16a34a;
+  }
+
+  .status-pending {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .status-wait {
+    background-color: #d87441ef;
+    color: white;
   }
   
   .action-buttons {
@@ -205,6 +214,9 @@
   .pagination-buttons {
     display: flex;
     gap: 8px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
   }
   
   .pagination-button {
@@ -224,3 +236,22 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  .filter-container {
+    margin: 20px 0;
+  }
+  
+  .status-filter {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .payment_search-input{
+    padding: 8px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  

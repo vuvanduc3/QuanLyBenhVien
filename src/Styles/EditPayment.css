@@ -1,0 +1,92 @@
+
+.EditPayment_paymentInfo {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.EditPayment_paymentRowInput {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; 
+}
+
+.EditPayment_paymentColInput {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    
+}
+
+/* Label cho input */
+.EditPayment_paymentColInput label {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+/* Input và Select */
+.EditPayment_paymentColInput input,
+.EditPayment_paymentColInput select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #f5f6fa;
+    box-sizing: border-box;
+}
+.EditPayment_paymentSubmit {
+    padding: 15px 80px;
+    background-color: #5b8dff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: auto;
+    display: block;
+    margin-top: 30px;
+}
+
+.EditPayment_paymentSubmit:hover {
+    background-color: #45a049;
+}
+
+.EditPayment_QRSubmit{
+    width: 80px;
+    height: 30px;
+    background-color: #5b8dff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.qrImage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .qrImage img {
+    width: 100%;
+    max-width: 30%;
+    height: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+/* Responsive: Cho thiết bị nhỏ hơn */
+@media (max-width: 768px) {
+    .EditPayment_paymentRowInput {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
