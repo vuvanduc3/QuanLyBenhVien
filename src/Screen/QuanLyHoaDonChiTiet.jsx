@@ -156,18 +156,31 @@ const HoaDonChiTiet = () => {
                                         <td>{item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td>{(item.SoLuong * item.DonGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td>
-                                            <button className="action-btn green" onClick={() => navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'edit', item } })}>Sửa</button>
-                                            <button className="action-btn red" onClick={() => {
-                                                fetch(`http://localhost:5000/api/hoadonchitiet/${item.MaChiTiet}`, { method: 'DELETE' })
-                                                    .then(response => response.json())
-                                                    .then(data => {
-                                                        if (data.success) {
-                                                            setHoaDonChiTiet(hoaDonChiTiet.filter(hd => hd.MaChiTiet !== item.MaChiTiet));
-                                                        } else {
-                                                            throw new Error(data.message);
-                                                        }
-                                                    }).catch(err => console.error('Lỗi:', err.message));
-                                            }}>Xóa</button>
+                                            <div className="action-buttons-container">
+                                                 <div className="action-buttons-row">
+                                                    <button className="action-btn green" onClick={() => navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'edit', item } })}>Sửa</button>
+                                                    <button className="action-btn red" onClick={() => {
+                                                        fetch(`http://localhost:5000/api/hoadonchitiet/${item.MaChiTiet}`, { method: 'DELETE' })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    setHoaDonChiTiet(hoaDonChiTiet.filter(hd => hd.MaChiTiet !== item.MaChiTiet));
+                                                                } else {
+                                                                    throw new Error(data.message);
+                                                                }
+                                                            }).catch(err => console.error('Lỗi:', err.message));
+                                                    }}>Xóa</button>
+                                                </div>
+                                                <div className="action-buttons-row">
+                                                            <button
+                                                                className="action-btn brown"
+                                                                onClick={() => navigate('/tra-cuu-va-nhap-hoa-don')}
+                                                            >
+                                                               Tra cứu và nhập hóa đơn chi tiết
+                                                            </button>
+
+                                                        </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
