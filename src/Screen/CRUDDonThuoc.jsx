@@ -304,7 +304,7 @@ const ThemSuaXoaXetNghiem = () => {
                             />
                         </div>
 
-                        <button type="submit" className="btn btn-primary">{action === 'edit' ? 'Sửa đơn thuốc' : 'Thêm đơn thuốc'}</button>
+                        <button type="submit" className="add-button btn-primary">{action === 'edit' ? 'Sửa đơn thuốc' : 'Thêm đơn thuốc'}</button>
                     </form>
                 </div>
             </main>
