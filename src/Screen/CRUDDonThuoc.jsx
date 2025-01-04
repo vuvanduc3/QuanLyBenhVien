@@ -23,7 +23,13 @@ const ThemSuaXoaXetNghiem = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedThuoc, setSelectedThuoc] = useState(null); // Thuốc đã chọn
     const [showDetails, setShowDetails] = useState(false); // Điều khiển việc hiển thị chi tiết thuốc
-    const [isSearchVisible, setIsSearchVisible] = useState(true); // Điều khiển việc hiển thị bảng tìm kiếm
+    const [isSearchVisible, setIsSearchVisible] = useState(true); // Điều khiển việc hiển thị bảng tìm kiếm thuốc
+
+    // Thông tin mã hồ sơ từ API
+    const [maHoSos, setMaHoSos] = useState([]); // Danh sách mã hồ sơ
+    const [selectedHoSo, setSelectedHoSo] = useState(null); // Hồ sơ đã chọn
+    const [searchTermHoSo, setSearchTermHoSo] = useState(''); // Từ khóa tìm kiếm mã hồ sơ
+    const [isSearchVisibleHoSo, setIsSearchVisibleHoSo] = useState(true); // Điều khiển hiển thị bảng tìm kiếm mã hồ sơ
 
     // Lấy danh sách thuốc từ API
     useEffect(() => {
@@ -44,6 +50,26 @@ const ThemSuaXoaXetNghiem = () => {
         fetchThuocs();
     }, []);
 
+    // Lấy danh sách mã hồ sơ từ API
+    useEffect(() => {
+        const fetchHoSos = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/medical-records');
+                const data = await response.json();
+
+                if (data.success) {
+                    setMaHoSos(data.data); // Cập nhật danh sách mã hồ sơ
+                } else {
+                    toast.error('Không thể tải danh sách mã hồ sơ');
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu mã hồ sơ:", error);
+                toast.error('Lỗi khi tải danh sách mã hồ sơ');
+            }
+        };
+        fetchHoSos();
+    }, []);
+
     useEffect(() => {
         if (action === 'edit' && item) {
             setMaDonThuoc(item.MaDonThuoc);
@@ -54,6 +80,23 @@ const ThemSuaXoaXetNghiem = () => {
         }
     }, [action, item]);
 
+    // Lọc thuốc và mã hồ sơ theo từ khóa tìm kiếm
+    const filteredThuocs = thuocs.filter(thuoc =>
+        thuoc.TenThuoc && thuoc.TenThuoc.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredHoSos = maHoSos.filter(hoSo => {
+        // Chuyển mã hồ sơ, mã bệnh nhân, mã bác sĩ thành chuỗi và so sánh với từ khóa tìm kiếm
+        const id = String(hoSo.ID).toLowerCase();
+        const maBenhNhan = String(hoSo.MaBenhNhan).toLowerCase();
+        const maBacSi = String(hoSo.MaBacSi).toLowerCase();
+        return (
+            id.includes(searchTermHoSo.toLowerCase()) ||
+            maBenhNhan.includes(searchTermHoSo.toLowerCase()) ||
+            maBacSi.includes(searchTermHoSo.toLowerCase())
+        );
+    });
+
     // Xử lý sự kiện khi nhấn vào thuốc
     const handleThuocSelect = (thuoc) => {
         setMaThuoc(thuoc.ID);
@@ -62,19 +105,16 @@ const ThemSuaXoaXetNghiem = () => {
         setIsSearchVisible(false); // Ẩn bảng tìm kiếm khi chọn thuốc
     };
 
-    // Lọc thuốc theo từ khóa tìm kiếm
-    const filteredThuocs = thuocs.filter(thuoc =>
-        thuoc.TenThuoc.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Xử lý sự kiện khi nhấn vào mã hồ sơ
+    const handleHoSoSelect = (hoSo) => {
+        setMaHoSo(hoSo.ID);
+        setSelectedHoSo(hoSo); // Cập nhật thông tin mã hồ sơ đã chọn
+        setIsSearchVisibleHoSo(false); // Ẩn bảng tìm kiếm mã hồ sơ khi chọn
+    };
 
     // Xử lý việc ẩn/hiện chi tiết thuốc
     const toggleDetails = () => {
         setShowDetails(prevState => !prevState);
-    };
-
-    // Xử lý việc nhấn vào ô nhập tìm kiếm để hiển thị lại bảng tìm kiếm
-    const handleSearchInputFocus = () => {
-        setIsSearchVisible(true); // Hiển thị lại bảng tìm kiếm khi nhấn vào input
     };
 
     const handleSubmit = async (e) => {
@@ -161,35 +201,15 @@ const ThemSuaXoaXetNghiem = () => {
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                onFocus={handleSearchInputFocus} // Hiển thị bảng tìm kiếm khi nhấn vào input
+                                onFocus={() => setIsSearchVisible(true)} // Hiển thị bảng tìm kiếm khi nhấn vào input
                                 placeholder="Tìm kiếm thuốc..."
                                 className="form-control"
                             />
-                        {/* Hiển thị mã thuốc đã chọn */}
-                        {MaThuoc && (
-                            <div className="selected-medicine">
-                                <label><strong>Mã thuốc đã chọn:</strong> {MaThuoc}</label>
-                            </div>
-                        )}
-
-                        {/* Hiển thị thông tin chi tiết thuốc khi chọn */}
-                        {selectedThuoc && (
-                            <div className="thuoc-details">
-                                <button type="button" onClick={toggleDetails} className="toggle-details-btn">
-                                    {showDetails ? 'Ẩn chi tiết' : 'Xem chi tiết'}
-                                </button>
-
-                                {showDetails && (
-                                    <div className="thuoc-info">
-                                        <p><strong>Tên thuốc:</strong> {selectedThuoc.TenThuoc}</p>
-                                        <p><strong>Mô tả:</strong> {selectedThuoc.MoTa}</p>
-                                        <p><strong>Số lượng:</strong> {selectedThuoc.SoLuong}</p>
-                                        <p><strong>Giá:</strong> {selectedThuoc.GiaThuoc}</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                            {/* Hiển thị danh sách thuốc tìm kiếm cùng thông tin */}
+                            {MaThuoc && (
+                                <div className="selected-medicine">
+                                    <label><strong>Mã thuốc đã chọn:</strong> {MaThuoc}</label>
+                                </div>
+                            )}
                             {isSearchVisible && searchTerm && (
                                 <div className="search-results">
                                     {filteredThuocs.map((thuoc) => (
@@ -216,7 +236,50 @@ const ThemSuaXoaXetNghiem = () => {
                             )}
                         </div>
 
-
+                        {/* Tìm kiếm và chọn mã hồ sơ */}
+                        <div className="form-group">
+                            <label>Mã hồ sơ <span className="required">*</span></label>
+                            <input
+                                type="text"
+                                value={searchTermHoSo}
+                                onChange={(e) => setSearchTermHoSo(e.target.value)}
+                                onFocus={() => setIsSearchVisibleHoSo(true)} // Hiển thị bảng tìm kiếm khi nhấn vào input
+                                placeholder="Tìm kiếm mã hồ sơ..."
+                                className="form-control"
+                            />
+                            {MaHoSo && (
+                                <div className="selected-hososo">
+                                    <label><strong>Mã hồ sơ đã chọn:</strong> {MaHoSo}</label>
+                                </div>
+                            )}
+                            {isSearchVisibleHoSo && searchTermHoSo && (
+                                <div className="search-results">
+                                    {filteredHoSos.map((hoSo) => (
+                                        <div
+                                            key={hoSo.MaHoSo}
+                                            onClick={() => handleHoSoSelect(hoSo)}
+                                            className="search-item"
+                                        >
+                                            <div>
+                                                <strong>{hoSo.ID}</strong>
+                                            </div>
+                                            <div>
+                                                <span><strong>Tên bệnh nhân:</strong> {hoSo.MaBenhNhan}</span>
+                                            </div>
+                                            <div>
+                                                <span><strong>Mã bác sĩ:</strong> {hoSo.BacSi}</span>
+                                            </div>
+                                            <div>
+                                                <span><strong>Chẩn đoán:</strong> {hoSo.ChanDoan}</span>
+                                            </div>
+                                            <div>
+                                                <span><strong>Ngày tạo hồ sơ:</strong> {hoSo.ChanDoan}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
 
                         <div className="form-group">
                             <label>Số lượng đơn thuốc <span className="required">*</span></label>
@@ -241,26 +304,12 @@ const ThemSuaXoaXetNghiem = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label>Mã hồ sơ <span className="required">*</span></label>
-                            <input
-                                type="text"
-                                value={MaHoSo}
-                                onChange={(e) => setMaHoSo(e.target.value)}
-                                placeholder="Nhập mã hồ sơ"
-                                className="form-control"
-                                required
-                            />
-                        </div>
-
-                        <button type="submit" className="add-button">
-                            {action === 'edit' ? 'Lưu thay đổi' : 'Thêm đơn thuốc'}
-                        </button>
+                        <button type="submit" className="btn btn-primary">{action === 'edit' ? 'Sửa đơn thuốc' : 'Thêm đơn thuốc'}</button>
                     </form>
                 </div>
             </main>
         </div>
     );
-};
+}
 
 export default ThemSuaXoaXetNghiem;
