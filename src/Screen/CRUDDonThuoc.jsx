@@ -18,6 +18,30 @@ const ThemSuaXoaXetNghiem = () => {
     const [MaHoSo, setMaHoSo] = useState(''); // Thêm state cho mã hồ sơ
     const [error, setError] = useState('');
 
+    const [MaBenhNhan, setMaBenhNhan] = useState('');
+    const [MaBacSi, setMaBacSi] = useState('');
+    const [ChanDoan, setChanDoan] = useState('');
+    const [NgayLap, setNgayLap] = useState('');
+
+    const [TenThuoc, setTenThuoc] = useState('');
+    const [MoTa, setMoTa] = useState('');
+    const [SoLuong, setSoLuong] = useState('');
+    const [GiaThuoc, setGiaThuoc] = useState('');
+
+
+
+    const [isCollapsedHoSo, setIsCollapsedHoSo] = useState(true); // Đặt trạng thái mặc định là thu gọn hồ sơ
+
+      const toggleCollapseHoSo = () => {
+        setIsCollapsedHoSo(prevState => !prevState); // Đổi trạng thái khi nhấn vào
+      };
+
+    const [isCollapsedThuoc, setIsCollapsedThuoc] = useState(true); // Đặt trạng thái mặc định là thu gọn thuốc
+
+      const toggleCollapseThuoc = () => {
+        setIsCollapsedThuoc(prevState => !prevState); // Đổi trạng thái khi nhấn vào thuoc
+      };
+
     // Thông tin thuốc từ API
     const [thuocs, setThuocs] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -50,6 +74,8 @@ const ThemSuaXoaXetNghiem = () => {
         fetchThuocs();
     }, []);
 
+
+
     // Lấy danh sách mã hồ sơ từ API
     useEffect(() => {
         const fetchHoSos = async () => {
@@ -76,7 +102,26 @@ const ThemSuaXoaXetNghiem = () => {
             setMaThuoc(item.MaThuoc);
             setSoLuongDonThuoc(item.SoLuongDonThuoc);
             setHuongDanSuDung(item.HuongDanSuDung);
-            setMaHoSo(item.MaHoSo); // Thiết lập mã hồ sơ khi sửa đơn thuốc
+            setMaHoSo(item.MaHoSo);
+
+            setMaBenhNhan(item.MaBenhNhan);
+            setMaBacSi(item.BacSi);
+            setChanDoan(item.ChanDoan);
+            setNgayLap(item.NgayLap);
+
+
+            setSelectedThuoc(item);
+            setTenThuoc(item.TenThuoc);
+            setSoLuong(item.SoLuong);
+
+            const GiaThuoc = item.GiaThuoc;
+            const formattedPrice = GiaThuoc.toLocaleString('vi-VN'); // Định dạng theo kiểu Việt Nam
+
+
+            setGiaThuoc(formattedPrice);
+            setMoTa(item.MoTa);
+
+            // Thiết lập mã hồ sơ khi sửa đơn thuốc
         }
     }, [action, item]);
 
@@ -99,8 +144,19 @@ const ThemSuaXoaXetNghiem = () => {
 
     // Xử lý sự kiện khi nhấn vào thuốc
     const handleThuocSelect = (thuoc) => {
+         // Cập nhật thông tin thuốc đã chọn
         setMaThuoc(thuoc.ID);
-        setSelectedThuoc(thuoc); // Cập nhật thông tin thuốc đã chọn
+        setSelectedThuoc(thuoc);
+        setTenThuoc(thuoc.TenThuoc);
+        setSoLuong(thuoc.SoLuong);
+
+        const GiaThuoc = thuoc.GiaThuoc;
+        const formattedPrice = GiaThuoc.toLocaleString('vi-VN'); // Định dạng theo kiểu Việt Nam
+
+
+        setGiaThuoc(formattedPrice);
+        setMoTa(thuoc.MoTa);
+
         setShowDetails(true); // Hiển thị chi tiết thuốc khi chọn
         setIsSearchVisible(false); // Ẩn bảng tìm kiếm khi chọn thuốc
     };
@@ -108,6 +164,11 @@ const ThemSuaXoaXetNghiem = () => {
     // Xử lý sự kiện khi nhấn vào mã hồ sơ
     const handleHoSoSelect = (hoSo) => {
         setMaHoSo(hoSo.ID);
+        setMaBenhNhan(hoSo.MaBenhNhan);
+        setMaBacSi(hoSo.BacSi);
+        setChanDoan(hoSo.ChanDoan);
+        setNgayLap(hoSo.NgayLap);
+
         setSelectedHoSo(hoSo); // Cập nhật thông tin mã hồ sơ đã chọn
         setIsSearchVisibleHoSo(false); // Ẩn bảng tìm kiếm mã hồ sơ khi chọn
     };
@@ -156,8 +217,13 @@ const ThemSuaXoaXetNghiem = () => {
         }
     };
 
+    const datLaiTuKhoa = () => {
+        setSearchTerm('');
+        setSearchTermHoSo('');
+    };
+
     return (
-        <div className="container">
+        <div className="container"  onClick={() => datLaiTuKhoa()} >
             <ToastContainer
                 position="top-right"
                 autoClose={3000}
@@ -182,7 +248,7 @@ const ThemSuaXoaXetNghiem = () => {
                         {error && <p className="error-message">{error}</p>}
 
                         <div className="form-group">
-                            <label>Mã đơn thuốc <span className="required">*</span></label>
+                            <label>Mã đơn thuốc <span className="required"></span></label>
                             <input
                                 type="text"
                                 value={MaDonThuoc}
@@ -190,6 +256,7 @@ const ThemSuaXoaXetNghiem = () => {
                                 placeholder="Nhập mã đơn thuốc"
                                 className="form-control"
                                 required
+                                readOnly
                                 disabled={action === 'edit'}
                             />
                         </div>
@@ -206,8 +273,19 @@ const ThemSuaXoaXetNghiem = () => {
                                 className="form-control"
                             />
                             {MaThuoc && (
-                                <div className="selected-medicine">
-                                    <label><strong>Mã thuốc đã chọn:</strong> {MaThuoc}</label>
+                                <div className="selected-medicine" onClick={toggleCollapseThuoc}>
+                                    <div className="selected-medicine-row">
+                                        <label><strong>Mã thuốc đã chọn:</strong> {MaThuoc} </label>
+                                        <label><strong>{isCollapsedThuoc?'Mở rộng':''}</strong></label>
+                                    </div>
+                                    {!isCollapsedThuoc && (
+                                     <>
+                                        <label><strong>Tên thuốc:</strong> {TenThuoc}</label>
+                                        <label><strong>Mô tả:</strong> {MoTa}</label>
+                                        <label><strong>Số lượng:</strong> {SoLuong}</label>
+                                        <label><strong>Gía thuốc:</strong> {GiaThuoc?GiaThuoc:0} đ</label>
+                                    </>
+                                    )}
                                 </div>
                             )}
                             {isSearchVisible && searchTerm && (
@@ -228,7 +306,7 @@ const ThemSuaXoaXetNghiem = () => {
                                                 <span><strong>Số lượng:</strong> {thuoc.SoLuong}</span>
                                             </div>
                                             <div>
-                                                <span><strong>Giá:</strong> {thuoc.GiaThuoc}</span>
+                                                <span><strong>Giá:</strong> {thuoc.GiaThuoc} </span>đ
                                             </div>
                                         </div>
                                     ))}
@@ -247,11 +325,21 @@ const ThemSuaXoaXetNghiem = () => {
                                 placeholder="Tìm kiếm mã hồ sơ..."
                                 className="form-control"
                             />
-                            {MaHoSo && (
-                                <div className="selected-hososo">
-                                    <label><strong>Mã hồ sơ đã chọn:</strong> {MaHoSo}</label>
-                                </div>
-                            )}
+                             <div className="selected-hososo" onClick={toggleCollapseHoSo}>
+                                 <div className="selected-hososo-row">
+                                      <label><strong>Mã hồ sơ đã chọn:</strong> {MaHoSo}</label>
+                                      <label><strong>{isCollapsedHoSo?'Mở rộng':''}</strong></label>
+                                 </div>
+                                  {!isCollapsedHoSo && (
+                                    <>
+                                      <label><strong>Mã bệnh nhân:</strong> {MaBenhNhan} </label>
+                                      <label><strong>Mã bác sĩ:</strong> {MaBacSi}</label>
+                                      <label><strong>Chẩn đoán:</strong> {ChanDoan}</label>
+                                      <label><strong>Ngày lập:</strong> {NgayLap}</label>
+                                    </>
+                                  )}
+                             </div>
+
                             {isSearchVisibleHoSo && searchTermHoSo && (
                                 <div className="search-results">
                                     {filteredHoSos.map((hoSo) => (
@@ -264,7 +352,7 @@ const ThemSuaXoaXetNghiem = () => {
                                                 <strong>{hoSo.ID}</strong>
                                             </div>
                                             <div>
-                                                <span><strong>Tên bệnh nhân:</strong> {hoSo.MaBenhNhan}</span>
+                                                <span><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</span>
                                             </div>
                                             <div>
                                                 <span><strong>Mã bác sĩ:</strong> {hoSo.BacSi}</span>
@@ -273,7 +361,7 @@ const ThemSuaXoaXetNghiem = () => {
                                                 <span><strong>Chẩn đoán:</strong> {hoSo.ChanDoan}</span>
                                             </div>
                                             <div>
-                                                <span><strong>Ngày tạo hồ sơ:</strong> {hoSo.ChanDoan}</span>
+                                                <span><strong>Ngày tạo hồ sơ:</strong> {hoSo.NgayLap}</span>
                                             </div>
                                         </div>
                                     ))}

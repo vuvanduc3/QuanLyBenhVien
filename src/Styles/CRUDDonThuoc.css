@@ -435,7 +435,31 @@
     padding: 8px;
     cursor: pointer;
 }
+.selected-medicine-row {
+  display: flex; /* Sử dụng Flexbox */
+  justify-content: space-between; /* Căn đều hai bên trái và phải */
+  align-items: center; /* Căn giữa theo trục dọc */
+}
 
+.selected-hososo {
+    background:#ffd;
+    padding: 8px;
+    max-width: 100%; /* Chiều dài tối đa */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.selected-hososo-row{
+ display: flex; /* Sử dụng Flexbox */
+  justify-content: space-between; /* Căn đều hai bên trái và phải */
+  align-items: center; /* Căn giữa theo trục dọc */
+}
+.selected-medicine{
+   background:#ffd;
+   padding: 8px;
+   max-width: 100%; /* Chiều dài tối đa */
+   border: 1px solid #ccc;
+   border-radius: 6px;
+}
 .search-item:hover {
     background-color: #f0f0f0;
 }

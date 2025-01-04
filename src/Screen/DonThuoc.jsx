@@ -95,22 +95,24 @@ const DonThuoc = () => {
                                             <td>{prescription.DaNhapHoaDon ? 'Đã nhập' : 'Chưa nhập'}</td>
                                             <td>
                                                 <div className="action-buttons">
-                                                    <button className="edit-button" onClick={() => handleEdit(prescription)}>
-                                                        <PenSquare size={16} />
-                                                    </button>
-                                                    <button className="delete-button"
-                                                    onClick={async () => {
-                                                   if (window.confirm("Bạn có chắc muốn xóa?")) {
-                                                       await fetch(`http://localhost:5000/api/donthuoc/${prescription.MaDonThuoc}`, {
-                                                           method: "DELETE",
-                                                       });
-                                                       fetchData();
-                                                   }
-                                               }}
+                                                    <div className="action-buttons-row">
+                                                        <button className="edit-nut" onClick={() => handleEdit(prescription)}>
+                                                            Sửa dữ liệu
+                                                        </button>
+                                                        <button className="delete-button"
+                                                        onClick={async () => {
+                                                        if (window.confirm("Bạn có chắc muốn xóa?")) {
+                                                           await fetch(`http://localhost:5000/api/donthuoc/${prescription.MaDonThuoc}`, {
+                                                               method: "DELETE",
+                                                           });
+                                                           fetchData();
+                                                        }
+                                                        }}
 
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
+                                                        >
+                                                            Xóa dữ liệu
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

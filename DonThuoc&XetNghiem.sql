@@ -49,3 +49,12 @@ SELECT *
             LEFT JOIN HoSoBenhAn AS HS ON DT.MaHoSo = HS.ID
             LEFT JOIN BenhNhan AS BN ON HS.MaBenhNhan = BN.MaBenhNhan
             ORDER BY DT.MaDonThuoc DESC
+
+CREATE TABLE Thuoc (
+    ID NVARCHAR(10) PRIMARY KEY,  -- Mã thuốc, khóa chính
+    TenThuoc NVARCHAR(100) NOT NULL,  -- Tên thuốc, bắt buộc
+    SDT NVARCHAR(15),              -- Số điện thoại liên hệ (nếu có)
+    MoTa NVARCHAR(255),            -- Mô tả thuốc
+    SoLuong INT NOT NULL,          -- Số lượng tồn kho, bắt buộc
+    GiaThuoc DECIMAL(18, 2) NOT NULL -- Giá thuốc, bắt buộc
+);

@@ -41,6 +41,28 @@
     font-weight: 500;
     transition: background-color 0.2s;
   }
+
+   .edit-nut {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      border: none; /* Xóa viền */
+      white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+   }
+
+   .delete-button{
+         background-color: #dc3545;
+         color: #fff;
+         padding: 0.5rem 1rem;
+         border-radius: 0.5rem;
+         font-weight: 500;
+         transition: background-color 0.2s;
+         white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+         border: none; /* Xóa viền */
+   }
   .add-button:hover {
     background-color: #1d4ed8;
   }
