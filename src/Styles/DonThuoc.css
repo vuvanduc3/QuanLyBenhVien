@@ -41,6 +41,29 @@
     font-weight: 500;
     transition: background-color 0.2s;
   }
+
+   .edit-nut {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      border: none; /* Xóa viền */
+      white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+   }
+
+   .delete-button{
+         margin-left:10px;
+         background-color: #dc3545;
+         color: #fff;
+         padding: 0.5rem 1rem;
+         border-radius: 0.5rem;
+         font-weight: 500;
+         transition: background-color 0.2s;
+         white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+         border: none; /* Xóa viền */
+   }
   .add-button:hover {
     background-color: #1d4ed8;
   }
@@ -257,6 +280,7 @@
 .pagination-buttons {
   display: flex;
   gap: 8px;
+  margin-left:5px;
 }
 
 .pagination-buttons button {
@@ -439,4 +463,43 @@
     flex: 1;
     padding: 1rem;
   }
-  
+  .pagination-buttons-row{
+    display: flex; /* Sử dụng Flexbox */
+  }
+.filter-container {
+    display: flex;
+     justify-content: space-between; /* Đẩy nội dung sang hai bên */
+    align-items: center; /* Căn giữa theo chiều dọc nếu cần */
+    margin-bottom: 1rem; /* Khoảng cách dưới */
+}
+
+
+.filter-button {
+    max-width: 100%;
+
+    display: inline-flex;
+    align-items: center;
+    background-color: #007bff; /* Màu nền */
+    color: #fff; /* Màu chữ */
+    padding: 0.5rem 1rem; /* Khoảng cách bên trong */
+    border: none; /* Xóa viền */
+    border-radius: 0.5rem; /* Bo góc */
+    font-weight: 500; /* Độ đậm của chữ */
+    font-size: 1rem; /* Kích thước chữ */
+    cursor: pointer; /* Con trỏ chuột dạng nút */
+    transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển động */
+}
+
+.filter-button:hover {
+    background-color: #0056b3; /* Màu nền khi hover */
+    transform: scale(1.05); /* Phóng to nhẹ khi hover */
+}
+
+.filter-button:active {
+    background-color: #003f7f; /* Màu nền khi nhấn */
+    transform: scale(0.95); /* Thu nhỏ nhẹ khi nhấn */
+}
+
+.filter-button svg {
+    margin-right: 0.5rem; /* Khoảng cách giữa icon và chữ */
+}
