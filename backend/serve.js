@@ -1576,7 +1576,7 @@ SELECT *
             FROM DonThuoc AS DT
             LEFT JOIN Thuoc AS T ON DT.MaThuoc = T.ID
             LEFT JOIN HoSoBenhAn AS HS ON DT.MaHoSo = HS.ID
-            LEFT JOIN BenhNhan AS BN ON HS.MaBenhNhan = BN.MaBenhNhan
+
             ORDER BY DT.MaDonThuoc DESC;
         `;
 
