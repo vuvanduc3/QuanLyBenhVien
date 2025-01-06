@@ -325,6 +325,7 @@ const ThemSuaXoaXetNghiem = () => {
                                 placeholder="Tìm kiếm mã hồ sơ..."
                                 className="form-control"
                             />
+                            {MaHoSo && (
                              <div className="selected-hososo" onClick={toggleCollapseHoSo}>
                                  <div className="selected-hososo-row">
                                       <label><strong>Mã hồ sơ đã chọn:</strong> {MaHoSo}</label>
@@ -339,6 +340,7 @@ const ThemSuaXoaXetNghiem = () => {
                                     </>
                                   )}
                              </div>
+                             )}
 
                             {isSearchVisibleHoSo && searchTermHoSo && (
                                 <div className="search-results">
