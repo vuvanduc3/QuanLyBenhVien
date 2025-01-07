@@ -8,6 +8,7 @@ import '../Styles/ChiTietThuoc.css';
 
 const ChiTietThuoc = () => {
     const [thuoc, setThuoc] = useState(null);
+    const [categories, setCategories] = useState([]); // State cho danh sách danh mục
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -17,7 +18,25 @@ const ChiTietThuoc = () => {
 
     useEffect(() => {
         fetchThuocDetail();
+        fetchCategories(); // Fetch danh mục khi component mount
     }, [id]);
+
+    // Hàm lấy danh sách danh mục
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/danhmucthuoc');
+            const data = await response.json();
+            
+            if (data.success) {
+                setCategories(data.data);
+            } else {
+                toast.error('Không thể lấy danh sách danh mục thuốc');
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            toast.error('Lỗi khi lấy danh sách danh mục thuốc');
+        }
+    };
 
     const fetchThuocDetail = async () => {
         try {
@@ -57,7 +76,8 @@ const ChiTietThuoc = () => {
                     phone: editedData.SDT,
                     description: editedData.MoTa,
                     quantity: editedData.SoLuong,
-                    price: editedData.GiaThuoc
+                    price: editedData.GiaThuoc,
+                    maDanhMuc: editedData.MaDanhMuc // Thêm mã danh mục vào request
                 })
             });
 
@@ -67,6 +87,8 @@ const ChiTietThuoc = () => {
                 toast.success('Cập nhật thuốc thành công!');
                 setThuoc(editedData);
                 setIsEditing(false);
+                // Refresh dữ liệu để cập nhật tên danh mục
+                fetchThuocDetail();
             } else {
                 throw new Error(data.message);
             }
@@ -120,7 +142,6 @@ const ChiTietThuoc = () => {
                                 </button>
                             </div>
                         )}
-                      
                     </div>
 
                     <div className="detail-card">
@@ -142,6 +163,28 @@ const ChiTietThuoc = () => {
                                 />
                             ) : (
                                 <span>{thuoc.TenThuoc}</span>
+                            )}
+                        </div>
+
+                        {/* Thêm trường danh mục */}
+                        <div className="detail-row">
+                            <label>Danh mục:</label>
+                            {isEditing ? (
+                                <select
+                                    name="MaDanhMuc"
+                                    value={editedData.MaDanhMuc}
+                                    onChange={handleInputChange}
+                                    className="edit-input"
+                                    required
+                                >
+                                    {categories.map(category => (
+                                        <option key={category.MaDanhMuc} value={category.MaDanhMuc}>
+                                            {category.TenDanhMuc}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <span>{thuoc.TenDanhMuc}</span>
                             )}
                         </div>
 
