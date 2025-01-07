@@ -13,7 +13,7 @@ CREATE TABLE DonThuoc (
     MaHoSo INT NOT NULL, -- Mã hồ sơ bệnh nhân (FOREIGN KEY nếu có bảng HoSo)
     SoLuongDonThuoc INT NOT NULL, -- Số lượng thuốc
     HuongDanSuDung NVARCHAR(MAX) NOT NULL, -- Hướng dẫn sử dụng thuốc
-    DaNhapHoaDon BIT NOT NULL DEFAULT 0 -- 0: chưa nhập hóa đơn, 1: đã nhập hóa đơn
+    DaNhapHoaDon INT NOT NULL DEFAULT 0 -- 0: chưa nhập hóa đơn, 1: đã nhập hóa đơn
 );
 go
 
@@ -23,7 +23,7 @@ CREATE TABLE XetNghiem (
     TenXetNghiem NVARCHAR(100) NOT NULL, -- Tên xét nghiệm
     KetQua NVARCHAR(MAX) NOT NULL, -- Kết quả xét nghiệm
     NgayXetNghiem DATE NOT NULL, -- Ngày xét nghiệm
-    DaNhapHoaDon BIT NOT NULL DEFAULT 0 -- 0: chưa nhập hóa đơn, 1: đã nhập hóa đơn
+    DaNhapHoaDon INT NOT NULL DEFAULT 0 -- 0: chưa nhập hóa đơn, 1: đã nhập hóa đơn
 );
 go
 
