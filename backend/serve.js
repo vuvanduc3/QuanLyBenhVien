@@ -1600,7 +1600,7 @@ SELECT *
 
 // API Thêm Đơn Thuốc (POST)
 app.post("/api/donthuoc", async (req, res) => {
-    const { MaThuoc, MaHoSo, SoLuongDonThuoc, HuongDanSuDung } = req.body; // Lấy dữ liệu từ body
+    const { MaThuoc, MaHoSo, SoLuongDonThuoc, HuongDanSuDung, DaNhapHoaDon } = req.body; // Lấy dữ liệu từ body
 
     try {
         const result = await pool
@@ -1609,9 +1609,10 @@ app.post("/api/donthuoc", async (req, res) => {
             .input("MaHoSo", sql.Int, MaHoSo)
             .input("SoLuongDonThuoc", sql.Int, SoLuongDonThuoc)
             .input("HuongDanSuDung", sql.NVarChar(sql.MAX), HuongDanSuDung)
+            .input("DaNhapHoaDon", sql.Int, DaNhapHoaDon)
             .query(`
-                INSERT INTO DonThuoc (MaThuoc, MaHoSo, SoLuongDonThuoc, HuongDanSuDung)
-                VALUES (@MaThuoc, @MaHoSo, @SoLuongDonThuoc, @HuongDanSuDung)
+                INSERT INTO DonThuoc (MaThuoc, MaHoSo, SoLuongDonThuoc, HuongDanSuDung, DaNhapHoaDon)
+                VALUES (@MaThuoc, @MaHoSo, @SoLuongDonThuoc, @HuongDanSuDung, @DaNhapHoaDon)
             `);
 
         res.status(201).json({ success: true, message: "Thêm đơn thuốc thành công!" });
@@ -1623,7 +1624,7 @@ app.post("/api/donthuoc", async (req, res) => {
 
 app.put("/api/donthuoc/:id", async (req, res) => {
     const { id } = req.params; // Lấy ID từ URL
-    const { MaThuoc, MaHoSo, SoLuongDonThuoc, HuongDanSuDung } = req.body; // Lấy dữ liệu từ body
+    const { MaThuoc, MaHoSo, SoLuongDonThuoc, HuongDanSuDung, DaNhapHoaDon } = req.body; // Thêm TrangThai từ body
 
     try {
         const result = await pool
@@ -1633,12 +1634,14 @@ app.put("/api/donthuoc/:id", async (req, res) => {
             .input("MaHoSo", sql.Int, MaHoSo)
             .input("SoLuongDonThuoc", sql.Int, SoLuongDonThuoc)
             .input("HuongDanSuDung", sql.NVarChar(sql.MAX), HuongDanSuDung)
+            .input("DaNhapHoaDon", sql.Int, DaNhapHoaDon) // Nhận thêm giá trị TrangThai
             .query(`
                 UPDATE DonThuoc
                 SET MaThuoc = @MaThuoc,
                     MaHoSo = @MaHoSo,
                     SoLuongDonThuoc = @SoLuongDonThuoc,
-                    HuongDanSuDung = @HuongDanSuDung
+                    HuongDanSuDung = @HuongDanSuDung,
+                    DaNhapHoaDon = @DaNhapHoaDon -- Cập nhật cột mới
                 WHERE MaDonThuoc = @MaDonThuoc
             `);
 
@@ -1648,6 +1651,7 @@ app.put("/api/donthuoc/:id", async (req, res) => {
         res.status(500).json({ success: false, message: "Lỗi khi sửa đơn thuốc: " + err.message });
     }
 });
+
 
 app.delete("/api/donthuoc/:id", async (req, res) => {
     const { id } = req.params; // Lấy ID từ URL
@@ -1667,5 +1671,156 @@ app.delete("/api/donthuoc/:id", async (req, res) => {
     }
 });
 
+// API: Lấy danh sách xét nghiệm chi tiết
+app.get("/api/xetnghiem", async (req, res) => {
+    try {
+        // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
+        const query = `
+            SELECT *
+            FROM XetNghiem AS XT
+            LEFT JOIN HoSoBenhAn AS HS ON XT.MaHoSo = HS.ID
+            LEFT JOIN BenhNhanVTP AS BN ON BN.ID = HS.MaBenhNhan
+            ORDER BY XT.MaXetNghiem DESC;
+        `;
 
+        // Thực hiện truy vấn SQL
+        const result = await pool.request().query(query);
+
+        // Trả về dữ liệu nếu thành công
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        // Xử lý lỗi và trả về phản hồi lỗi
+        console.error("❌ Lỗi lấy thông tin xét nghiệm:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+// API Thêm Xét Nghiệm (POST)
+app.post("/api/xetnghiem", async (req, res) => {
+    const { MaHoSo, TenXetNghiem, KetQua, NgayXetNghiem, DaNhapHoaDon } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaHoSo", sql.Int, MaHoSo)
+            .input("TenXetNghiem", sql.NVarChar(100), TenXetNghiem)
+            .input("KetQua", sql.NVarChar(sql.MAX), KetQua)
+            .input("NgayXetNghiem", sql.Date, NgayXetNghiem)
+            .input("DaNhapHoaDon", sql.Bit, DaNhapHoaDon)
+            .query(`
+                INSERT INTO XetNghiem (MaHoSo, TenXetNghiem, KetQua, NgayXetNghiem, DaNhapHoaDon)
+                VALUES (@MaHoSo, @TenXetNghiem, @KetQua, @NgayXetNghiem, @DaNhapHoaDon)
+            `);
+
+        res.status(201).json({ success: true, message: "Thêm xét nghiệm thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi thêm xét nghiệm:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi thêm xét nghiệm: " + err.message });
+    }
+});
+
+// API Sửa Xét Nghiệm (PUT)
+app.put("/api/xetnghiem/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+    const { MaHoSo, TenXetNghiem, KetQua, NgayXetNghiem, DaNhapHoaDon } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaXetNghiem", sql.Int, id)
+            .input("MaHoSo", sql.Int, MaHoSo)
+            .input("TenXetNghiem", sql.NVarChar(100), TenXetNghiem)
+            .input("KetQua", sql.NVarChar(sql.MAX), KetQua)
+            .input("NgayXetNghiem", sql.Date, NgayXetNghiem)
+            .input("DaNhapHoaDon", sql.Bit, DaNhapHoaDon)
+            .query(`
+                UPDATE XetNghiem
+                SET MaHoSo = @MaHoSo,
+                    TenXetNghiem = @TenXetNghiem,
+                    KetQua = @KetQua,
+                    NgayXetNghiem = @NgayXetNghiem,
+                    DaNhapHoaDon = @DaNhapHoaDon
+                WHERE MaXetNghiem = @MaXetNghiem
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật xét nghiệm thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa xét nghiệm:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi sửa xét nghiệm: " + err.message });
+    }
+});
+
+// API Xóa Xét Nghiệm (DELETE)
+app.delete("/api/xetnghiem/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+
+    try {
+        await pool
+            .request()
+            .input("MaXetNghiem", sql.Int, id)
+            .query(`
+                DELETE FROM XetNghiem WHERE MaXetNghiem = @MaXetNghiem
+            `);
+
+        res.status(200).json({ success: true, message: "Xóa xét nghiệm thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi xóa xét nghiệm:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi xóa xét nghiệm: " + err.message });
+    }
+});
+
+// API Sửa Đơn Thuốc (PUT)
+app.put("/api/donthuocnhapHD/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+    const {  DaNhapHoaDon } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaDonThuoc", sql.Int, id)
+            .input("DaNhapHoaDon", sql.Int, DaNhapHoaDon)
+            .query(`
+                UPDATE DonThuoc
+                SET
+                DaNhapHoaDon = @DaNhapHoaDon
+                WHERE MaDonThuoc = @MaDonThuoc
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật đơn thuốc thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa đơn thuốc:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi sửa đơn thuốc: " + err.message });
+    }
+});
+
+
+// API Sửa Xét Nghiệm (PUT)
+app.put("/api/xetnghiemnhapHD/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+    const {  DaNhapHoaDon } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaXetNghiem", sql.Int, id)
+            .input("DaNhapHoaDon", sql.Int, DaNhapHoaDon)
+            .query(`
+                UPDATE XetNghiem
+                SET
+                DaNhapHoaDon = @DaNhapHoaDon
+                WHERE MaXetNghiem = @MaXetNghiem
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật xét nghiệm thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa xét nghiệm:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi sửa xét nghiệm: " + err.message });
+    }
+});
 

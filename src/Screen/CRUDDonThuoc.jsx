@@ -23,6 +23,8 @@ const ThemSuaXoaXetNghiem = () => {
     const [ChanDoan, setChanDoan] = useState('');
     const [NgayLap, setNgayLap] = useState('');
 
+     const [DaNhapHoaDon, setDaNhapHoaDon] = useState(0);
+
     const [TenThuoc, setTenThuoc] = useState('');
     const [MoTa, setMoTa] = useState('');
     const [SoLuong, setSoLuong] = useState('');
@@ -109,6 +111,7 @@ const ThemSuaXoaXetNghiem = () => {
             setChanDoan(item.ChanDoan);
             setNgayLap(item.NgayLap);
 
+            setDaNhapHoaDon(item.DaNhapHoaDon);
 
             setSelectedThuoc(item);
             setTenThuoc(item.TenThuoc);
@@ -199,7 +202,8 @@ const ThemSuaXoaXetNghiem = () => {
                         MaThuoc,
                         SoLuongDonThuoc,
                         HuongDanSuDung,
-                        MaHoSo // Thêm MaHoSo vào body
+                        MaHoSo,
+                        DaNhapHoaDon// Thêm MaHoSo vào body
                     })
                 }
             );
@@ -207,7 +211,7 @@ const ThemSuaXoaXetNghiem = () => {
 
             if (result.success) {
                 toast.success(action === 'edit' ? 'Sửa đơn thuốc thành công!' : 'Thêm đơn thuốc thành công!');
-                navigate('/donthuoc'); // Chuyển về trang danh sách đơn thuốc
+
             } else {
                 setError(result.message);
             }

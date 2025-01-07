@@ -2,7 +2,7 @@
     ID NVARCHAR(10) PRIMARY KEY,  -- Mã thuốc, khóa chính
     TenThuoc NVARCHAR(100) NOT NULL,  -- Tên thuốc, bắt buộc
     SDT NVARCHAR(15),              -- Số điện thoại liên hệ (nếu có)
-    MoTa NVARCHAR(255),            -- Mô tả thuốc
+    MoTa NVARCHAR(MAX),            -- Mô tả thuốc
     SoLuong INT NOT NULL,          -- Số lượng tồn kho, bắt buộc
     GiaThuoc DECIMAL(18, 2) NOT NULL -- Giá thuốc, bắt buộc
 );

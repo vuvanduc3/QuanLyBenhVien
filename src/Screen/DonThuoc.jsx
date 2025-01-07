@@ -16,7 +16,7 @@ const DonThuoc = () => {
         search: '',
         sortField: '',
         sortOrder: 'asc',
-        daNhapHoaDon: '',
+        DaNhapHoaDon: '',
     });
     const [showFilters, setShowFilters] = useState(false); // Ẩn/Hiện bộ lọc
 
@@ -39,22 +39,28 @@ const DonThuoc = () => {
         fetchData();
     }, []);
 
-    // Hàm xử lý lọc và sắp xếp
+    // Hàm xử lý thay đổi bộ lọc
     const handleFilterChange = (key, value) => {
+        // Chuyển giá trị DaNhapHoaDon thành kiểu số (int) nếu có
+        if (key === 'DaNhapHoaDon') {
+            value = value === '' ? '' : parseInt(value);
+        }
         setFilters((prev) => ({ ...prev, [key]: value }));
         setPage(1); // Reset về trang 1 khi thay đổi bộ lọc
     };
 
+    // Reset bộ lọc
     const resetFilters = () => {
         setFilters({
             search: '',
             sortField: '',
             sortOrder: 'asc',
-            daNhapHoaDon: '',
+            DaNhapHoaDon: '',
         });
         setPage(1); // Reset về trang 1
     };
 
+    // Lọc và sắp xếp dữ liệu theo các bộ lọc
     const filteredPrescriptions = prescriptions
         .filter((prescription) => {
             const searchFields = [
@@ -68,8 +74,8 @@ const DonThuoc = () => {
                 searchFields.some((field) =>
                     field?.toString().toLowerCase().includes(filters.search.toLowerCase())
                 ) &&
-                (filters.daNhapHoaDon === '' ||
-                    prescription.DaNhapHoaDon === (filters.daNhapHoaDon === 'true'))
+                (filters.DaNhapHoaDon === '' ||
+                    prescription.DaNhapHoaDon === filters.DaNhapHoaDon)
             );
         })
         .sort((a, b) => {
@@ -89,9 +95,10 @@ const DonThuoc = () => {
         page * itemsPerPage
     );
 
-    // Hàm chuyển trang
+    // Tổng số trang
     const totalPages = Math.ceil(filteredPrescriptions.length / itemsPerPage);
 
+    // Chuyển trang
     const handleEdit = (item) => {
         navigate('/cruddonthuoc', { state: { action: 'edit', item } });
     };
@@ -108,21 +115,19 @@ const DonThuoc = () => {
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Đơn thuốc</h2>
-                        <div>
-
-                        </div>
                     </div>
-                            <div className="filter-container">
-                            <button className="add-button" onClick={handleAdd}>
-                                Thêm đơn thuốc
-                            </button>
-                            <button
-                                className="filter-button"
-                                onClick={() => setShowFilters(!showFilters)}
-                            >
-                                <Filter size={20} /> {showFilters ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
-                            </button>
-                            </div>
+                    <div className="filter-container">
+                        <button className="add-button" onClick={handleAdd}>
+                            Thêm đơn thuốc
+                        </button>
+                        <button
+                            className="filter-button"
+                            onClick={() => setShowFilters(!showFilters)}
+                        >
+                            <Filter size={20} /> {showFilters ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
+                        </button>
+                    </div>
+
                     {/* Bộ lọc */}
                     {showFilters && (
                         <div className="filters">
@@ -144,6 +149,7 @@ const DonThuoc = () => {
                                 <option value="BacSi">Mã bác sĩ</option>
                                 <option value="MaHoSo">Mã hồ sơ bệnh án</option>
                                 <option value="MaThuoc">Mã thuốc</option>
+                                <option value="SoLuongDonThuoc">Số lượng</option>
                             </select>
                             <select
                                 value={filters.sortOrder}
@@ -154,13 +160,13 @@ const DonThuoc = () => {
                                 <option value="desc">Giảm dần</option>
                             </select>
                             <select
-                                value={filters.daNhapHoaDon}
-                                onChange={(e) => handleFilterChange('daNhapHoaDon', e.target.value)}
+                                value={filters.DaNhapHoaDon}
+                                onChange={(e) => handleFilterChange('DaNhapHoaDon', e.target.value)}
                                 className="filter-select"
                             >
                                 <option value="">-- Tất cả --</option>
-                                <option value="true">Đã nhập hóa đơn</option>
-                                <option value="false">Chưa nhập hóa đơn</option>
+                                <option value="1">Đã nhập hóa đơn</option>
+                                <option value="0">Chưa nhập hóa đơn</option>
                             </select>
                             <button onClick={resetFilters} className="reset-button">
                                 Reset bộ lọc
@@ -195,7 +201,7 @@ const DonThuoc = () => {
                                         <td>{prescription.HuongDanSuDung}</td>
                                         <td>x{prescription.SoLuongDonThuoc}</td>
                                         <td>
-                                            {prescription.DaNhapHoaDon ? 'Đã nhập' : 'Chưa nhập'}
+                                            {prescription.DaNhapHoaDon === 1 ? 'Đã nhập' : 'Chưa nhập'}
                                         </td>
                                         <td>
                                             <button className="edit-nut" onClick={() => handleEdit(prescription)}>
@@ -227,18 +233,18 @@ const DonThuoc = () => {
                             Trang {page} / {totalPages}
                         </span>
                         <div className="pagination-buttons-row">
-                        <button className="pagination-buttons"
-                            onClick={() => setPage(Math.max(1, page - 1))}
-                            disabled={page === 1}
-                        >
-                            <ChevronLeft size={20} />
-                        </button>
-                        <button className="pagination-buttons"
-                            onClick={() => setPage(Math.min(totalPages, page + 1))}
-                            disabled={page === totalPages}
-                        >
-                            <ChevronRight size={20} />
-                        </button>
+                            <button className="pagination-buttons"
+                                onClick={() => setPage(Math.max(1, page - 1))}
+                                disabled={page === 1}
+                            >
+                                <ChevronLeft size={20} />
+                            </button>
+                            <button className="pagination-buttons"
+                                onClick={() => setPage(Math.min(totalPages, page + 1))}
+                                disabled={page === totalPages}
+                            >
+                                <ChevronRight size={20} />
+                            </button>
                         </div>
                     </div>
                 </div>

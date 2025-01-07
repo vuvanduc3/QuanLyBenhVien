@@ -51,9 +51,9 @@ const HoaDonChiTiet = () => {
         .filter(item => {
             const query = searchQuery.toLowerCase();
             return (
-                item.TenDichVu.toLowerCase().includes(query) ||
-                item.SoLuong.toString().includes(query) ||
-                item.DonGia.toString().includes(query)
+                item.TenDichVu?.toLowerCase().includes(query) ||
+                item.SoLuong?.toString().includes(query) ||
+                item.DonGia?.toString().includes(query)
             ) && (
                 (!filters.maBenhNhan || item.MaBenhNhan?.includes(filters.maBenhNhan)) &&
                 (!filters.maBacSi || item.MaBacSi?.includes(filters.maBacSi))
@@ -153,11 +153,11 @@ const HoaDonChiTiet = () => {
                                         <td>{item.MaHoaDon}</td>
                                         <td>{item.TenDichVu}</td>
                                         <td>{item.SoLuong}</td>
-                                        <td>{item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                                        <td>{item.DonGia ? item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có'}</td>
                                         <td>{(item.SoLuong * item.DonGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                         <td>
                                             <div className="action-buttons-container">
-                                                 <div className="action-buttons-row">
+                                                <div className="action-buttons-row">
                                                     <button className="action-btn green" onClick={() => navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'edit', item } })}>Sửa</button>
                                                     <button className="action-btn red" onClick={() => {
                                                         fetch(`http://localhost:5000/api/hoadonchitiet/${item.MaChiTiet}`, { method: 'DELETE' })
@@ -172,14 +172,13 @@ const HoaDonChiTiet = () => {
                                                     }}>Xóa</button>
                                                 </div>
                                                 <div className="action-buttons-row">
-                                                            <button
-                                                                className="action-btn brown"
-                                                                onClick={() => navigate('/tra-cuu-va-nhap-hoa-don')}
-                                                            >
-                                                               Tra cứu và nhập hóa đơn chi tiết
-                                                            </button>
-
-                                                        </div>
+                                                    <button
+                                                        className="action-btn brown"
+                                                        onClick={() => navigate('/tra-cuu-va-nhap-hoa-don', { state: { action: 'tracuu', item } })}
+                                                    >
+                                                        Tra cứu và nhập hóa đơn chi tiết
+                                                    </button>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -205,4 +204,3 @@ const HoaDonChiTiet = () => {
 };
 
 export default HoaDonChiTiet;
-
