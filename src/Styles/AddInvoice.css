@@ -348,3 +348,58 @@
   background-color: #f3f4f6;
   cursor: not-allowed;
 }
+.add-invoice-form {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.add-invoice-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-invoice-form .form-group {
+  margin-bottom: 15px;
+}
+
+.add-invoice-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.add-invoice-form input,
+.add-invoice-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.add-invoice-form .btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-invoice-form .btn:hover {
+  background-color: #0056b3;
+}
+
+.add-invoice-form .message {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #28a745;
+}
