@@ -515,97 +515,7 @@ app.delete("/api/nguoidung/:id", async (req, res) => {
 // });
 
 
-// API: Lấy danh sách thuốc
-app.get("/api/thuoc", async (req, res) => {
-    try {
-        const result = await pool
-            .request()
-            .query("SELECT * FROM Thuoc ORDER BY ID DESC");
-        res.status(200).json({
-            success: true,
-            data: result.recordset,
-        });
-    } catch (err) {
-        console.error("❌ Lỗi lấy dữ liệu thuốc:", err.message);
-        res.status(500).json({
-            success: false,
-            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
-        });
-    }
-});
 
-// API: Add new medicine
-app.post("/api/thuoc", async (req, res) => {
-    try {
-        console.log("Received request to add medicine:", req.body);
-
-        const { code, name, phone, description, quantity, price } = req.body;
-
-        // Input validation
-        if (!code || !name || !quantity || !price) {
-            return res.status(400).json({
-                success: false,
-                message: "Vui lòng điền đầy đủ thông tin bắt buộc",
-            });
-        }
-
-        // Validate code format
-        if (!code.match(/^T\d{3}$/)) {
-            return res.status(400).json({
-                success: false,
-                message: "Mã thuốc không đúng định dạng (phải là T và 3 số)",
-            });
-        }
-
-        // Check for existing medicine
-        const checkResult = await pool
-            .request()
-            .input("code", sql.VarChar(10), code)
-            .query("SELECT ID FROM Thuoc WHERE ID = @code");
-
-        if (checkResult.recordset.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: `Mã thuốc ${code} đã tồn tại trong hệ thống`,
-            });
-        }
-
-        // Insert new medicine
-        const insertResult = await pool
-            .request()
-            .input("code", sql.VarChar(10), code)
-            .input("name", sql.NVarChar(100), name)
-            .input("phone", sql.VarChar(15), phone || null)
-            .input("description", sql.NVarChar(255), description || null)
-            .input("quantity", sql.Int, Number(quantity))
-            .input("price", sql.Decimal(18, 2), Number(price)).query(`
-                INSERT INTO Thuoc (ID, TenThuoc, SDT, MoTa, SoLuong, GiaThuoc)
-                VALUES (@code, @name, @phone, @description, @quantity, @price)
-            `);
-
-        console.log("Medicine added successfully:", code);
-
-        res.status(201).json({
-            success: true,
-            message: "Thêm thuốc thành công",
-            data: { code, name, phone, description, quantity, price },
-        });
-    } catch (err) {
-        console.error("Error adding medicine:", err);
-
-        if (err.number === 2627) {
-            return res.status(400).json({
-                success: false,
-                message: "Mã thuốc đã tồn tại trong hệ thống",
-            });
-        }
-
-        res.status(500).json({
-            success: false,
-            message: "Lỗi server khi thêm thuốc: " + err.message,
-        });
-    }
-});
 
 // API: Lấy mã thuốc tiếp theo
 app.get("/api/thuoc/next-code", async (req, res) => {
@@ -648,16 +558,188 @@ app.get("/api/thuoc/next-code", async (req, res) => {
         });
     }
 });
-// API: Delete medicine
-app.delete("/api/thuoc/:id", async (req, res) => {
+// API: Lấy danh sách thuốc (kèm thông tin danh mục)
+app.get("/api/thuoc", async (req, res) => {
+    try {
+        const result = await pool.request().query(`
+            SELECT t.*, d.TenDanhMuc 
+            FROM Thuoc t
+            LEFT JOIN DanhMucThuoc d ON t.MaDanhMuc = d.MaDanhMuc
+            ORDER BY t.ID DESC
+        `);
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error("❌ Lỗi lấy dữ liệu thuốc:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+// API: Thêm thuốc mới
+app.post("/api/thuoc", async (req, res) => {
+    try {
+        const { code, name, phone, description, quantity, price, maDanhMuc } = req.body;
+
+        // Validate input
+        if (!code || !name || !quantity || !price || !maDanhMuc) {
+            return res.status(400).json({
+                success: false,
+                message: "Vui lòng điền đầy đủ thông tin bắt buộc",
+            });
+        }
+
+        // Validate code format
+        if (!code.match(/^T\d{3}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: "Mã thuốc không đúng định dạng (phải là T và 3 số)",
+            });
+        }
+
+        // Kiểm tra danh mục tồn tại
+        const categoryCheck = await pool
+            .request()
+            .input("maDanhMuc", sql.NVarChar(10), maDanhMuc)
+            .query("SELECT MaDanhMuc FROM DanhMucThuoc WHERE MaDanhMuc = @maDanhMuc");
+
+        if (categoryCheck.recordset.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Danh mục thuốc không tồn tại",
+            });
+        }
+
+        // Kiểm tra mã thuốc đã tồn tại
+        const checkResult = await pool
+            .request()
+            .input("code", sql.NVarChar(10), code)
+            .query("SELECT ID FROM Thuoc WHERE ID = @code");
+
+        if (checkResult.recordset.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Mã thuốc ${code} đã tồn tại trong hệ thống`,
+            });
+        }
+
+        // Thêm thuốc mới
+        const insertResult = await pool
+            .request()
+            .input("code", sql.NVarChar(10), code)
+            .input("name", sql.NVarChar(100), name)
+            .input("phone", sql.NVarChar(15), phone || null)
+            .input("description", sql.NVarChar(255), description || null)
+            .input("quantity", sql.Int, Number(quantity))
+            .input("price", sql.Decimal(18, 2), Number(price))
+            .input("maDanhMuc", sql.NVarChar(10), maDanhMuc)
+            .query(`
+                INSERT INTO Thuoc (ID, TenThuoc, SDT, MoTa, SoLuong, GiaThuoc, MaDanhMuc)
+                VALUES (@code, @name, @phone, @description, @quantity, @price, @maDanhMuc)
+            `);
+
+        res.status(201).json({
+            success: true,
+            message: "Thêm thuốc thành công",
+            data: { code, name, phone, description, quantity, price, maDanhMuc },
+        });
+    } catch (err) {
+        console.error("Error adding medicine:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi thêm thuốc: " + err.message,
+        });
+    }
+});
+
+// API: Cập nhật thuốc
+app.put("/api/thuoc/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("Deleting medicine with ID:", id);
+        const { name, phone, description, quantity, price, maDanhMuc } = req.body;
+
+        // Validate input
+        if (!name || !quantity || !price || !maDanhMuc) {
+            return res.status(400).json({
+                success: false,
+                message: "Vui lòng điền đầy đủ thông tin bắt buộc",
+            });
+        }
+
+        // Kiểm tra danh mục tồn tại
+        const categoryCheck = await pool
+            .request()
+            .input("maDanhMuc", sql.NVarChar(10), maDanhMuc)
+            .query("SELECT MaDanhMuc FROM DanhMucThuoc WHERE MaDanhMuc = @maDanhMuc");
+
+        if (categoryCheck.recordset.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Danh mục thuốc không tồn tại",
+            });
+        }
 
         // Kiểm tra thuốc tồn tại
         const checkResult = await pool
             .request()
-            .input("id", sql.VarChar(10), id)
+            .input("id", sql.NVarChar(10), id)
+            .query("SELECT ID FROM Thuoc WHERE ID = @id");
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Không tìm thấy thuốc với mã ${id}`,
+            });
+        }
+
+        // Cập nhật thuốc
+        await pool
+            .request()
+            .input("id", sql.NVarChar(10), id)
+            .input("name", sql.NVarChar(100), name)
+            .input("phone", sql.NVarChar(15), phone || null)
+            .input("description", sql.NVarChar(255), description || null)
+            .input("quantity", sql.Int, Number(quantity))
+            .input("price", sql.Decimal(18, 2), Number(price))
+            .input("maDanhMuc", sql.NVarChar(10), maDanhMuc)
+            .query(`
+                UPDATE Thuoc 
+                SET TenThuoc = @name,
+                    SDT = @phone,
+                    MoTa = @description,
+                    SoLuong = @quantity,
+                    GiaThuoc = @price,
+                    MaDanhMuc = @maDanhMuc
+                WHERE ID = @id
+            `);
+
+        res.status(200).json({
+            success: true,
+            message: "Cập nhật thuốc thành công",
+            data: { id, name, phone, description, quantity, price, maDanhMuc },
+        });
+    } catch (err) {
+        console.error("Error updating medicine:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi cập nhật thuốc: " + err.message,
+        });
+    }
+});
+
+// API: Xóa thuốc
+app.delete("/api/thuoc/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Kiểm tra thuốc tồn tại
+        const checkResult = await pool
+            .request()
+            .input("id", sql.NVarChar(10), id)
             .query("SELECT ID FROM Thuoc WHERE ID = @id");
 
         if (checkResult.recordset.length === 0) {
@@ -670,10 +752,8 @@ app.delete("/api/thuoc/:id", async (req, res) => {
         // Thực hiện xóa
         await pool
             .request()
-            .input("id", sql.VarChar(10), id)
+            .input("id", sql.NVarChar(10), id)
             .query("DELETE FROM Thuoc WHERE ID = @id");
-
-        console.log("Medicine deleted successfully:", id);
 
         res.status(200).json({
             success: true,
@@ -687,14 +767,20 @@ app.delete("/api/thuoc/:id", async (req, res) => {
         });
     }
 });
-// API: Get medicine detail by ID
+
+// API: Lấy chi tiết thuốc theo ID
 app.get("/api/thuoc/:id", async (req, res) => {
     try {
         const { id } = req.params;
 
-        const result = await pool.request().input("id", sql.VarChar(10), id).query(`
-                SELECT * FROM Thuoc 
-                WHERE ID = @id
+        const result = await pool
+            .request()
+            .input("id", sql.NVarChar(10), id)
+            .query(`
+                SELECT t.*, d.TenDanhMuc 
+                FROM Thuoc t
+                LEFT JOIN DanhMucThuoc d ON t.MaDanhMuc = d.MaDanhMuc
+                WHERE t.ID = @id
             `);
 
         if (result.recordset.length === 0) {
@@ -716,61 +802,205 @@ app.get("/api/thuoc/:id", async (req, res) => {
         });
     }
 });
-// API: Update medicine
-app.put("/api/thuoc/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, phone, description, quantity, price } = req.body;
 
-        // Input validation
-        if (!name || !quantity || !price) {
+// GET: Lấy danh sách danh mục thuốc
+app.get("/api/danhmucthuoc", async (req, res) => {
+    try {
+        const result = await pool
+            .request()
+            .query("SELECT * FROM DanhMucThuoc ORDER BY MaDanhMuc");
+
+        res.json({
+            success: true,
+            data: result.recordset
+        });
+    } catch (err) {
+        console.error("Error getting categories:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi lấy danh sách danh mục: " + err.message
+        });
+    }
+});
+
+// GET: Lấy chi tiết một danh mục thuốc
+app.get("/api/danhmucthuoc/:id", async (req, res) => {
+    try {
+        const result = await pool
+            .request()
+            .input('MaDanhMuc', sql.NVarChar(10), req.params.id)
+            .query("SELECT * FROM DanhMucThuoc WHERE MaDanhMuc = @MaDanhMuc");
+
+        if (result.recordset.length > 0) {
+            res.json({
+                success: true,
+                data: result.recordset[0]
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: "Không tìm thấy danh mục thuốc"
+            });
+        }
+    } catch (err) {
+        console.error("Error getting category:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi lấy thông tin danh mục: " + err.message
+        });
+    }
+});
+
+// POST: Thêm danh mục thuốc mới
+app.post("/api/danhmucthuoc", async (req, res) => {
+    try {
+        const { MaDanhMuc, TenDanhMuc } = req.body;
+
+        // Validate input
+        if (!MaDanhMuc || !TenDanhMuc) {
             return res.status(400).json({
                 success: false,
-                message: "Vui lòng điền đầy đủ thông tin bắt buộc",
+                message: "Vui lòng điền đầy đủ mã và tên danh mục"
             });
         }
 
-        // Check if medicine exists
+        // Validate MaDanhMuc format (DM + 3 số)
+        if (!MaDanhMuc.match(/^DM\d{3}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: "Mã danh mục không đúng định dạng (phải là DM và 3 số)"
+            });
+        }
+
+        // Kiểm tra mã danh mục đã tồn tại
         const checkResult = await pool
             .request()
-            .input("id", sql.VarChar(10), id)
-            .query("SELECT ID FROM Thuoc WHERE ID = @id");
+            .input("MaDanhMuc", sql.NVarChar(10), MaDanhMuc)
+            .query("SELECT MaDanhMuc FROM DanhMucThuoc WHERE MaDanhMuc = @MaDanhMuc");
+
+        if (checkResult.recordset.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Mã danh mục ${MaDanhMuc} đã tồn tại trong hệ thống`
+            });
+        }
+
+        // Thêm danh mục mới
+        await pool
+            .request()
+            .input("MaDanhMuc", sql.NVarChar(10), MaDanhMuc)
+            .input("TenDanhMuc", sql.NVarChar(100), TenDanhMuc)
+            .query(`
+                INSERT INTO DanhMucThuoc (MaDanhMuc, TenDanhMuc)
+                VALUES (@MaDanhMuc, @TenDanhMuc)
+            `);
+
+        res.status(201).json({
+            success: true,
+            message: "Thêm danh mục thuốc thành công",
+            data: { MaDanhMuc, TenDanhMuc }
+        });
+    } catch (err) {
+        console.error("Error adding category:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi thêm danh mục: " + err.message
+        });
+    }
+});
+
+// PUT: Cập nhật danh mục thuốc
+app.put("/api/danhmucthuoc/:id", async (req, res) => {
+    try {
+        const { TenDanhMuc } = req.body;
+        const MaDanhMuc = req.params.id;
+
+        // Validate input
+        if (!TenDanhMuc) {
+            return res.status(400).json({
+                success: false,
+                message: "Vui lòng điền tên danh mục"
+            });
+        }
+
+        // Kiểm tra danh mục tồn tại
+        const checkResult = await pool
+            .request()
+            .input("MaDanhMuc", sql.NVarChar(10), MaDanhMuc)
+            .query("SELECT MaDanhMuc FROM DanhMucThuoc WHERE MaDanhMuc = @MaDanhMuc");
 
         if (checkResult.recordset.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: `Không tìm thấy thuốc với mã ${id}`,
+                message: "Không tìm thấy danh mục thuốc"
             });
         }
 
-        // Update medicine
+        // Cập nhật danh mục
         await pool
             .request()
-            .input("id", sql.VarChar(10), id)
-            .input("name", sql.NVarChar(100), name)
-            .input("phone", sql.NVarChar(15), phone || null)
-            .input("description", sql.NVarChar(255), description || null)
-            .input("quantity", sql.Int, Number(quantity))
-            .input("price", sql.Decimal(18, 2), Number(price)).query(`
-                UPDATE Thuoc 
-                SET TenThuoc = @name,
-                    SDT = @phone,
-                    MoTa = @description,
-                    SoLuong = @quantity,
-                    GiaThuoc = @price
-                WHERE ID = @id
+            .input("MaDanhMuc", sql.NVarChar(10), MaDanhMuc)
+            .input("TenDanhMuc", sql.NVarChar(100), TenDanhMuc)
+            .query(`
+                UPDATE DanhMucThuoc 
+                SET TenDanhMuc = @TenDanhMuc 
+                WHERE MaDanhMuc = @MaDanhMuc
             `);
 
-        res.status(200).json({
+        res.json({
             success: true,
-            message: "Cập nhật thuốc thành công",
-            data: { id, name, phone, description, quantity, price },
+            message: "Cập nhật danh mục thuốc thành công",
+            data: { MaDanhMuc, TenDanhMuc }
         });
     } catch (err) {
-        console.error("Error updating medicine:", err);
+        console.error("Error updating category:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi cập nhật thuốc: " + err.message,
+            message: "Lỗi server khi cập nhật danh mục: " + err.message
+        });
+    }
+});
+
+// DELETE: Xóa danh mục thuốc
+app.delete("/api/danhmucthuoc/:id", async (req, res) => {
+    try {
+        const MaDanhMuc = req.params.id;
+
+        // Kiểm tra danh mục có đang được sử dụng
+        const checkUsageResult = await pool
+            .request()
+            .input("MaDanhMuc", sql.NVarChar(10), MaDanhMuc)
+            .query("SELECT TOP 1 ID FROM Thuoc WHERE MaDanhMuc = @MaDanhMuc");
+
+        if (checkUsageResult.recordset.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Không thể xóa danh mục đang có thuốc"
+            });
+        }
+
+        // Xóa danh mục
+        const deleteResult = await pool
+            .request()
+            .input("MaDanhMuc", sql.NVarChar(10), MaDanhMuc)
+            .query("DELETE FROM DanhMucThuoc WHERE MaDanhMuc = @MaDanhMuc");
+
+        if (deleteResult.rowsAffected[0] === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy danh mục thuốc"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Xóa danh mục thuốc thành công"
+        });
+    } catch (err) {
+        console.error("Error deleting category:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi xóa danh mục: " + err.message
         });
     }
 });
@@ -1650,6 +1880,183 @@ app.put("/api/donthuoc/:id", async (req, res) => {
         console.error("❌ Lỗi sửa đơn thuốc:", err.message);
         res.status(500).json({ success: false, message: "Lỗi khi sửa đơn thuốc: " + err.message });
     }
+});
+
+// GET: Lấy danh sách hóa đơn
+app.get("/api/invoices", async (req, res) => {
+  try {
+    const result = await pool
+      .request()
+      .query("SELECT * FROM HoaDon ORDER BY NgayNhapHoaDon DESC");
+
+    res.json({
+      success: true,
+      data: result.recordset
+    });
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy danh sách hóa đơn"
+    });
+  }
+});
+
+// GET: Lấy chi tiết hóa đơn
+app.get("/api/invoices/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool
+      .request()
+      .input("id", sql.VarChar(20), id)
+      .query("SELECT * FROM HoaDon WHERE MaHoaDon = @id");
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy hóa đơn"
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result.recordset[0]
+    });
+  } catch (error) {
+    console.error("Error fetching invoice:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy thông tin hóa đơn"
+    });
+  }
+});
+
+// POST: Thêm hóa đơn mới
+app.post("/api/invoices", async (req, res) => {
+  try {
+    const { MaHoaDon, MaBenhNhan, MaBacSi, TongTien, TrangThai } = req.body;
+
+    // Check if invoice exists
+    const checkResult = await pool
+      .request()
+      .input("MaHoaDon", sql.VarChar(20), MaHoaDon)
+      .query("SELECT MaHoaDon FROM HoaDon WHERE MaHoaDon = @MaHoaDon");
+
+    if (checkResult.recordset.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Mã hóa đơn đã tồn tại"
+      });
+    }
+
+    await pool
+      .request()
+      .input("MaHoaDon", sql.VarChar(20), MaHoaDon)
+      .input("MaBenhNhan", sql.VarChar(20), MaBenhNhan)
+      .input("MaBacSi", sql.VarChar(20), MaBacSi)
+      .input("TongTien", sql.Decimal(18, 2), TongTien)
+      .input("NgayNhapHoaDon", sql.DateTime, new Date())
+      .input("TrangThai", sql.NVarChar(50), TrangThai)
+      .query(`
+        INSERT INTO HoaDon (MaHoaDon, MaBenhNhan, MaBacSi, TongTien, NgayNhapHoaDon, TrangThai)
+        VALUES (@MaHoaDon, @MaBenhNhan, @MaBacSi, @TongTien, @NgayNhapHoaDon, @TrangThai)
+      `);
+
+    res.status(201).json({
+      success: true,
+      message: "Thêm hóa đơn thành công"
+    });
+  } catch (error) {
+    console.error("Error creating invoice:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi thêm hóa đơn"
+    });
+  }
+});
+
+// PUT: Cập nhật hóa đơn
+app.put("/api/invoices/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { MaBenhNhan, MaBacSi, TongTien, TrangThai } = req.body;
+
+    // Check if invoice exists
+    const checkResult = await pool
+      .request()
+      .input("id", sql.VarChar(20), id)
+      .query("SELECT MaHoaDon FROM HoaDon WHERE MaHoaDon = @id");
+
+    if (checkResult.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy hóa đơn"
+      });
+    }
+
+    await pool
+      .request()
+      .input("id", sql.VarChar(20), id)
+      .input("MaBenhNhan", sql.VarChar(20), MaBenhNhan)
+      .input("MaBacSi", sql.VarChar(20), MaBacSi)
+      .input("TongTien", sql.Decimal(18, 2), TongTien)
+      .input("TrangThai", sql.NVarChar(50), TrangThai)
+      .query(`
+        UPDATE HoaDon 
+        SET MaBenhNhan = @MaBenhNhan,
+            MaBacSi = @MaBacSi,
+            TongTien = @TongTien,
+            TrangThai = @TrangThai
+        WHERE MaHoaDon = @id
+      `);
+
+    res.json({
+      success: true,
+      message: "Cập nhật hóa đơn thành công"
+    });
+  } catch (error) {
+    console.error("Error updating invoice:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi cập nhật hóa đơn"
+    });
+  }
+});
+
+// DELETE: Xóa hóa đơn
+app.delete("/api/invoices/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if invoice exists
+    const checkResult = await pool
+      .request()
+      .input("id", sql.VarChar(20), id)
+      .query("SELECT MaHoaDon FROM HoaDon WHERE MaHoaDon = @id");
+
+    if (checkResult.recordset.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy hóa đơn"
+      });
+    }
+
+    await pool
+      .request()
+      .input("id", sql.VarChar(20), id)
+      .query("DELETE FROM HoaDon WHERE MaHoaDon = @id");
+
+    res.json({
+      success: true,
+      message: "Xóa hóa đơn thành công"
+    });
+  } catch (error) {
+    console.error("Error deleting invoice:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi xóa hóa đơn"
+    });
+  }
 });
 
 

@@ -30,6 +30,8 @@ import CRUDXetNghiem from './Screen/CRUDXetNghiem';
 import CRUDDonThuoc from './Screen/CRUDDonThuoc';
 
 import EditPayment from './Screen/EditPayment';
+import DanhMucList from './Screen/DanhMucThuoc';
+import DanhMucThuoc from './Screen/DanhMucThuoc';
 
 function App() {
   return (
@@ -68,7 +70,7 @@ function App() {
             <Route path="xet-nghiem" element={<XetNghiem/>} />
             <Route path="crud-xet-nghiem" element={<CRUDXetNghiem/>} />
             <Route path="/cruddonthuoc" element={<CRUDDonThuoc/>} />
-
+            <Route path="/danhmuc" element={<DanhMucThuoc/>} />
             <Route path="/EditPayment/:paymentId" element={<EditPayment/>} />
           </Routes>
         </div>

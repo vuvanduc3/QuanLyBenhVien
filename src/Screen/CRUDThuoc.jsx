@@ -12,16 +12,35 @@ const ThemSuaXoaThuoc = () => {
         description: '',
         quantity: '',
         price: '',
-        phone: ''
+        phone: '',
+        maDanhMuc: '' // Thêm trường maDanhMuc
     });
 
+    const [categories, setCategories] = useState([]); // State cho danh sách danh mục
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log('Component mounted, fetching initial code...');
+        console.log('Component mounted, fetching initial data...');
         fetchNextCode();
+        fetchCategories(); // Fetch danh sách danh mục khi component mount
     }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/danhmucthuoc');
+            const data = await response.json();
+            
+            if (data.success) {
+                setCategories(data.data);
+            } else {
+                toast.error('Không thể lấy danh sách danh mục thuốc');
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            toast.error('Lỗi khi lấy danh sách danh mục thuốc');
+        }
+    };
 
     const fetchNextCode = async () => {
         try {
@@ -77,6 +96,10 @@ const ThemSuaXoaThuoc = () => {
             setError('Vui lòng nhập giá thuốc');
             return false;
         }
+        if (!formData.maDanhMuc) {
+            setError('Vui lòng chọn danh mục thuốc');
+            return false;
+        }
         return true;
     };
 
@@ -103,7 +126,8 @@ const ThemSuaXoaThuoc = () => {
                     description: formData.description || '',
                     quantity: Number(formData.quantity),
                     price: Number(formData.price),
-                    phone: formData.phone || ''
+                    phone: formData.phone || '',
+                    maDanhMuc: formData.maDanhMuc // Thêm maDanhMuc vào request
                 })
             });
             
@@ -130,7 +154,8 @@ const ThemSuaXoaThuoc = () => {
                     description: '',
                     quantity: '',
                     price: '',
-                    phone: ''
+                    phone: '',
+                    maDanhMuc: '' // Reset maDanhMuc
                 });
                 toast.success('🎉 Thêm thuốc thành công!');
             } else {
@@ -194,6 +219,24 @@ const ThemSuaXoaThuoc = () => {
                                 className="form-control"
                                 required
                             />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Danh mục thuốc <span className="required">*</span></label>
+                            <select
+                                name="maDanhMuc"
+                                value={formData.maDanhMuc}
+                                onChange={handleChange}
+                                className="form-control"
+                                required
+                            >
+                                <option value="">Chọn danh mục thuốc</option>
+                                {categories.map(category => (
+                                    <option key={category.MaDanhMuc} value={category.MaDanhMuc}>
+                                        {category.TenDanhMuc}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="form-group">

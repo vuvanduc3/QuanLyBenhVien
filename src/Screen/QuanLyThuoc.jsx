@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Edit, Trash2, ChevronLeft, ChevronRight, Filter, Search } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../Styles/QuanLyThuoc.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 
 const QuanLyThuoc = () => {
     const [thuocs, setThuocs] = useState([]);
     const [filteredThuocs, setFilteredThuocs] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -25,12 +25,23 @@ const QuanLyThuoc = () => {
         minPrice: '',
         maxPrice: '',
         minQuantity: '',
-        maxQuantity: ''
+        maxQuantity: '',
+        category: '' // Thêm filter cho danh mục
     });
 
     const navigate = useNavigate();
 
-   
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/danhmucthuoc');
+            const data = await response.json();
+            if (data.success) {
+                setCategories(data.data);
+            }
+        } catch (err) {
+            console.error('Error fetching categories:', err);
+        }
+    };
 
     const fetchThuocs = async () => {
         try {
@@ -54,6 +65,7 @@ const QuanLyThuoc = () => {
 
     useEffect(() => {
         fetchThuocs();
+        fetchCategories();
     }, []);
 
     // Xử lý tìm kiếm và lọc
@@ -65,8 +77,13 @@ const QuanLyThuoc = () => {
             result = result.filter(thuoc =>
                 thuoc.TenThuoc.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 thuoc.ID.toString().includes(searchTerm) ||
-                thuoc.SDT.includes(searchTerm)
+                (thuoc.SDT && thuoc.SDT.includes(searchTerm))
             );
+        }
+
+        // Lọc theo danh mục
+        if (filters.category) {
+            result = result.filter(thuoc => thuoc.MaDanhMuc === filters.category);
         }
 
         // Lọc theo giá
@@ -90,9 +107,6 @@ const QuanLyThuoc = () => {
             result.sort((a, b) => {
                 let compareResult = 0;
                 switch (filters.sortBy) {
-                    case 'id':
-                        compareResult = a.ID - b.ID;
-                        break;
                     case 'name':
                         compareResult = a.TenThuoc.localeCompare(b.TenThuoc);
                         break;
@@ -111,7 +125,7 @@ const QuanLyThuoc = () => {
 
         setFilteredThuocs(result);
         setTotalPages(Math.ceil(result.length / itemsPerPage));
-        setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
+        setCurrentPage(1);
     }, [searchTerm, filters, thuocs]);
 
     const handleDelete = async (id) => {
@@ -144,8 +158,10 @@ const QuanLyThuoc = () => {
     const handleChangeThuoc = () => {
         navigate('/themsuaxoathuoc');
     };
+    const handleChangeDMThuoc = () => {
+        navigate('/danhmuc');
+    };
 
-    // Lấy thuốc cho trang hiện tại
     const getCurrentPageItems = () => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -164,7 +180,6 @@ const QuanLyThuoc = () => {
         }
     };
 
-    // Reset tất cả bộ lọc
     const handleResetFilters = () => {
         setSearchTerm('');
         setFilters({
@@ -173,7 +188,8 @@ const QuanLyThuoc = () => {
             minPrice: '',
             maxPrice: '',
             minQuantity: '',
-            maxQuantity: ''
+            maxQuantity: '',
+            category: ''
         });
     };
 
@@ -188,7 +204,6 @@ const QuanLyThuoc = () => {
     return (
         <div className="container">
             <Menu1 />
-
             <main className="main-content">
                 <Search1 />
 
@@ -199,11 +214,13 @@ const QuanLyThuoc = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="search-input"
                 />
-
-
+                <button className="add-button" onClick={handleChangeDMThuoc}>
+                    Thêm danh mục thuốc
+                </button>
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Quản lý thuốc</h2>
+
                         <button className="add-button" onClick={handleChangeThuoc}>
                             Thêm thuốc
                         </button>
@@ -212,12 +229,27 @@ const QuanLyThuoc = () => {
                     <div className="filters">
                         <div className="filter-group">
                             <Filter />
+
+                            {/* Thêm select box cho danh mục */}
+                            <select
+                                value={filters.category}
+                                onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                                className="filter-select"
+                            >
+                                <option value="">Tất cả danh mục</option>
+                                {categories.map(category => (
+                                    <option key={category.MaDanhMuc} value={category.MaDanhMuc}>
+                                        {category.TenDanhMuc}
+                                    </option>
+                                ))}
+                            </select>
+
                             <select
                                 value={filters.sortBy}
                                 onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
                             >
                                 <option value="">Sắp xếp theo</option>
-                               
+                                <option value="name">Tên thuốc</option>
                                 <option value="price">Giá thuốc</option>
                                 <option value="quantity">Số lượng</option>
                             </select>
@@ -277,6 +309,7 @@ const QuanLyThuoc = () => {
                             <tr>
                                 <th>#ID</th>
                                 <th>Tên thuốc</th>
+                                <th>Danh mục</th>
                                 <th>SĐT liên hệ</th>
                                 <th>Mô tả</th>
                                 <th>Số lượng</th>
@@ -294,6 +327,7 @@ const QuanLyThuoc = () => {
                                     >
                                         <td>{thuoc.ID}</td>
                                         <td>{thuoc.TenThuoc}</td>
+                                        <td>{thuoc.TenDanhMuc}</td>
                                         <td>{thuoc.SDT}</td>
                                         <td>{thuoc.MoTa}</td>
                                         <td><span className="quantity">{thuoc.SoLuong}</span></td>
@@ -325,7 +359,7 @@ const QuanLyThuoc = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="7" className="no-data">Không có dữ liệu</td>
+                                    <td colSpan="8" className="no-data">Không có dữ liệu</td>
                                 </tr>
                             )}
                         </tbody>
