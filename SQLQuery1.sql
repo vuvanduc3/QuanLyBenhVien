@@ -10,6 +10,7 @@ CREATE TABLE BenhNhan (
     CMND_CCCD NVARCHAR(20) NOT NULL
 );
 
+
 -- Tạo bảng Hồ sơ bệnh án
 CREATE TABLE HoSoBenhAn (
     MaHoSo INT IDENTITY(1,1) PRIMARY KEY,

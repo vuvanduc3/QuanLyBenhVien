@@ -12,6 +12,7 @@ const QuanLyNguoiDungScreen = () => {
     const [imageURL, setImageURL] = useState('https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg');
     const [currentUserId, setCurrentUserId] = useState(null);
     const [formData, setFormData] = useState({
+        ID: '',
         Hinh: '',
         TenDayDu: '',
         Email: '',
@@ -133,6 +134,7 @@ const QuanLyNguoiDungScreen = () => {
                 setUsers([...users, data.data]);
                 setShowModal(false);
                 setFormData({
+                    ID:'',
                     Hinh: '',
                     TenDayDu: '',
                     Email: '',
@@ -167,6 +169,7 @@ const QuanLyNguoiDungScreen = () => {
                 setUsers(users.map(user => (user.ID === currentUserId ? data.data : user)));
                 setShowModal(false);
                 setFormData({
+                    ID:'',
                     Hinh: '',
                     TenDayDu: '',
                     Email: '',
@@ -205,6 +208,7 @@ const QuanLyNguoiDungScreen = () => {
         if (type === 'edit' && user) {
             setCurrentUserId(user.ID);
             setFormData({
+                ID: user.ID,
                 Hinh: user.Hinh,
                 TenDayDu: user.TenDayDu,
                 Email: user.Email,
@@ -219,6 +223,7 @@ const QuanLyNguoiDungScreen = () => {
             });
         } else {
             setFormData({
+                ID:'',
                 Hinh: '',
                 TenDayDu: '',
                 Email: '',
@@ -337,9 +342,9 @@ const QuanLyNguoiDungScreen = () => {
                                         <label>Mã người dùng</label>
                                         <input
                                             type="text"
-                                            name="TenDayDu"
-                                            value="Tự động tăng"
-                                            readonly
+                                            name="MaNguoiDung"
+                                            value={formData.ID}
+                                            readOnly
                                         />
                                     </div>
                                     <div style={{ width: "50%" }}>
