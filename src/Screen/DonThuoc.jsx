@@ -204,8 +204,10 @@ const DonThuoc = () => {
                                             {prescription.DaNhapHoaDon === 1 ? 'Đã nhập' : 'Chưa nhập'}
                                         </td>
                                         <td>
+                                            <div className="action-buttons-container">
+                                            <div className="action-buttons-row">
                                             <button className="edit-nut" onClick={() => handleEdit(prescription)}>
-                                                Sửa
+                                                Sửa dữ liệu
                                             </button>
                                             <button className="delete-button"
                                                 onClick={async () => {
@@ -218,8 +220,10 @@ const DonThuoc = () => {
                                                     }
                                                 }}
                                             >
-                                                Xóa
+                                                Xóa dữ liệu
                                             </button>
+                                            </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

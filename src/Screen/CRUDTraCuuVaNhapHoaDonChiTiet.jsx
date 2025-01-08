@@ -19,6 +19,9 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
      const [SoLuong, setSoLuong] = useState('');
      const [DonGia, setDonGia] = useState('');
 
+     const [actionURL, setActionURL] = useState('');
+     const [actionIDURL, setActionIDURL] = useState('');
+
     useEffect(() => {
         setThanhTien(quantity * price);
     }, [quantity, price]);
@@ -28,16 +31,26 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
 
         setQuantity(item.SoLuong);
 
-
         if (action === 'prescriptions' && item) {
             setTenDichVu(item.TenThuoc);
             setPrice(item.GiaThuoc);
             setQuantity(item.SoLuongDonThuoc);
+            setActionURL('donthuocnhapHD');
+            setActionIDURL(item.MaDonThuoc);
         }
-        else{
+        else if (action === 'tests' && item){
             setTenDichVu(item.TenXetNghiem);
             setPrice(1);
             setQuantity(1);
+            setActionURL('xetnghiemnhapHD');
+            setActionIDURL(item.MaXetNghiem);
+        }
+        else if (action === 'history' && item){
+            setTenDichVu(item.MoTa);
+            setPrice(1);
+            setQuantity(1);
+            setActionURL('dieutrinhapHD');
+            setActionIDURL(item.MaDieuTri);
         }
 
 
@@ -59,7 +72,7 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
 
         const body = {
             MaHoaDon: MaHoaDon,  // Sử dụng item.MaHoaDon nếu có
-            TenDichVu: action === 'prescriptions' ?  item.TenThuoc : item.TenXetNghiem, // Dùng tên thuốc hoặc tên xét nghiệm
+            TenDichVu: TenDichVu, // Dùng tên thuốc hoặc tên xét nghiệm
             SoLuong: quantity,
             DonGia: price, // Giá đơn vị
 
@@ -83,7 +96,7 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
 
                 // Sau khi thêm hóa đơn chi tiết, cập nhật trạng thái DaNhapHoaDon
                 try {
-                    const updateResponse = await fetch(`http://localhost:5000/api/${action === 'prescriptions' ? 'donthuocnhapHD' : 'xetnghiemnhapHD'}/${action === 'prescriptions' ? item.MaDonThuoc : item.MaXetNghiem}`, {
+                    const updateResponse = await fetch(`http://localhost:5000/api/${actionURL}/${actionIDURL}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -141,13 +154,13 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
                 <Search1 />
                 <div className="content">
                     <div className="card-header">
-                        <h2 className="card-title">Thêm hóa đơn chi tiết </h2>
+                        <h2 className="card-title">Thêm hóa đơn chi tiết {item.MoTa}</h2>
                     </div>
 
                     <form onSubmit={handleSubmit} className="medicine-form">
                         <label>Mã hóa đơn: <span className="required">{MaHoaDon}</span></label>
 
-                        <label>Tên thuốc/dịch vụ: <span className="required">{action === 'prescriptions' ? item.TenThuoc : item.TenXetNghiem || 'N/A'}</span></label>
+                        <label>Tên thuốc/dịch vụ: <span className="required">{TenDichVu}</span></label>
 
                         <div className="form-group">
                         <label>Số lượng: <span className="required"></span></label>
