@@ -117,7 +117,7 @@ const InvoiceForm = () => {
                         <div className="action-buttons">
                           <button className="action-btn" onClick={() => handleChuyenTrang(invoice)}>Xem hóa đơn chi tiết</button>
                           <button className="action-btn" onClick={() => handleEditBill(invoice)}>Sửa dữ liệu</button>
-                          <button className="action-btn red"
+                          <button className="action-btn"
                                                 onClick={async () => {
                                                     if (window.confirm('Bạn có chắc muốn xóa?')) {
                                                         await fetch(
@@ -130,7 +130,7 @@ const InvoiceForm = () => {
                           >Xóa hóa đơn</button>
                           <button className="action-btn">Thanh toán</button>
                           <button className="action-btn"  onClick={() => handleChuyenTrangHD(invoice)}>Xuất hóa đơn</button>
-                          <button className="action-btn brown"
+                          <button className="action-btn"
                           onClick={() => handleChuyenTrang2(invoice)}
                            >Tra cứu & nhập</button>
                         </div>
