@@ -72,7 +72,7 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
 
         const body = {
             MaHoaDon: MaHoaDon,  // Sử dụng item.MaHoaDon nếu có
-            TenDichVu: action === 'prescriptions' ?  item.TenThuoc : item.TenXetNghiem, // Dùng tên thuốc hoặc tên xét nghiệm
+            TenDichVu: TenDichVu, // Dùng tên thuốc hoặc tên xét nghiệm
             SoLuong: quantity,
             DonGia: price, // Giá đơn vị
 
