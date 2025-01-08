@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Edit, Trash } from 'lucide-react';
-import '../Styles/AddInvoice.css';
+import '../Styles/CRUDLichKham.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 
-const AddInvoice = () => {
+const CRUDLichKham = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -13,10 +13,10 @@ const AddInvoice = () => {
   const [formData, setFormData] = useState({
     MaBenhNhan: '',
     MaBacSi: '',
-    TongTien: '',
-    TinhTrang: 'Chưa thanh toán',
-    NgayLapHoaDon: '',
-    NgayThanhToan: ''
+    NgayKham: '',
+    GioKham: '',
+    TrangThai: '',
+    PhongKham: ''
   });
 
   const [users, setUsers] = useState([]); // Lưu danh sách người dùng
@@ -28,9 +28,9 @@ const AddInvoice = () => {
   const [showPatientResults, setShowPatientResults] = useState(false); // Kiểm soát hiển thị danh sách bệnh nhân
   const [showDoctorResults, setShowDoctorResults] = useState(false); // Kiểm soát hiển thị danh sách bác sĩ
 
-  const [isExpandedBN, setIsExpandedBN] = useState(false); // Trạng thái mở rộng thông tin
+  const [isExpandedBN, setIsExpandedBN] = useState(false); // Trạng thái mở rộng thông tin bệnh nhân
   const handleExpandBenhNhanInfo = () => {
-      setIsExpandedBN(!isExpandedBN); // Chuyển đổi trạng thái mở rộng
+    setIsExpandedBN(!isExpandedBN); // Chuyển đổi trạng thái mở rộng
   };
 
   // Fetch dữ liệu người dùng từ API khi tải trang
@@ -48,13 +48,16 @@ const AddInvoice = () => {
   // Fetch dữ liệu khi sửa hóa đơn
   useEffect(() => {
     if (action === 'edit' && item) {
+      const formattedNgayKham = new Date(item.NgayKham).toISOString().split('T')[0];
+      const formattedTime =  item.GioKham.slice(11, 19);
+
       setFormData({
         MaBenhNhan: item.MaBenhNhan,
         MaBacSi: item.MaBacSi,
-        TongTien: item.TongTien,
-        TinhTrang: item.TinhTrang?item.TinhTrang:'Chưa thanh toán',
-        NgayLapHoaDon: item.NgayLapHoaDon,
-        NgayThanhToan: item.NgayThanhToan,
+        NgayKham: formattedNgayKham,
+        GioKham: formattedTime,
+        TrangThai: item.TrangThai,
+        PhongKham: item.PhongKham,
       });
     }
   }, [action, item]);
@@ -118,54 +121,79 @@ const AddInvoice = () => {
     setFormData({ ...formData, MaBacSi: doctor.ID }); // Cập nhật MaBacSi
   };
 
-  // Xử lý submit form
   const handleSubmit = async (e) => {
-    e.preventDefault();
+      e.preventDefault();
 
-    if (!selectedPatient || !selectedDoctor) {
-      alert('Vui lòng chọn cả bệnh nhân và bác sĩ!');
-      return;
-    }
-
-    const updatedFormData = { ...formData, MaBenhNhan: selectedPatient.ID, MaBacSi: selectedDoctor.ID };
-
-    try {
-      if (action === 'add') {
-        // Thêm hóa đơn
-        const response = await fetch('http://localhost:5000/api/vienphi', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedFormData),
-        });
-        const data = await response.json();
-        if (data.success) {
-          alert("Thêm hóa đơn thành công!");
-        } else {
-          alert(data.message);
-        }
-      } else if (action === 'edit') {
-        // Sửa hóa đơn
-        const response = await fetch(`http://localhost:5000/api/vienphi/${item.MaHoaDon}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedFormData),
-        });
-        const data = await response.json();
-        if (data.success) {
-          alert("Cập nhật hóa đơn thành công!");
-        } else {
-          alert(data.message);
-        }
+      if (!selectedPatient || !selectedDoctor) {
+        alert('Vui lòng chọn cả bệnh nhân và bác sĩ!');
+        return;
       }
-    } catch (error) {
-      console.error("❌ Lỗi khi thực hiện thao tác:", error.message);
-      alert("Đã xảy ra lỗi, vui lòng thử lại!");
-    }
+
+      // Xử lý định dạng ngày
+      const formattedNgayKham = formData.NgayKham ? new Date(formData.NgayKham).toISOString().split('T')[0] : null; // Định dạng ngày 'yyyy-MM-dd'
+
+        // Kiểm tra nếu không có giá trị
+      if (!formattedNgayKham ) {
+          alert('Vui lòng nhập ngày khám');
+      }
+
+      // Xử lý định dạng giờ, nếu giờ có dạng 'HH:mm' thì thêm ':00' vào
+      let formattedGioKham = formData.GioKham;
+      if (!formattedGioKham.includes(':00')) {
+        formattedGioKham = `${formattedGioKham}:00`; // Thêm ':00' nếu không có giây
+      }
+
+      if (!formattedGioKham) {
+         alert('Vui lòng nhập giờ');
+      }
+
+      const updatedFormData = {
+        ...formData,
+        MaBenhNhan: selectedPatient.ID,
+        MaBacSi: selectedDoctor.ID,
+        NgayKham: formattedNgayKham, // Cập nhật lại ngày
+        GioKham: formattedGioKham,  // Cập nhật lại giờ với định dạng 'HH:mm:ss'
+      };
+
+      try {
+        if (action === 'add') {
+          // Thêm lịch hẹn
+          const response = await fetch('http://localhost:5000/api/lichkham', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedFormData),
+          });
+          const data = await response.json();
+          if (data.success) {
+            alert("Thêm lịch hẹn thành công!");
+          } else {
+            alert(data.message);
+          }
+        } else if (action === 'edit') {
+          // Sửa lịch hẹn
+          const response = await fetch(`http://localhost:5000/api/lichkham/${item.MaLichKham}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedFormData),
+          });
+          const data = await response.json();
+          if (data.success) {
+            alert("Cập nhật lịch hẹn thành công!");
+          } else {
+            alert(data.message);
+          }
+        }
+      } catch (error) {
+        console.error("❌ Lỗi khi thực hiện thao tác:", error.message);
+        alert("Đã xảy ra lỗi, vui lòng thử lại!");
+      }
   };
+
+
 
   // Hàm xử lý khi nhấn vào bác sĩ để mở rộng thông tin
   const handleExpandDoctorInfo = () => {
@@ -179,7 +207,7 @@ const AddInvoice = () => {
         <Search1 />
         <div className="form-container">
           <div className="form-header">
-            <h1 className="form-title">{action === 'edit' ? 'Sửa hóa đơn' : 'Thêm hóa đơn'}</h1>
+            <h1 className="form-title">{action === 'edit' ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'} {formData.GioKham}</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -212,13 +240,12 @@ const AddInvoice = () => {
             {selectedPatient && (
               <div className="selected-medicine" onClick={handleExpandBenhNhanInfo}>
                 <span>Đã chọn bệnh nhân: {selectedPatient.TenDayDu}</span>
-                            {isExpandedBN && (
-                            <div className="expanded-info">
-                              <span>CCCD: {selectedPatient.CCCD}</span>
-                              <span>SDT: {selectedPatient.SDT}</span>
-
-                            </div>
-                             )}
+                {isExpandedBN && (
+                  <div className="expanded-info">
+                    <span>CCCD: {selectedPatient.CCCD}</span>
+                    <span>SDT: {selectedPatient.SDT}</span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -251,10 +278,8 @@ const AddInvoice = () => {
             {selectedDoctor && (
               <div className="selected-medicine" onClick={handleExpandDoctorInfo}>
                 <span>Đã chọn bác sĩ: {selectedDoctor.TenDayDu}</span>
-
-
                 {isExpanded && (
-                  <div className="expanded-info" >
+                  <div className="expanded-info">
                     <span>CCCD: {selectedDoctor.CCCD}</span>
                     <span>Chuyên môn: {selectedDoctor.ChuyenMon}</span>
                     <span>Phòng khám: {selectedDoctor.PhongKham}</span>
@@ -264,42 +289,53 @@ const AddInvoice = () => {
             )}
 
             {/* Các trường còn lại */}
+
             <div className="form-group">
-              <label className="form-label">Ngày lập hóa đơn</label>
+              <label className="form-label">Ngày khám</label>
               <input
-                type="text"
+                type="date"
                 className="form-input"
-                value={formData.NgayLapHoaDon || new Date().toLocaleDateString()}
-                disabled
+                value={formData.NgayKham}
+                onChange={(e) => setFormData({ ...formData, NgayKham: e.target.value })}
               />
             </div>
 
             <div className="form-group">
-              <label className="form-label">Tổng số tiền</label>
+              <label className="form-label">Giờ khám</label>
               <input
-                type="text"
+                type="time"
                 className="form-input"
-                value={formData.TongTien}
-                onChange={(e) => setFormData({ ...formData, TongTien: e.target.value })}
+                value={formData.GioKham}
+                onChange={(e) => setFormData({ ...formData, GioKham: e.target.value })}
               />
             </div>
 
             <div className="form-group">
-              <label className="form-label">Trạng thái</label>
+              <label className="form-label">Tình trạng</label>
               <select
-                className="form-select"
-                value={formData.TinhTrang || 'Chưa thanh toán'}
-                onChange={(e) => setFormData({ ...formData, TinhTrang: e.target.value })}
+                className="form-input"
+                value={formData.TrangThai}
+                onChange={(e) => setFormData({ ...formData, TrangThai: e.target.value })}
               >
-                <option>Đã thanh toán</option>
-                <option>Chưa thanh toán</option>
-                <option>Đã hủy</option>
+                <option value="Đang chờ khám">Đang chờ khám</option>
+                <option value="Hoàn thành">Hoàn thành</option>
+                <option value="Đã hủy">Đã hủy</option>
               </select>
             </div>
 
-            <div className="content-header">
-              <button className="add-btn" type="submit">
-                {action === 'edit' ? 'Cập nhật' : 'Lưu'}
+            <div className="form-group">
+              <label className="form-label">Phòng khám</label>
+              <input
+                type="text"
+                className="form-input"
+                value={formData.PhongKham}
+                onChange={(e) => setFormData({ ...formData, PhongKham: e.target.value })}
+              />
+            </div>
+
+            <div className="form-actions">
+              <button type="submit" className="add-btn">
+                {action === 'edit' ? 'Cập nhật' : 'Thêm'}
               </button>
             </div>
           </form>
@@ -309,4 +345,4 @@ const AddInvoice = () => {
   );
 };
 
-export default AddInvoice;
+export default CRUDLichKham;

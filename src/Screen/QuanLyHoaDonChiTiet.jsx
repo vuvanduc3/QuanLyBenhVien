@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../Styles/QuanLyHoaDonChiTiet.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 
 const HoaDonChiTiet = () => {
+    const { state } = useLocation();
+    const { action, item } = state || {};
     const navigate = useNavigate();
     const [hoaDonChiTiet, setHoaDonChiTiet] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+
     const [currentPage, setCurrentPage] = useState(1);
     const [filterVisible, setFilterVisible] = useState(false);
     const [filters, setFilters] = useState({
@@ -37,6 +40,13 @@ const HoaDonChiTiet = () => {
         fetchData();
     }, []);
 
+
+
+    // Lọc danh sách theo item.MaHoaDon nếu tồn tại
+    const displayedData = item?.MaHoaDon
+        ? hoaDonChiTiet.filter(hd => hd.MaHoaDon === item.MaHoaDon)
+        : hoaDonChiTiet;
+
     const resetFilters = () => {
         setFilters({
             maBenhNhan: '',
@@ -47,7 +57,7 @@ const HoaDonChiTiet = () => {
         setSearchQuery('');
     };
 
-    const filteredData = hoaDonChiTiet
+    const filteredData = displayedData
         .filter(item => {
             const query = searchQuery.toLowerCase();
             return (

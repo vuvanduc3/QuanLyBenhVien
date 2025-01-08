@@ -33,6 +33,14 @@ import EditPayment from './Screen/EditPayment';
 import DanhMucList from './Screen/DanhMucThuoc';
 import DanhMucThuoc from './Screen/DanhMucThuoc';
 
+import XuatHoaDon from './Screen/XuatHoaDon';
+
+import LichKham from './Screen/LichKham';
+import CRUDLichKham from './Screen/CRUDLichKham';
+
+import DieuTri from './Screen/DieuTri';
+import CRUDDieuTri from './Screen/CRUDDieuTri';
+
 function App() {
   return (
     <Router>
@@ -72,6 +80,14 @@ function App() {
             <Route path="/cruddonthuoc" element={<CRUDDonThuoc/>} />
             <Route path="/danhmuc" element={<DanhMucThuoc/>} />
             <Route path="/EditPayment/:paymentId" element={<EditPayment/>} />
+
+            <Route path="/XuatHoaDon" element={<XuatHoaDon/>} />
+
+            <Route path="/lich-hen" element={<LichKham/>} />
+            <Route path="/CRUDLichKham" element={<CRUDLichKham/>} />
+
+            <Route path="/lich-su-dieu-tri" element={<DieuTri/>} />
+            <Route path="/CRUDDieuTri" element={<CRUDDieuTri/>} />
           </Routes>
         </div>
       </div>

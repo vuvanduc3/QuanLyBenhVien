@@ -1546,7 +1546,7 @@ app.get("/api/hoadonchitiet", async (req, res) => {
     try {
         const result = await pool
             .request()
-            .query("SELECT * FROM HoaDonChiTiet ORDER BY MaChiTiet DESC");
+            .query("SELECT HDCT.MaChiTiet,HDCT.MaHoaDon, HDCT.TenDichVu, HDCT.SoLuong, HDCT.DonGia, HDCT.ThanhTien,VP.MaBenhNhan, VP.MaBacSi FROM HoaDonChiTiet AS HDCT LEFT JOIN VienPhi AS VP ON HDCT.MaHoaDon = VP.MaHoaDon ORDER BY MaChiTiet DESC");
         res.status(200).json({
             success: true,
             data: result.recordset,
@@ -2231,3 +2231,426 @@ app.put("/api/xetnghiemnhapHD/:id", async (req, res) => {
     }
 });
 
+// Endpoint: Cập nhật tổng tiền
+app.put("/api/updatetongtienvienphi", async (req, res) => {
+    try {
+        const result = await pool
+            .request()
+            .query(`
+                UPDATE VP
+                      SET VP.TongTien = ISNULL(CT.TongTien, 0)
+                      FROM VienPhi AS VP
+                      LEFT JOIN (
+                          SELECT MaHoaDon, SUM(SoLuong * DonGia) AS TongTien
+                          FROM HoaDonChiTiet
+                          GROUP BY MaHoaDon
+                      ) AS CT ON VP.MaHoaDon = CT.MaHoaDon;
+            `);
+
+        res.status(200).json({ success: true, message: "✅ Cập nhật tổng tiền thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa tổng tiền:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi cập nhập tổng tiền: " + err.message });
+    }
+});
+
+// Endpoint: Lấy dữ liệu chi tiết
+app.get("/api/vienphi", async (req, res) => {
+    try {
+        // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
+        const query = `
+           SELECT
+                  *
+                 FROM VienPhi AS VP
+                 LEFT JOIN BenhNhanVTP AS BN ON BN.ID = VP.MaBenhNhan
+                 LEFT JOIN BacSiVTP AS BS ON BS.ID = VP.MaBacSi
+           	   ORDER BY VP.MaHoaDon DESC;
+        `;
+
+        // Thực hiện truy vấn SQL
+        const result = await pool.request().query(query);
+
+        // Trả về dữ liệu nếu thành công
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        // Xử lý lỗi và trả về phản hồi lỗi
+        console.error("❌ Lỗi lấy thông tin hóa đơn:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+//1. API Thêm Hóa Đơn (POST)
+app.post("/api/vienphi", async (req, res) => {
+    const { MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaBenhNhan", sql.Int, MaBenhNhan)
+                  .input("MaBacSi", sql.Int, MaBacSi)
+                  .input("TongTien", sql.Decimal(18, 2), TongTien)
+                  .input("TinhTrang", sql.NVarChar(50), TinhTrang)
+                  .input("NgayLapHoaDon", sql.Date, NgayLapHoaDon || new Date()) // Nếu không có, dùng ngày hiện tại
+                  .input("NgayThanhToan", sql.Date, NgayThanhToan || new Date()) // Nếu không có, dùng ngày hiện tại
+                  .query(`
+                    INSERT INTO VienPhi (MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan)
+                    VALUES (@MaBenhNhan, @MaBacSi, @TongTien, @TinhTrang, @NgayLapHoaDon, @NgayThanhToan);
+                  `);
+
+        res.status(201).json({ success: true, message: "Thêm xét nghiệm thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi thêm xét nghiệm:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi thêm xét nghiệm: " + err.message });
+    }
+});
+
+ //2.API Sửa Hóa Đơn (PUT)
+ app.put("/api/vienphi/:id", async (req, res) => {
+   const { id } = req.params; // Lấy ID từ URL
+   const { MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan } = req.body;
+
+   try {
+      const result = await pool
+       .request()
+       .input("MaHoaDon", sql.Int, id) // ID hóa đơn
+       .input("MaBenhNhan", sql.Int, MaBenhNhan)
+       .input("MaBacSi", sql.Int, MaBacSi)
+       .input("TongTien", sql.Decimal(18, 2), TongTien)
+       .input("TinhTrang", sql.NVarChar(50), TinhTrang)
+       .input("NgayLapHoaDon", sql.Date, NgayLapHoaDon)
+       .input("NgayThanhToan", sql.Date, NgayThanhToan)
+       .query(`
+         UPDATE VienPhi
+         SET MaBenhNhan = @MaBenhNhan,
+             MaBacSi = @MaBacSi,
+             TongTien = @TongTien,
+             TinhTrang = @TinhTrang,
+             NgayLapHoaDon = @NgayLapHoaDon,
+             NgayThanhToan = @NgayThanhToan
+         WHERE MaHoaDon = @MaHoaDon;
+       `);
+
+     res.status(200).json({ success: true, message: "Cập nhật hóa đơn thành công!" });
+   } catch (err) {
+     console.error("❌ Lỗi sửa hóa đơn:", err.message);
+     res.status(500).json({ success: false, message: "Lỗi khi sửa hóa đơn: " + err.message });
+   }
+ });
+
+//3. API Xóa Hóa Đơn (DELETE)
+app.delete("/api/vienphi/:id", async (req, res) => {
+  const { id } = req.params; // Lấy ID từ URL
+
+  try {
+     const result = await pool
+      .request()
+      .input("MaHoaDon", sql.Int, id) // ID hóa đơn
+      .query(`
+        DELETE FROM VienPhi WHERE MaHoaDon = @MaHoaDon;
+      `);
+
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).json({ success: false, message: "Hóa đơn không tồn tại!" });
+    }
+
+    res.status(200).json({ success: true, message: "Xóa hóa đơn thành công!" });
+  } catch (err) {
+    console.error("❌ Lỗi xóa hóa đơn:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi khi xóa hóa đơn: " + err.message });
+  }
+});
+
+// Endpoint: Lấy dữ liệu chi tiết
+app.get("/api/LichKham", async (req, res) => {
+    try {
+        // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
+        const query = `
+           select * from LichKham ORDER by LichKham.MaLichKham DESC;
+        `;
+
+        // Thực hiện truy vấn SQL
+        const result = await pool.request().query(query);
+
+        // Trả về dữ liệu nếu thành công
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        // Xử lý lỗi và trả về phản hồi lỗi
+        console.error("❌ Lỗi lấy thông tin hóa đơn:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+// Kiểm tra định dạng GioKham trước khi thực hiện truy vấn SQL
+app.post("/api/LichKham", async (req, res) => {
+    const { MaBenhNhan, MaBacSi, NgayKham, GioKham, TrangThai, PhongKham } = req.body;
+
+    // Kiểm tra xem GioKham có hợp lệ không
+    const timeRegex = /^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/;
+    if (!timeRegex.test(GioKham)) {
+        return res.status(400).json({
+            success: false,
+            message: "Định dạng thời gian không hợp lệ. Định dạng hợp lệ là HH:MM:SS.",
+        });
+    }
+
+    const query = `
+        INSERT INTO LichKham (MaBenhNhan, MaBacSi, NgayKham, GioKham, TrangThai, PhongKham)
+        VALUES (@MaBenhNhan, @MaBacSi, @NgayKham, @GioKham, @TrangThai, @PhongKham);
+    `;
+
+    try {
+        // Chuyển GioKham thành đối tượng thời gian hợp lệ (Date) nếu cần
+        const time = new Date('1970-01-01T' + GioKham + 'Z'); // Dùng '1970-01-01' làm ngày cố định
+
+        await pool.request()
+            .input('MaBenhNhan', sql.Int, MaBenhNhan)
+            .input('MaBacSi', sql.Int, MaBacSi)
+            .input('NgayKham', sql.Date, NgayKham)
+            .input('GioKham', sql.Time, time)  // Truyền kiểu dữ liệu thời gian hợp lệ
+            .input('TrangThai', sql.NVarChar, TrangThai)
+            .input('PhongKham', sql.NVarChar, PhongKham)
+            .query(query);
+
+        res.status(201).json({
+            success: true,
+            message: "Lịch khám đã được thêm thành công.",
+        });
+    } catch (err) {
+        console.error("❌ Lỗi thêm Lịch khám:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi thêm dữ liệu vào database: " + err.message,
+        });
+    }
+});
+
+
+
+// Endpoint: Xóa Lịch khám
+app.delete("/api/LichKham/:id", async (req, res) => {
+    const { id } = req.params;
+
+    const query = `
+        DELETE FROM LichKham WHERE MaLichKham = @MaLichKham;
+    `;
+
+    try {
+        const result = await pool.request()
+            .input('MaLichKham', sql.Int, id)
+            .query(query);
+
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy Lịch khám với ID này.",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Lịch khám đã được xóa thành công.",
+        });
+    } catch (err) {
+        console.error("❌ Lỗi xóa Lịch khám:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi xóa dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+// Endpoint: Sửa Lịch khám
+app.put("/api/LichKham/:id", async (req, res) => {
+    const { MaBenhNhan, MaBacSi, NgayKham, GioKham, TrangThai, PhongKham } = req.body;
+    const { id } = req.params;  // Lấy MaLichKham từ URL (ví dụ: /api/LichKham/1)
+
+    // Kiểm tra định dạng thời gian
+    const timeRegex = /^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/;
+    if (!timeRegex.test(GioKham)) {
+        return res.status(400).json({
+            success: false,
+            message: "Định dạng thời gian không hợp lệ. Định dạng hợp lệ là HH:MM:SS.",
+        });
+    }
+
+    const query = `
+        UPDATE LichKham
+        SET
+            MaBenhNhan = @MaBenhNhan,
+            MaBacSi = @MaBacSi,
+            NgayKham = @NgayKham,
+            GioKham = @GioKham,
+            TrangThai = @TrangThai,
+            PhongKham = @PhongKham
+        WHERE MaLichKham = @MaLichKham;
+    `;
+
+    try {
+        // Chuyển GioKham thành đối tượng thời gian hợp lệ (Date) nếu cần
+        const time = new Date('1970-01-01T' + GioKham + 'Z'); // Dùng '1970-01-01' làm ngày cố định
+
+        await pool.request()
+            .input('MaBenhNhan', sql.Int, MaBenhNhan)
+            .input('MaBacSi', sql.Int, MaBacSi)
+            .input('NgayKham', sql.Date, NgayKham)
+            .input('GioKham', sql.Time, time)  // Truyền kiểu dữ liệu thời gian hợp lệ
+            .input('TrangThai', sql.NVarChar, TrangThai)
+            .input('PhongKham', sql.NVarChar, PhongKham)
+            .input('MaLichKham', sql.Int, id)  // Thêm điều kiện WHERE theo MaLichKham
+            .query(query);
+
+        res.status(200).json({
+            success: true,
+            message: "Cập nhật lịch khám thành công.",
+        });
+    } catch (err) {
+        console.error("❌ Lỗi cập nhật Lịch khám:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi cập nhật dữ liệu vào database: " + err.message,
+        });
+    }
+});
+
+// Endpoint: Lấy dữ liệu điều trị
+app.get("/api/DieuTri", async (req, res) => {
+    try {
+        // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
+        const query = `
+           select * from DieuTri
+           LEFT JOIN HoSoBenhAn ON DieuTri.MaHoSo = HoSoBenhAn.ID
+           ORDER by DieuTri.MaDieuTri DESC;
+        `;
+
+        // Thực hiện truy vấn SQL
+        const result = await pool.request().query(query);
+
+        // Trả về dữ liệu nếu thành công
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        // Xử lý lỗi và trả về phản hồi lỗi
+        console.error("❌ Lỗi lấy thông tin hóa đơn:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+// Thêm điều trị mới
+app.post("/api/dieutri", async (req, res) => {
+    const { MaHoSo, MoTa, PhuongPhap, KetQua, NgayDieuTri, DaSuDung } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaHoSo", sql.Int, MaHoSo)
+            .input("MoTa", sql.NVarChar(sql.MAX), MoTa)
+            .input("PhuongPhap", sql.NVarChar(sql.MAX), PhuongPhap)
+            .input("KetQua", sql.NVarChar(sql.MAX), KetQua)
+            .input("NgayDieuTri", sql.Date, NgayDieuTri || new Date()) // Nếu không có, dùng ngày hiện tại
+            .input("DaSuDung", sql.NVarChar(sql.MAX), DaSuDung)
+            .query(`
+                INSERT INTO DieuTri (MaHoSo, MoTa, PhuongPhap, KetQua, NgayDieuTri, DaSuDung)
+                VALUES (@MaHoSo, @MoTa, @PhuongPhap, @KetQua, @NgayDieuTri, @DaSuDung);
+            `);
+
+        res.status(201).json({ success: true, message: "Thêm điều trị thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi thêm điều trị:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi thêm điều trị: " + err.message });
+    }
+});
+
+
+// Sửa điều trị
+app.put("/api/dieutri/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+    const { MaHoSo, MoTa, PhuongPhap, KetQua, NgayDieuTri, DaSuDung } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaHoSo", sql.Int, MaHoSo)
+            .input("MoTa", sql.NVarChar(sql.MAX), MoTa)
+            .input("PhuongPhap", sql.NVarChar(sql.MAX), PhuongPhap)
+            .input("KetQua", sql.NVarChar(sql.MAX), KetQua)
+            .input("NgayDieuTri", sql.Date, NgayDieuTri || new Date())
+            .input("DaSuDung", sql.NVarChar(sql.MAX), DaSuDung)
+            .input("MaDieuTri", sql.Int, id)
+            .query(`
+                UPDATE DieuTri
+                SET MaHoSo = @MaHoSo,
+                    MoTa = @MoTa,
+                    PhuongPhap = @PhuongPhap,
+                    KetQua = @KetQua,
+                    NgayDieuTri = @NgayDieuTri,
+                    DaSuDung = @DaSuDung
+                WHERE MaDieuTri = @MaDieuTri;
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật điều trị thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa điều trị:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi sửa điều trị: " + err.message });
+    }
+});
+
+
+// Xóa điều trị
+app.delete("/api/dieutri/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaDieuTri", sql.Int, id)
+            .query(`
+                DELETE FROM DieuTri WHERE MaDieuTri = @MaDieuTri;
+            `);
+
+        res.status(200).json({ success: true, message: "Điều trị đã được xóa thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi xóa điều trị:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi xóa điều trị: " + err.message });
+    }
+});
+
+// API Sửa Viện Phí Nhập Hóa Đơn
+app.put("/api/dieutrinhapHD/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+    const {  DaNhapHoaDon } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        const result = await pool
+            .request()
+            .input("MaDieuTri", sql.Int, id)
+            .input("DaNhapHoaDon", sql.Int, DaNhapHoaDon)
+            .query(`
+                UPDATE DieuTri
+                               SET
+                               DaNhapHoaDon = @DaNhapHoaDon
+                               WHERE MaDieuTri = @MaDieuTri
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật điều trị thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa viện phí:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi sửa điều trị: " + err.message });
+    }
+});
