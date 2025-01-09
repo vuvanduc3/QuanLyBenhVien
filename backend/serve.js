@@ -1004,21 +1004,20 @@ app.delete("/api/danhmucthuoc/:id", async (req, res) => {
         });
     }
 });
+
+//-----------------------//
 // API: Lấy mã bệnh nhân tiếp theo
-app.get("/api/medical-records/next-patient-code", async (req, res) => {
+app.get("/api/medical-records/next-patient-code",   async (req, res) => {
     try {
         const result = await pool
             .request()
-            .query(
-                "SELECT TOP 1 MaBenhNhan FROM HoSoBenhAn ORDER BY MaBenhNhan DESC"
-            );
+            .query("SELECT TOP 1 MaBenhNhan FROM HoSoBenhAn ORDER BY MaBenhNhan DESC");
 
-        let nextCode = "BN048"; // Mã mặc định nếu không có dữ liệu
+        let nextCode = "BN001"; // Mã mặc định nếu không có dữ liệu
 
         if (result.recordset && result.recordset.length > 0) {
             const lastCode = result.recordset[0].MaBenhNhan;
             if (lastCode && lastCode.startsWith("BN")) {
-                // Lấy phần số và tăng lên 1
                 const numPart = parseInt(lastCode.substring(2));
                 if (!isNaN(numPart)) {
                     nextCode = `BN${String(numPart + 1).padStart(3, "0")}`;
@@ -1028,266 +1027,459 @@ app.get("/api/medical-records/next-patient-code", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            nextCode: nextCode,
+            nextCode: nextCode
         });
     } catch (err) {
         console.error("Error generating next patient code:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi tạo mã bệnh nhân mới",
+            message: "Lỗi khi tạo mã bệnh nhân mới"
         });
     }
 });
-// API: Lấy mã lịch hẹn tiếp theo (đặt trước các routes khác)
-app.get("/api/medical-records/next-appointment-code", async (req, res) => {
+
+// API: Lấy mã lịch hẹn tiếp theo
+app.get("/api/medical-records/next-appointment-code",   async (req, res) => {
     try {
         const result = await pool
             .request()
             .query("SELECT TOP 1 MaLichHen FROM HoSoBenhAn ORDER BY MaLichHen DESC");
 
-        let nextCode = "LH049"; // Bắt đầu từ LH049
+        let nextCode = "LH001"; // Mã mặc định nếu không có dữ liệu
 
         if (result.recordset && result.recordset.length > 0) {
             const lastCode = result.recordset[0].MaLichHen;
-            console.log("Last appointment code:", lastCode);
-
             if (lastCode && lastCode.startsWith("LH")) {
                 const numPart = parseInt(lastCode.substring(2));
                 if (!isNaN(numPart)) {
                     nextCode = `LH${String(numPart + 1).padStart(3, "0")}`;
-                    console.log("Generated next appointment code:", nextCode);
                 }
             }
         }
 
         res.status(200).json({
             success: true,
-            nextCode: nextCode,
+            nextCode: nextCode
         });
     } catch (err) {
         console.error("Error generating next appointment code:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi tạo mã lịch hẹn mới",
+            message: "Lỗi khi tạo mã lịch hẹn mới"
         });
     }
 });
-// API: Get all medical records
-app.get("/api/medical-records", async (req, res) => {
+
+// API: Lấy danh sách tất cả hồ sơ bệnh án với phân trang và tìm kiếm
+app.get("/api/medical-records",   async (req, res) => {
     try {
+        const { 
+            page = 1, 
+            limit = 10, 
+            searchTerm = '',
+            sortBy = 'VaoVien',
+            sortOrder = 'DESC'
+        } = req.query;
+
+        const offset = (page - 1) * limit;
+
+        // Xây dựng câu query với điều kiện tìm kiếm
+        let query = `
+            SELECT *
+            FROM HoSoBenhAn
+            WHERE 
+                MaBenhNhan LIKE @searchTerm OR
+                HoVaTen LIKE @searchTerm OR
+                SoTheBHYT LIKE @searchTerm OR
+                SoCCCD_HoChieu LIKE @searchTerm
+            ORDER BY ${sortBy} ${sortOrder}
+            OFFSET @offset ROWS
+            FETCH NEXT @limit ROWS ONLY;
+
+            SELECT COUNT(*) as totalCount
+            FROM HoSoBenhAn
+            WHERE 
+                MaBenhNhan LIKE @searchTerm OR
+                HoVaTen LIKE @searchTerm OR
+                SoTheBHYT LIKE @searchTerm OR
+                SoCCCD_HoChieu LIKE @searchTerm;
+        `;
+
         const result = await pool
             .request()
-            .query("SELECT * FROM HoSoBenhAn ORDER BY NgayLap DESC");
+            .input('searchTerm', sql.NVarChar, `%${searchTerm}%`)
+            .input('offset', sql.Int, offset)
+            .input('limit', sql.Int, parseInt(limit))
+            .query(query);
+
+        const records = result.recordsets[0];
+        const totalCount = result.recordsets[1][0].totalCount;
+        const totalPages = Math.ceil(totalCount / limit);
 
         res.status(200).json({
             success: true,
-            data: result.recordset,
+            data: records,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages,
+                totalRecords: totalCount,
+                limit: parseInt(limit)
+            }
         });
     } catch (err) {
         console.error("Error fetching medical records:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi lấy danh sách hồ sơ bệnh án: " + err.message,
+            message: "Lỗi khi lấy danh sách hồ sơ bệnh án: " + err.message
         });
     }
 });
 
-// API: Get medical record by ID
-app.get("/api/medical-records/:id", async (req, res) => {
+// API: Lấy chi tiết hồ sơ bệnh án theo mã bệnh nhân
+app.get("/api/medical-records/:maBenhNhan",   async (req, res) => {
     try {
-        const { id } = req.params;
+        const { maBenhNhan } = req.params;
 
         const result = await pool
             .request()
-            .input("id", sql.Int, id)
-            .query("SELECT * FROM HoSoBenhAn WHERE ID = @id");
+            .input("maBenhNhan", sql.NVarChar(50), maBenhNhan)
+            .query("SELECT * FROM HoSoBenhAn WHERE MaBenhNhan = @maBenhNhan");
 
         if (result.recordset.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy hồ sơ bệnh án",
+                message: "Không tìm thấy hồ sơ bệnh án"
             });
         }
 
         res.status(200).json({
             success: true,
-            data: result.recordset[0],
+            data: result.recordset[0]
         });
     } catch (err) {
         console.error("Error fetching medical record:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi lấy thông tin hồ sơ bệnh án: " + err.message,
+            message: "Lỗi khi lấy thông tin hồ sơ bệnh án: " + err.message
         });
     }
 });
 
-// API: Create new medical record
-app.post("/api/medical-records", async (req, res) => {
+// API: Tạo mới hồ sơ bệnh án
+app.post("/api/medical-records",   async (req, res) => {
     try {
-        const { maBenhNhan, maLichHen, bacSi, chanDoan, ngayLap, action } =
-            req.body;
+        const {
+            maBenhNhan,
+            hoVaTen,
+            ngaySinh,
+            tuoi,
+            gioiTinh,
+            danToc,
+            diaChiCuTru,
+            thonPho,
+            xaPhuong,
+            huyen,
+            tinhThanhPho,
+            soTheBHYT,
+            soCCCD_HoChieu,
+            vaoVien,
+            raVien,
+            chanDoanVaoVien,
+            chanDoanRaVien,
+            lyDoVaoVien,
+            tomTatBenhLy,
+            maLichHen,
+            hanhDong
+        } = req.body;
 
-        // Input validation
-        if (
-            !maBenhNhan ||
-            !maLichHen ||
-            !bacSi ||
-            !chanDoan ||
-            !ngayLap ||
-            !action
-        ) {
+        // Kiểm tra các trường bắt buộc
+        if (!maBenhNhan || !hoVaTen || !ngaySinh || !tuoi || !gioiTinh || !vaoVien) {
             return res.status(400).json({
                 success: false,
-                message: "Vui lòng điền đầy đủ thông tin bắt buộc",
+                message: "Vui lòng điền đầy đủ thông tin bắt buộc"
             });
         }
 
+        // Kiểm tra giới tính hợp lệ
+        if (!['Nam', 'Nữ'].includes(gioiTinh)) {
+            return res.status(400).json({
+                success: false,
+                message: "Giới tính không hợp lệ. Chỉ chấp nhận 'Nam' hoặc 'Nữ'"
+            });
+        }
+
+        // Kiểm tra mã bệnh nhân đã tồn tại
+        const checkExisting = await pool
+            .request()
+            .input("maBenhNhan", sql.NVarChar(50), maBenhNhan)
+            .query("SELECT MaBenhNhan FROM HoSoBenhAn WHERE MaBenhNhan = @maBenhNhan");
+
+        if (checkExisting.recordset.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Mã bệnh nhân đã tồn tại"
+            });
+        }
+
+        // Thêm mới hồ sơ bệnh án
         const result = await pool
             .request()
             .input("maBenhNhan", sql.NVarChar(50), maBenhNhan)
+            .input("hoVaTen", sql.NVarChar(255), hoVaTen)
+            .input("ngaySinh", sql.Date, new Date(ngaySinh))
+            .input("tuoi", sql.Int, tuoi)
+            .input("gioiTinh", sql.NVarChar(10), gioiTinh)
+            .input("danToc", sql.NVarChar(50), danToc)
+            .input("diaChiCuTru", sql.NVarChar(255), diaChiCuTru)
+            .input("thonPho", sql.NVarChar(100), thonPho)
+            .input("xaPhuong", sql.NVarChar(100), xaPhuong)
+            .input("huyen", sql.NVarChar(100), huyen)
+            .input("tinhThanhPho", sql.NVarChar(100), tinhThanhPho)
+            .input("soTheBHYT", sql.NVarChar(20), soTheBHYT)
+            .input("soCCCD_HoChieu", sql.NVarChar(50), soCCCD_HoChieu)
+            .input("vaoVien", sql.Date, new Date(vaoVien))
+            .input("raVien", sql.Date, raVien ? new Date(raVien) : null)
+            .input("chanDoanVaoVien", sql.NVarChar(255), chanDoanVaoVien)
+            .input("chanDoanRaVien", sql.NVarChar(255), chanDoanRaVien)
+            .input("lyDoVaoVien", sql.NVarChar(255), lyDoVaoVien)
+            .input("tomTatBenhLy", sql.NVarChar(sql.MAX), tomTatBenhLy)
             .input("maLichHen", sql.NVarChar(50), maLichHen)
-            .input("bacSi", sql.NVarChar(100), bacSi)
-            .input("chanDoan", sql.NVarChar(sql.MAX), chanDoan)
-            .input("ngayLap", sql.Date, new Date(ngayLap))
-            .input("action", sql.NVarChar(50), action).query(`
-                INSERT INTO HoSoBenhAn (MaBenhNhan, MaLichHen, BacSi, ChanDoan, NgayLap, Action)
-                VALUES (@maBenhNhan, @maLichHen, @bacSi, @chanDoan, @ngayLap, @action);
-                SELECT SCOPE_IDENTITY() AS ID;
+            .input("hanhDong", sql.NVarChar(255), hanhDong)
+            .query(`
+                INSERT INTO HoSoBenhAn (
+                    MaBenhNhan, HoVaTen, NgaySinh, Tuoi, GioiTinh, DanToc,
+                    DiaChiCuTru, ThonPho, XaPhuong, Huyen, TinhThanhPho,
+                    SoTheBHYT, SoCCCD_HoChieu, VaoVien, RaVien,
+                    ChanDoanVaoVien, ChanDoanRaVien, LyDoVaoVien,
+                    TomTatBenhLy, MaLichHen, HanhDong
+                )
+                VALUES (
+                    @maBenhNhan, @hoVaTen, @ngaySinh, @tuoi, @gioiTinh, @danToc,
+                    @diaChiCuTru, @thonPho, @xaPhuong, @huyen, @tinhThanhPho,
+                    @soTheBHYT, @soCCCD_HoChieu, @vaoVien, @raVien,
+                    @chanDoanVaoVien, @chanDoanRaVien, @lyDoVaoVien,
+                    @tomTatBenhLy, @maLichHen, @hanhDong
+                );
+
+                SELECT * FROM HoSoBenhAn WHERE MaBenhNhan = @maBenhNhan;
             `);
 
         res.status(201).json({
             success: true,
             message: "Thêm hồ sơ bệnh án thành công",
-            data: {
-                id: result.recordset[0].ID,
-                maBenhNhan,
-                maLichHen,
-                bacSi,
-                chanDoan,
-                ngayLap,
-                action,
-            },
+            data: result.recordset[0]
         });
     } catch (err) {
         console.error("Error creating medical record:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi thêm hồ sơ bệnh án: " + err.message,
+            message: "Lỗi khi thêm hồ sơ bệnh án: " + err.message
         });
     }
 });
 
-// API: Update medical record
-app.put("/api/medical-records/:id", async (req, res) => {
+// API: Cập nhật hồ sơ bệnh án
+app.put("/api/medical-records/:maBenhNhan",   async (req, res) => {
     try {
-        const { id } = req.params;
-        const { maBenhNhan, maLichHen, bacSi, chanDoan, ngayLap, action } =
-            req.body;
+        const { maBenhNhan } = req.params;
+        const {
+            hoVaTen,
+            ngaySinh,
+            tuoi,
+            gioiTinh,
+            danToc,
+            diaChiCuTru,
+            thonPho,
+            xaPhuong,
+            huyen,
+            tinhThanhPho,
+            soTheBHYT,
+            soCCCD_HoChieu,
+            vaoVien,
+            raVien,
+            chanDoanVaoVien,
+            chanDoanRaVien,
+            lyDoVaoVien,
+            tomTatBenhLy,
+            maLichHen,
+            hanhDong
+        } = req.body;
 
-        // Input validation
-        if (
-            !maBenhNhan ||
-            !maLichHen ||
-            !bacSi ||
-            !chanDoan ||
-            !ngayLap ||
-            !action
-        ) {
+        // Kiểm tra các trường bắt buộc
+        if (!hoVaTen || !ngaySinh || !tuoi || !gioiTinh || !vaoVien) {
             return res.status(400).json({
                 success: false,
-                message: "Vui lòng điền đầy đủ thông tin bắt buộc",
+                message: "Vui lòng điền đầy đủ thông tin bắt buộc"
             });
         }
 
-        // Check if record exists
+        // Kiểm tra giới tính hợp lệ
+        if (!['Nam', 'Nữ'].includes(gioiTinh)) {
+            return res.status(400).json({
+                success: false,
+                message: "Giới tính không hợp lệ. Chỉ chấp nhận 'Nam' hoặc 'Nữ'"
+            });
+        }
+
+        // Kiểm tra hồ sơ tồn tại
         const checkResult = await pool
             .request()
-            .input("id", sql.Int, id)
-            .query("SELECT ID FROM HoSoBenhAn WHERE ID = @id");
+            .input("maBenhNhan", sql.NVarChar(50), maBenhNhan)
+            .query("SELECT MaBenhNhan FROM HoSoBenhAn WHERE MaBenhNhan = @maBenhNhan");
 
         if (checkResult.recordset.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy hồ sơ bệnh án",
+                message: "Không tìm thấy hồ sơ bệnh án"
             });
         }
 
-        // Update record
-        await pool
+        // Cập nhật hồ sơ bệnh án
+        const result = await pool
             .request()
-            .input("id", sql.Int, id)
             .input("maBenhNhan", sql.NVarChar(50), maBenhNhan)
+            .input("hoVaTen", sql.NVarChar(255), hoVaTen)
+            .input("ngaySinh", sql.Date, new Date(ngaySinh))
+            .input("tuoi", sql.Int, tuoi)
+            .input("gioiTinh", sql.NVarChar(10), gioiTinh)
+            .input("danToc", sql.NVarChar(50), danToc)
+            .input("diaChiCuTru", sql.NVarChar(255), diaChiCuTru)
+            .input("thonPho", sql.NVarChar(100), thonPho)
+            .input("xaPhuong", sql.NVarChar(100), xaPhuong)
+            .input("huyen", sql.NVarChar(100), huyen)
+            .input("tinhThanhPho", sql.NVarChar(100), tinhThanhPho)
+            .input("soTheBHYT", sql.NVarChar(20), soTheBHYT)
+            .input("soCCCD_HoChieu", sql.NVarChar(50), soCCCD_HoChieu)
+            .input("vaoVien", sql.Date, new Date(vaoVien))
+            .input("raVien", sql.Date, raVien ? new Date(raVien) : null)
+            .input("chanDoanVaoVien", sql.NVarChar(255), chanDoanVaoVien)
+            .input("chanDoanRaVien", sql.NVarChar(255), chanDoanRaVien)
+            .input("lyDoVaoVien", sql.NVarChar(255), lyDoVaoVien)
+            .input("tomTatBenhLy", sql.NVarChar(sql.MAX), tomTatBenhLy)
             .input("maLichHen", sql.NVarChar(50), maLichHen)
-            .input("bacSi", sql.NVarChar(100), bacSi)
-            .input("chanDoan", sql.NVarChar(sql.MAX), chanDoan)
-            .input("ngayLap", sql.Date, new Date(ngayLap))
-            .input("action", sql.NVarChar(50), action).query(`
+            .input("hanhDong", sql.NVarChar(255), hanhDong)
+            .query(`
                 UPDATE HoSoBenhAn 
-                SET MaBenhNhan = @maBenhNhan,
+                SET HoVaTen = @hoVaTen,
+                    NgaySinh = @ngaySinh,
+                    Tuoi = @tuoi,
+                    GioiTinh = @gioiTinh,
+                    DanToc = @danToc,
+                    DiaChiCuTru = @diaChiCuTru,
+                    ThonPho = @thonPho,
+                    XaPhuong = @xaPhuong,
+                    Huyen = @huyen,
+                    TinhThanhPho = @tinhThanhPho,
+                    SoTheBHYT = @soTheBHYT,
+                    SoCCCD_HoChieu = @soCCCD_HoChieu,
+                    VaoVien = @vaoVien,
+                    RaVien = @raVien,
+                    ChanDoanVaoVien = @chanDoanVaoVien,
+                    ChanDoanRaVien = @chanDoanRaVien,
+                    LyDoVaoVien = @lyDoVaoVien,
+                    TomTatBenhLy = @tomTatBenhLy,
                     MaLichHen = @maLichHen,
-                    BacSi = @bacSi,
-                    ChanDoan = @chanDoan,
-                    NgayLap = @ngayLap,
-                    Action = @action
-                WHERE ID = @id
+                    HanhDong = @hanhDong
+                WHERE MaBenhNhan = @maBenhNhan;
+
+                SELECT * FROM HoSoBenhAn WHERE MaBenhNhan = @maBenhNhan;
             `);
 
         res.status(200).json({
             success: true,
             message: "Cập nhật hồ sơ bệnh án thành công",
-            data: {
-                id,
-                maBenhNhan,
-                maLichHen,
-                bacSi,
-                chanDoan,
-                ngayLap,
-                action,
-            },
+            data: result.recordset[0]
         });
     } catch (err) {
         console.error("Error updating medical record:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi cập nhật hồ sơ bệnh án: " + err.message,
+            message: "Lỗi khi cập nhật hồ sơ bệnh án: " + err.message
         });
     }
 });
 
-// API: Delete medical record
-app.delete("/api/medical-records/:id", async (req, res) => {
+// API: Xóa hồ sơ bệnh án
+app.delete("/api/medical-records/:maBenhNhan",   async (req, res) => {
     try {
-        const { id } = req.params;
+        const { maBenhNhan } = req.params;
 
-        // Check if record exists
+        // Kiểm tra hồ sơ tồn tại
         const checkResult = await pool
             .request()
-            .input("id", sql.Int, id)
-            .query("SELECT ID FROM HoSoBenhAn WHERE ID = @id");
+            .input("maBenhNhan", sql.NVarChar(50), maBenhNhan)
+            .query("SELECT MaBenhNhan FROM HoSoBenhAn WHERE MaBenhNhan = @maBenhNhan");
 
         if (checkResult.recordset.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: "Không tìm thấy hồ sơ bệnh án",
+                message: "Không tìm thấy hồ sơ bệnh án"
             });
         }
 
-        // Delete record
+        // Xóa hồ sơ bệnh án
         await pool
             .request()
-            .input("id", sql.Int, id)
-            .query("DELETE FROM HoSoBenhAn WHERE ID = @id");
+            .input("maBenhNhan", sql.NVarChar(50), maBenhNhan)
+            .query("DELETE FROM HoSoBenhAn WHERE MaBenhNhan = @maBenhNhan");
 
         res.status(200).json({
             success: true,
-            message: "Xóa hồ sơ bệnh án thành công",
+            message: "Xóa hồ sơ bệnh án thành công"
         });
     } catch (err) {
         console.error("Error deleting medical record:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi xóa hồ sơ bệnh án: " + err.message,
+            message: "Lỗi khi xóa hồ sơ bệnh án: " + err.message
+        });
+    }
+});
+
+// API: Thống kê hồ sơ bệnh án
+app.get("/api/medical-records/statistics/overview",   async (req, res) => {
+    try {
+        const result = await pool
+            .request()
+            .query(`
+                SELECT
+                    COUNT(*) as totalRecords,
+                    COUNT(CASE WHEN RaVien IS NULL THEN 1 END) as currentInPatients,
+                    COUNT(CASE WHEN RaVien IS NOT NULL THEN 1 END) as discharged,
+                    COUNT(DISTINCT MaBenhNhan) as uniquePatients,
+                    COUNT(DISTINCT MaLichHen) as totalAppointments
+                FROM HoSoBenhAn;
+
+                SELECT TOP 5
+                    DATEPART(MONTH, VaoVien) as month,
+                    DATEPART(YEAR, VaoVien) as year,
+                    COUNT(*) as admissionCount
+                FROM HoSoBenhAn
+                WHERE VaoVien >= DATEADD(MONTH, -12, GETDATE())
+                GROUP BY DATEPART(MONTH, VaoVien), DATEPART(YEAR, VaoVien)
+                ORDER BY year DESC, month DESC;
+
+                SELECT TOP 5
+                    GioiTinh,
+                    COUNT(*) as count,
+                    AVG(CAST(Tuoi as FLOAT)) as averageAge
+                FROM HoSoBenhAn
+                GROUP BY GioiTinh;
+            `);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                overview: result.recordsets[0][0],
+                recentAdmissions: result.recordsets[1],
+                demographicStats: result.recordsets[2]
+            }
+        });
+    } catch (err) {
+        console.error("Error fetching statistics:", err);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy thống kê: " + err.message
         });
     }
 });

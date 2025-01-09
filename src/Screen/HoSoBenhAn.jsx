@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {
     ChevronLeft,
     ChevronRight,
-    Search,
     Filter
 } from 'lucide-react';
 import Menu1 from '../components/Menu';
@@ -22,11 +21,9 @@ const MedicalRecordList = () => {
     // Filter states
     const [filters, setFilters] = useState({
         maBenhNhan: '',
+        hoTen: '',
         maLichHen: '',
-        bacSi: '',
-        action: '',
-        startDate: '',
-        endDate: ''
+        hanhDong: ''
     });
     const [showFilters, setShowFilters] = useState(false);
 
@@ -60,24 +57,22 @@ const MedicalRecordList = () => {
             ...prev,
             [name]: value
         }));
-        setCurrentPage(1); // Reset về trang 1 khi filter thay đổi
+        setCurrentPage(1);
     };
 
     const clearFilters = () => {
         setFilters({
             maBenhNhan: '',
+            hoTen: '',
             maLichHen: '',
-            bacSi: '',
-            action: '',
-            startDate: '',
-            endDate: ''
+            hanhDong: ''
         });
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (maBenhNhan) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa hồ sơ này?')) {
             try {
-                const response = await fetch(`http://localhost:5000/api/medical-records/${id}`, {
+                const response = await fetch(`http://localhost:5000/api/medical-records/${maBenhNhan}`, {
                     method: 'DELETE'
                 });
                 const data = await response.json();
@@ -95,33 +90,19 @@ const MedicalRecordList = () => {
         }
     };
 
-    // Filter records based on all criteria
+    // Filter records based on criteria
     const filteredRecords = records.filter(record => {
         const matchMaBenhNhan = record.MaBenhNhan.toLowerCase().includes(filters.maBenhNhan.toLowerCase());
+        const matchHoTen = record.HoVaTen.toLowerCase().includes(filters.hoTen.toLowerCase());
         const matchMaLichHen = record.MaLichHen.toLowerCase().includes(filters.maLichHen.toLowerCase());
-        const matchBacSi = record.BacSi.toLowerCase().includes(filters.bacSi.toLowerCase());
-        const matchAction = filters.action === '' || record.Action === filters.action;
-        
-        let matchDate = true;
-        if (filters.startDate && filters.endDate) {
-            const recordDate = new Date(record.NgayLap);
-            const startDate = new Date(filters.startDate);
-            const endDate = new Date(filters.endDate);
-            endDate.setHours(23, 59, 59); // Set end date to end of day
-            matchDate = recordDate >= startDate && recordDate <= endDate;
-        }
+        const matchHanhDong = filters.hanhDong === '' || record.HanhDong === filters.hanhDong;
 
-        return matchMaBenhNhan && matchMaLichHen && matchBacSi && matchAction && matchDate;
+        return matchMaBenhNhan && matchHoTen && matchMaLichHen && matchHanhDong;
     });
 
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
     const currentRecords = filteredRecords.slice(indexOfFirstRecord, indexOfLastRecord);
-
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-    };
 
     return (
         <div className="container">
@@ -130,7 +111,7 @@ const MedicalRecordList = () => {
                 <Search1 />
                 
                 <div className="content">
-                <div className="card-header">
+                    <div className="card-header">
                         <h2 className="card-title">Hồ sơ bệnh án</h2>
                         <button 
                             className="add-button"
@@ -139,6 +120,7 @@ const MedicalRecordList = () => {
                             Thêm hồ sơ
                         </button>
                     </div>
+
                     <div className="filters-section">
                         <div className="filters-header">
                             <button 
@@ -172,6 +154,16 @@ const MedicalRecordList = () => {
                                         />
                                     </div>
                                     <div className="filter-group">
+                                        <label>Họ tên</label>
+                                        <input
+                                            type="text"
+                                            name="hoTen"
+                                            value={filters.hoTen}
+                                            onChange={handleFilterChange}
+                                            placeholder="Tìm theo họ tên"
+                                        />
+                                    </div>
+                                    <div className="filter-group">
                                         <label>Mã lịch hẹn</label>
                                         <input
                                             type="text"
@@ -182,23 +174,10 @@ const MedicalRecordList = () => {
                                         />
                                     </div>
                                     <div className="filter-group">
-                                        <label>Bác sĩ</label>
-                                        <input
-                                            type="text"
-                                            name="bacSi"
-                                            value={filters.bacSi}
-                                            onChange={handleFilterChange}
-                                            placeholder="Tìm theo tên bác sĩ"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="filter-row">
-                                    <div className="filter-group">
                                         <label>Hành động</label>
                                         <select
-                                            name="action"
-                                            value={filters.action}
+                                            name="hanhDong"
+                                            value={filters.hanhDong}
                                             onChange={handleFilterChange}
                                         >
                                             <option value="">Tất cả</option>
@@ -208,30 +187,10 @@ const MedicalRecordList = () => {
                                             <option value="TheoDoi">Theo dõi</option>
                                         </select>
                                     </div>
-                                    <div className="filter-group">
-                                        <label>Từ ngày</label>
-                                        <input
-                                            type="date"
-                                            name="startDate"
-                                            value={filters.startDate}
-                                            onChange={handleFilterChange}
-                                        />
-                                    </div>
-                                    <div className="filter-group">
-                                        <label>Đến ngày</label>
-                                        <input
-                                            type="date"
-                                            name="endDate"
-                                            value={filters.endDate}
-                                            onChange={handleFilterChange}
-                                        />
-                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
-                    
-                    
 
                     {loading ? (
                         <div className="loading">Đang tải dữ liệu...</div>
@@ -243,44 +202,38 @@ const MedicalRecordList = () => {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>#ID</th>
                                             <th>Mã bệnh nhân</th>
+                                            <th>Họ tên</th>
                                             <th>Mã lịch hẹn</th>
-                                            <th>Bác sĩ</th>
-                                            <th>Chẩn đoán</th>
                                             <th>Hành động</th>
-                                            <th>Ngày lập</th>
-                                            <th>Action</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {currentRecords.map(record => (
-                                            <tr key={record.ID}>
-                                                <td>{record.ID}</td>
+                                            <tr key={record.MaBenhNhan}>
                                                 <td className="patient-id">{record.MaBenhNhan}</td>
+                                                <td>{record.HoVaTen}</td>
                                                 <td>{record.MaLichHen}</td>
-                                                <td>{record.BacSi}</td>
-                                                <td>{record.ChanDoan}</td>
-                                                <td>{record.Action}</td>
-                                                <td>{formatDate(record.NgayLap)}</td>
+                                                <td>{record.HanhDong}</td>
                                                 <td>
                                                     <div className="action-buttons-container">
                                                         <div className="action-buttons-row">
                                                             <button 
                                                                 className="action-btn green"
-                                                                onClick={() => navigate(`/medical-records/history/${record.ID}`)}
+                                                                onClick={() => navigate(`/medical-records/history/${record.MaBenhNhan}`)}
                                                             >
                                                                 Lịch sử điều trị
                                                             </button>
                                                             <button 
                                                                 className="action-btn green"
-                                                                onClick={() => navigate(`/chitiethsba/${record.ID}`)}
+                                                                onClick={() => navigate(`/chitiethsba/${record.MaBenhNhan}`)}
                                                             >
                                                                 Sửa dữ liệu
                                                             </button>
                                                             <button 
                                                                 className="action-btn"
-                                                                onClick={() => navigate(`/prescriptions/${record.ID}`)}
+                                                                onClick={() => navigate(`/prescriptions/${record.MaBenhNhan}`)}
                                                             >
                                                                 Đơn thuốc
                                                             </button>
@@ -288,13 +241,13 @@ const MedicalRecordList = () => {
                                                         <div className="action-buttons-row">
                                                             <button 
                                                                 className="action-btn red"
-                                                                onClick={() => handleDelete(record.ID)}
+                                                                onClick={() => handleDelete(record.MaBenhNhan)}
                                                             >
                                                                 Xóa dữ liệu
                                                             </button>
                                                             <button 
                                                                 className="action-btn brown"
-                                                                onClick={() => navigate(`/lab-tests/${record.ID}`)}
+                                                                onClick={() => navigate(`/lab-tests/${record.MaBenhNhan}`)}
                                                             >
                                                                 Xét nghiệm
                                                             </button>
