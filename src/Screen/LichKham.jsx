@@ -18,6 +18,8 @@ const LichKham = () => {
     setLoading(true);
 
     try {
+      await fetch('http://localhost:5000/api/capnhaptrangthailichkham', { method: 'PUT' });
+
       const response = await fetch(`http://localhost:5000/api/LichKham?page=${page}&limit=${itemsPerPage}`);
       const data = await response.json();
 
@@ -51,6 +53,10 @@ const LichKham = () => {
     navigate('/CRUDLichKham', { state: { action: 'edit', item } });
   };
 
+  const handleAddHSBA = (item) => {
+    navigate('/hosobenhan/add', { state: { action: 'add', item } });
+  };
+
   // Gọi API khi component được render lần đầu
   useEffect(() => {
     fetchInvoices(currentPage);
@@ -74,6 +80,7 @@ const LichKham = () => {
                 <tr>
                   <th>Mã lịch khám</th>
                   <th>Mã bệnh nhân</th>
+                  <th>Mã khám bệnh</th>
                   <th>Mã bác sĩ</th>
                   <th>Ngày khám</th>
                   <th>Giờ khám</th>
@@ -106,6 +113,7 @@ const LichKham = () => {
                       <tr key={lichKham.MaLichKham}>
                         <td>{lichKham.MaLichKham}</td>
                         <td>{lichKham.MaBenhNhan}</td>
+                        <td>{lichKham.MaBenhNhanKhamBenh}</td>
                         <td>{lichKham.MaBacSi}</td>
                         <td>{formattedDate}</td>
                         <td>{formattedTime}</td>
@@ -127,8 +135,21 @@ const LichKham = () => {
                               >Xóa</button>
                             </div>
                             {detailButtonText && (
-                              <button className="action-btn brown">{detailButtonText}</button>
+                              <button
+                                className="action-btn brown"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Ngăn sự kiện click ảnh hưởng đến phần tử cha
+                                  if (lichKham.TrangThai === "Hoàn thành") {
+                                    navigate(`/chitiethsba/${lichKham.MaBenhNhanKhamBenh}`); // Điều hướng đến trang chi tiết
+                                  } else if (lichKham.TrangThai === "Đang chờ khám"){
+                                    handleAddHSBA(lichKham); // Gọi hàm handleAddHSBA nếu không có detailButtonText
+                                  }
+                                }}
+                              >
+                                {detailButtonText}
+                              </button>
                             )}
+
                           </div>
                         </td>
                       </tr>

@@ -2576,6 +2576,7 @@ app.get("/api/LichKham", async (req, res) => {
         const query = `
            select
            LichKham.MaLichKham,
+           LichKham.MaBenhNhanKhamBenh,
            LichKham.MaBenhNhan,
            LichKham.MaBacSi,
            LichKham.NgayKham,
@@ -2598,7 +2599,6 @@ app.get("/api/LichKham", async (req, res) => {
            BHYT.NgayHetHanBaoHiem,
            BHYT.TrangThaiBaoHiem,
            BHYT.ID AS MaBaoHiem
-
 
            from LichKham
            LEFT JOIN BenhNhanVTP bn ON bn.ID = LichKham.MaBenhNhan
@@ -3089,7 +3089,7 @@ app.get("/api/quanlynguoidungbaohiem", async (req, res) => {
     }
 });
 
-// API Sửa Viện Phí Nhập Hóa Đơn
+// API cập nhập trạng thái bảo hiểm y tế
     app.put("/api/capnhaptrangthaibaohiem", async (req, res) => {
 
     try {
@@ -3110,5 +3110,59 @@ app.get("/api/quanlynguoidungbaohiem", async (req, res) => {
     } catch (err) {
         console.error("❌ Lỗi sửa trạng thái bảo hiểm:", err.message);
         res.status(500).json({ success: false, message: "Lỗi khi sửa trạng thái bảo hiểm: " + err.message });
+    }
+});
+
+// API cập nhập đang khám thành hoàn thành
+app.put("/api/capnhaptrangthailichkham", async (req, res) => {
+
+    try {
+        const result = await pool
+            .request()
+            .query(`
+                UPDATE LichKham
+                SET TrangThai = N'Hoàn thành'
+                FROM LichKham LK
+                INNER JOIN HoSoBenhAn HSBA ON LK.MaBenhNhanKhamBenh = HSBA.MaBenhNhan
+                WHERE LK.TrangThai <> N'Hoàn thành';
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật mã lịch hẹn thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa mã lịch hẹn:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi sửa mã lịch hẹn: " + err.message });
+    }
+});
+
+// API cập nhập colum LichKham.MaBenhNhanKhamBenh
+app.put("/api/lichkhammabenhnhankhambenh/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+    const {
+        MaBenhNhanKhamBenh
+    } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        // Cập nhật dữ liệu bảo hiểm y tế
+        const result = await pool
+            .request()
+            .input("MaLichKham", sql.Int, id)
+            .input("MaBenhNhanKhamBenh", sql.NVarChar(50), MaBenhNhanKhamBenh)
+            .query(`
+                UPDATE LichKham
+                SET
+                    TrangThai = N'Hoàn thành',
+                    MaBenhNhanKhamBenh = @MaBenhNhanKhamBenh
+                WHERE MaLichKham = @MaLichKham
+            `);
+
+        // Trả về kết quả thành công
+        res.status(200).json({ success: true, message: "Cập nhật lịch khám thành công!" });
+    } catch (err) {
+        // Xử lý lỗi
+        console.error("❌ Lỗi cập nhật lịch khám:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi cập nhật lịch khám: " + err.message,
+        });
     }
 });
