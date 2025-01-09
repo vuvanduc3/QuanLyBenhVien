@@ -2857,3 +2857,228 @@ app.put("/api/dieutrinhapHD/:id", async (req, res) => {
         res.status(500).json({ success: false, message: "Lỗi khi sửa điều trị: " + err.message });
     }
 });
+
+// Endpoint: Lấy dữ liệu chi tiết
+app.get("/api/BaoHiemYTe", async (req, res) => {
+    try {
+        // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
+        const query = `
+           select * from BaoHiemYTe ORDER by BaoHiemYTe.ID DESC;
+        `;
+
+        // Thực hiện truy vấn SQL
+        const result = await pool.request().query(query);
+
+        // Trả về dữ liệu nếu thành công
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        // Xử lý lỗi và trả về phản hồi lỗi
+        console.error("❌ Lỗi lấy thông tin bảo hiểm y tế:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+//. API POST - Thêm mới bảo hiểm y tế
+app.post("/api/baohiemyte", async (req, res) => {
+    const {
+        MaBenhNhan,
+        DonViCungCap,
+        SoHopDongBaoHiem,
+        SoTienBaoHiem,
+        NgayHetHanBaoHiem,
+        TrangThaiBaoHiem
+    } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        // Thêm mới dữ liệu bảo hiểm y tế
+        const result = await pool
+            .request()
+            .input("MaBenhNhan", sql.NVarChar(50), MaBenhNhan)
+            .input("DonViCungCap", sql.NVarChar(100), DonViCungCap)
+            .input("SoHopDongBaoHiem", sql.NVarChar(100), SoHopDongBaoHiem)
+            .input("SoTienBaoHiem", sql.Decimal(18, 2), SoTienBaoHiem)
+            .input("NgayHetHanBaoHiem", sql.Date, NgayHetHanBaoHiem)
+            .input("TrangThaiBaoHiem", sql.NVarChar(50), TrangThaiBaoHiem)
+            .query(`
+                INSERT INTO BaoHiemYTe (
+                    MaBenhNhan,
+                    DonViCungCap,
+                    SoHopDongBaoHiem,
+                    SoTienBaoHiem,
+                    NgayHetHanBaoHiem,
+                    TrangThaiBaoHiem
+                ) VALUES (
+                    @MaBenhNhan,
+                    @DonViCungCap,
+                    @SoHopDongBaoHiem,
+                    @SoTienBaoHiem,
+                    @NgayHetHanBaoHiem,
+                    @TrangThaiBaoHiem
+                )
+            `);
+
+        // Trả về kết quả thành công
+        res.status(201).json({ success: true, message: "Thêm mới bảo hiểm y tế thành công!" });
+    } catch (err) {
+        // Xử lý lỗi
+        console.error("❌ Lỗi thêm mới bảo hiểm y tế:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi thêm mới bảo hiểm y tế: " + err.message,
+        });
+    }
+});
+
+//2. API DELETE - Xóa bảo hiểm y tế
+app.delete("/api/baohiemyte/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+
+    try {
+        // Xóa dữ liệu bảo hiểm y tế
+        const result = await pool
+            .request()
+            .input("ID", sql.Int, id)
+            .query(`
+                DELETE FROM BaoHiemYTe
+                WHERE ID = @ID
+            `);
+
+        // Kiểm tra kết quả xóa
+        if (result.rowsAffected[0] > 0) {
+            res.status(200).json({ success: true, message: "Xóa bảo hiểm y tế thành công!" });
+        } else {
+            res.status(404).json({ success: false, message: "Không tìm thấy bảo hiểm y tế để xóa!" });
+        }
+    } catch (err) {
+        // Xử lý lỗi
+        console.error("❌ Lỗi xóa bảo hiểm y tế:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi xóa bảo hiểm y tế: " + err.message,
+        });
+    }
+});
+
+//API PUT Cập Nhật Bảo Hiểm Y Tế:
+app.put("/api/baohiemyte/:id", async (req, res) => {
+    const { id } = req.params; // Lấy ID từ URL
+    const {
+        MaBenhNhan,
+        DonViCungCap,
+        SoHopDongBaoHiem,
+        SoTienBaoHiem,
+        NgayHetHanBaoHiem,
+        TrangThaiBaoHiem
+    } = req.body; // Lấy dữ liệu từ body
+
+    try {
+        // Cập nhật dữ liệu bảo hiểm y tế
+        const result = await pool
+            .request()
+            .input("ID", sql.Int, id)
+            .input("MaBenhNhan", sql.NVarChar(50), MaBenhNhan)
+            .input("DonViCungCap", sql.NVarChar(100), DonViCungCap)
+            .input("SoHopDongBaoHiem", sql.NVarChar(100), SoHopDongBaoHiem)
+            .input("SoTienBaoHiem", sql.Decimal(18, 2), SoTienBaoHiem)
+            .input("NgayHetHanBaoHiem", sql.Date, NgayHetHanBaoHiem)
+            .input("TrangThaiBaoHiem", sql.NVarChar(50), TrangThaiBaoHiem)
+            .query(`
+                UPDATE BaoHiemYTe
+                SET
+                    MaBenhNhan = @MaBenhNhan,
+                    DonViCungCap = @DonViCungCap,
+                    SoHopDongBaoHiem = @SoHopDongBaoHiem,
+                    SoTienBaoHiem = @SoTienBaoHiem,
+                    NgayHetHanBaoHiem = @NgayHetHanBaoHiem,
+                    TrangThaiBaoHiem = @TrangThaiBaoHiem
+                WHERE ID = @ID
+            `);
+
+        // Trả về kết quả thành công
+        res.status(200).json({ success: true, message: "Cập nhật thông tin bảo hiểm y tế thành công!" });
+    } catch (err) {
+        // Xử lý lỗi
+        console.error("❌ Lỗi cập nhật bảo hiểm y tế:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi cập nhật bảo hiểm y tế: " + err.message,
+        });
+    }
+});
+
+// API: Lấy danh sách người dùng đang dùng bảo hiểm
+app.get("/api/quanlynguoidungbaohiem", async (req, res) => {
+    try {
+        const result = await pool.request().query(`
+            SELECT
+                            nd.ID,
+                            nd.Hinh,
+                            nd.TenDayDu,
+                            nd.Email,
+                            nd.SDT,
+                            nd.CCCD,
+                            nd.VaiTro,
+                            COALESCE(bn.DiaChi, 'Không có địa chỉ') AS DiaChi,
+                            COALESCE(bn.Tuoi, 0) AS Tuoi,
+                            COALESCE(bn.GioiTinh, 'Không xác định') AS GioiTinh,
+                            COALESCE(bs.ChuyenMon, 'Không có chuyên môn') AS ChuyenMon,
+                            COALESCE(bs.PhongKham, 'Không có phòng khám') AS PhongKham,
+            				BHYT.ID AS MaBaoHiem,
+            				BHYT.MaBenhNhan,
+            				BHYT.DonViCungCap,
+            				BHYT.SoHopDongBaoHiem,
+            				BHYT.SoTienBaoHiem,
+            				BHYT.NgayHetHanBaoHiem,
+            				BHYT.TrangThaiBaoHiem
+
+                        FROM NguoiDung nd
+                        LEFT JOIN BenhNhanVTP bn
+                            ON nd.ID = bn.ID
+                        LEFT JOIN BacSiVTP bs
+                            ON nd.ID = bs.ID
+            			LEFT JOIN BaoHiemYTe BHYT
+            				ON BHYT.MaBenhNhan = nd.ID
+        `);
+
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error("❌ Lỗi lấy dữ liệu người dùng:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+// API Sửa Viện Phí Nhập Hóa Đơn
+    app.put("/api/capnhaptrangthaibaohiem", async (req, res) => {
+
+    try {
+        const result = await pool
+            .request()
+            .query(`
+                UPDATE BaoHiemYTe
+                    SET TrangThaiBaoHiem = N'Hết hạn'
+                    WHERE NgayHetHanBaoHiem < GETDATE();
+
+                    -- Cập nhật trạng thái nếu ngày hiện tại nhỏ hơn hoặc bằng ngày hết hạn bảo hiểm
+                    UPDATE BaoHiemYTe
+                    SET TrangThaiBaoHiem = N'Còn hiệu lực'
+                    WHERE NgayHetHanBaoHiem >= GETDATE();
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật trạng thái bảo hiểm thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi sửa trạng thái bảo hiểm:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi sửa trạng thái bảo hiểm: " + err.message });
+    }
+});
