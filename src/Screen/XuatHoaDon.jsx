@@ -65,6 +65,18 @@ const HoaDonChiTiet = () => {
     if (error) {
         return <div className="error">Lỗi: {error}</div>;
     }
+   const formatNgaySinh = (ngaySinh) => {
+       if (!ngaySinh) return "Không xác định";
+       const date = new Date(ngaySinh);
+       return new Intl.DateTimeFormat('vi-VN', {
+           year: 'numeric',
+           month: '2-digit',
+           day: '2-digit',
+           hour: '2-digit',
+           minute: '2-digit',
+           second: '2-digit',
+       }).format(date);
+   };
 
     return (
         <div className="container">
@@ -77,7 +89,7 @@ const HoaDonChiTiet = () => {
                     </div>
                     <div className="card-header">
                         <span>Mã bệnh nhân: {item?.MaBenhNhan || 'Không có'}</span>
-                        <span>Ngày tạo hóa đơn: {item?.NgayLapHoaDon || 'Không có'}</span>
+                        <span>Ngày tạo hóa đơn: {formatNgaySinh(item?.NgayLapHoaDon) || 'Không có'}</span>
                     </div>
                     <div className="card-header">
                         <span>Mã hóa đơn: {item?.MaHoaDon || 'Không có'}</span>
