@@ -118,21 +118,25 @@ const InvoiceForm = () => {
                           <button className="action-btn" onClick={() => handleChuyenTrang(invoice)}>Xem hóa đơn chi tiết</button>
                           <button className="action-btn" onClick={() => handleEditBill(invoice)}>Sửa dữ liệu</button>
                           <button className="action-btn"
-                                                onClick={async () => {
-                                                    if (window.confirm('Bạn có chắc muốn xóa?')) {
-                                                        await fetch(
-                                                            `http://localhost:5000/api/vienphi/${invoice.MaHoaDon}`,
-                                                            { method: 'DELETE' }
-                                                        );
-                                                        fetchInvoices();
-                                                    }
-                                                }}
+                            onClick={async () => {
+                              if (window.confirm('Bạn có chắc muốn xóa?')) {
+                                await fetch(
+                                  `http://localhost:5000/api/vienphi/${invoice.MaHoaDon}`,
+                                  { method: 'DELETE' }
+                                );
+                                fetchInvoices();
+                              }
+                            }}
                           >Xóa hóa đơn</button>
-                          <button className="action-btn">Thanh toán</button>
-                          <button className="action-btn"  onClick={() => handleChuyenTrangHD(invoice)}>Xuất hóa đơn</button>
-                          <button className="action-btn"
-                          onClick={() => handleChuyenTrang2(invoice)}
-                           >Tra cứu & nhập</button>
+                          <button className="action-btn" onClick={() => handleChuyenTrangHD(invoice)}>Xuất hóa đơn</button>
+                          {/* Ẩn nút Thanh toán và Tra cứu & nhập nếu hóa đơn đã thanh toán */}
+                          {invoice.TinhTrang !== "Đã thanh toán" && (
+                            <>
+                              <button className="action-btn">Thanh toán</button>
+
+                              <button className="action-btn" onClick={() => handleChuyenTrang2(invoice)}>Tra cứu & nhập</button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>

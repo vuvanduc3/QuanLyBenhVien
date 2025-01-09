@@ -181,14 +181,14 @@ const HoaDonChiTiet = () => {
                                                             }).catch(err => console.error('Lỗi:', err.message));
                                                     }}>Xóa</button>
                                                 </div>
-                                                <div className="action-buttons-row">
-                                                    <button
-                                                        className="action-btn brown"
-                                                        onClick={() => navigate('/tra-cuu-va-nhap-hoa-don', { state: { action: 'tracuu', item } })}
-                                                    >
-                                                        Tra cứu và nhập hóa đơn chi tiết
-                                                    </button>
-                                                </div>
+{/*                                                 <div className="action-buttons-row"> */}
+{/*                                                     <button */}
+{/*                                                         className="action-btn brown" */}
+{/*                                                         onClick={() => navigate('/tra-cuu-va-nhap-hoa-don', { state: { action: 'tracuu', item } })} */}
+{/*                                                     > */}
+{/*                                                         Tra cứu và nhập hóa đơn chi tiết */}
+{/*                                                     </button> */}
+{/*                                                 </div> */}
                                             </div>
                                         </td>
                                     </tr>
