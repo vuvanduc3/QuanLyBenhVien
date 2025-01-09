@@ -94,6 +94,15 @@ const ThemSuaXoaDieuTri = () => {
       DaSuDung: daSuDung,
       DaNhapHoaDon: daNhapHoaDon ? 1 : 0,
     };
+    const formatNgaySinh = (ngaySinh) => {
+        if (!ngaySinh) return "Không xác định";
+        const date = new Date(ngaySinh);
+        return new Intl.DateTimeFormat('vi-VN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        }).format(date);
+      };
 
     try {
       const apiUrl = action === 'edit'
@@ -130,6 +139,16 @@ const ThemSuaXoaDieuTri = () => {
       toast.error(`Lỗi: ${err.message}`);
     }
   };
+  const formatNgaySinh = (ngaySinh) => {
+    if (!ngaySinh) return "Không xác định";
+    const date = new Date(ngaySinh);
+    return new Intl.DateTimeFormat('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(date);
+  };
+
 
   return (
     <div className="container">
@@ -159,9 +178,11 @@ const ThemSuaXoaDieuTri = () => {
                   {!isSearchVisibleHoSo && (
                     <>
                       <label><strong>Mã bệnh nhân:</strong> {selectedHoSo.MaBenhNhan}</label>
-                      <label><strong>Mã bác sĩ:</strong> {selectedHoSo.BacSi}</label>
-                      <label><strong>Chẩn đoán:</strong> {selectedHoSo.ChanDoan}</label>
-                      <label><strong>Ngày lập:</strong> {selectedHoSo.NgayLap}</label>
+                      <label><strong>Họ và tên:</strong> {selectedHoSo.HoVaTen}</label>
+                      <label>
+                          <strong>Ngày sinh:</strong> {formatNgaySinh(selectedHoSo.NgaySinh)}
+                      </label>
+                      <label><strong>CCCD/HC:</strong> {selectedHoSo.SoCCCD_HoChieu}</label>
                     </>
                   )}
                 </div>
@@ -173,9 +194,9 @@ const ThemSuaXoaDieuTri = () => {
                     <div key={hoSo.ID} onClick={() => handleHoSoSelect(hoSo)} className="search-item">
                       <div><strong>{hoSo.ID}</strong></div>
                       <div><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</div>
-                      <div><strong>Mã bác sĩ:</strong> {hoSo.BacSi}</div>
-                      <div><strong>Chẩn đoán:</strong> {hoSo.ChanDoan}</div>
-                      <div><strong>Ngày lập hồ sơ:</strong> {hoSo.NgayLap}</div>
+                      <div><strong>Họ và tên:</strong> {hoSo.HoVaTen}</div>
+                      <div><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</div>
+                      <div><strong>Số CCCD_HoChieu:</strong> {hoSo.SoCCCD_HoChieu}</div>
                     </div>
                   ))}
                 </div>
