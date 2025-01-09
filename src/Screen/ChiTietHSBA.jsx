@@ -169,12 +169,33 @@ const MedicalRecordDetail = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEditedData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        
+        setEditedData(prev => {
+            // Tạo object mới với tất cả giá trị cũ và giá trị mới cần update
+            const updatedData = {
+                ...prev,
+                [name]: value
+            };
+            
+            // Nếu trường thay đổi là ngày sinh thì tính tuổi
+            if (name === "ngaySinh") {
+                updatedData.tuoi = calculateAge(value);
+            }
+            
+            return updatedData;
+        });
     };
-
+    
+    const calculateAge = (birthDate) => {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age > 0 ? age : 0;
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {

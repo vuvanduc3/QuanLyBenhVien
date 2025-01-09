@@ -113,11 +113,20 @@ const AddMedicalRecord = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-
+    
+        setFormData(prev => {
+            // Tạo đối tượng mới từ `prev` và cập nhật trường `name` với `value`
+            const updatedData = { ...prev, [name]: value };
+    
+            // Tính tuổi nếu `name` là `ngaySinh`
+            if (name === "ngaySinh") {
+                updatedData.tuoi = calculateAge(value);
+            }
+    
+            // Trả về `updatedData` đã cập nhật
+            return updatedData;
+        });
+    
         // Handle location changes
         if (name === 'tinhThanhPho') {
             const province = provinces.find(p => p.name === value);
@@ -131,7 +140,7 @@ const AddMedicalRecord = () => {
                 xaPhuong: ''
             }));
         }
-
+    
         if (name === 'huyen') {
             const district = districts.find(d => d.name === value);
             if (district) {
@@ -144,7 +153,18 @@ const AddMedicalRecord = () => {
             }));
         }
     };
-
+    
+    const calculateAge = (birthDate) => {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age > 0 ? age : 0; // Nếu tuổi tính ra âm, trả về 0
+    };
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);

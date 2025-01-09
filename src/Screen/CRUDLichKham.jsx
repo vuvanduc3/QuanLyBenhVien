@@ -15,7 +15,7 @@ const CRUDLichKham = () => {
     MaBacSi: '',
     NgayKham: '',
     GioKham: '',
-    TrangThai: '',
+    TrangThai: 'Đang chờ khám',
     PhongKham: ''
   });
 

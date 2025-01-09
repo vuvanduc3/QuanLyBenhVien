@@ -129,8 +129,74 @@ const MedicalRecordList = () => {
                     </div>
 
                     <div className="filters-section">
-                        {/* Filters section remains the same */}
-                        {/* ... */}
+                        <div className="filters-header">
+                            <button 
+                                className="filter-toggle-button"
+                                onClick={() => setShowFilters(!showFilters)}
+                            >
+                                <Filter size={20} />
+                                {showFilters ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
+                            </button>
+                            {showFilters && (
+                                <button 
+                                    className="clear-filters-button"
+                                    onClick={clearFilters}
+                                >
+                                    Xóa bộ lọc
+                                </button>
+                            )}
+                        </div>
+
+                        {showFilters && (
+                            <div className="filters-container">
+                                <div className="filter-row">
+                                    <div className="filter-group">
+                                        <label>Mã bệnh nhân</label>
+                                        <input
+                                            type="text"
+                                            name="maBenhNhan"
+                                            value={filters.maBenhNhan}
+                                            onChange={handleFilterChange}
+                                            placeholder="Tìm theo mã bệnh nhân"
+                                        />
+                                    </div>
+                                    <div className="filter-group">
+                                        <label>Họ tên</label>
+                                        <input
+                                            type="text"
+                                            name="hoTen"
+                                            value={filters.hoTen}
+                                            onChange={handleFilterChange}
+                                            placeholder="Tìm theo họ tên"
+                                        />
+                                    </div>
+                                    <div className="filter-group">
+                                        <label>Mã lịch hẹn</label>
+                                        <input
+                                            type="text"
+                                            name="maLichHen"
+                                            value={filters.maLichHen}
+                                            onChange={handleFilterChange}
+                                            placeholder="Tìm theo mã lịch hẹn"
+                                        />
+                                    </div>
+                                    <div className="filter-group">
+                                        <label>Hành động</label>
+                                        <select
+                                            name="hanhDong"
+                                            value={filters.hanhDong}
+                                            onChange={handleFilterChange}
+                                        >
+                                            <option value="">Tất cả</option>
+                                            <option value="KhamMoi">Khám mới</option>
+                                            <option value="TaiKham">Tái khám</option>
+                                            <option value="CapCuu">Cấp cứu</option>
+                                            <option value="TheoDoi">Theo dõi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {loading ? (

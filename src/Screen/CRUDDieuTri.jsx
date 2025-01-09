@@ -228,7 +228,7 @@ const ThemSuaXoaDieuTri = () => {
             </div>
 
             <div className="form-group">
-              <label>Kết quả <span className="required">*</span></label>
+              <label>Kết quả:  {ketQua}<span className="required">*</span></label>
               <select
                  value={ketQua}
                  onChange={handleKetQuaChange}
