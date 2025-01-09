@@ -107,9 +107,9 @@ const ThemSuaXoaXetNghiem = () => {
             setMaHoSo(item.MaHoSo);
 
             setMaBenhNhan(item.MaBenhNhan);
-            setMaBacSi(item.BacSi);
-            setChanDoan(item.ChanDoan);
-            setNgayLap(item.NgayLap);
+            setMaBacSi(item.HoVaTen);
+            setChanDoan(item.NgaySinh);
+            setNgayLap(item.SoCCCD_HoChieu);
 
             setDaNhapHoaDon(item.DaNhapHoaDon);
 
@@ -168,9 +168,9 @@ const ThemSuaXoaXetNghiem = () => {
     const handleHoSoSelect = (hoSo) => {
         setMaHoSo(hoSo.ID);
         setMaBenhNhan(hoSo.MaBenhNhan);
-        setMaBacSi(hoSo.BacSi);
-        setChanDoan(hoSo.ChanDoan);
-        setNgayLap(hoSo.NgayLap);
+        setMaBacSi(hoSo.HoVaTen);
+        setChanDoan(hoSo.NgaySinh);
+        setNgayLap(hoSo.SoCCCD_HoChieu);
 
         setSelectedHoSo(hoSo); // Cập nhật thông tin mã hồ sơ đã chọn
         setIsSearchVisibleHoSo(false); // Ẩn bảng tìm kiếm mã hồ sơ khi chọn
@@ -220,6 +220,15 @@ const ThemSuaXoaXetNghiem = () => {
             setError('Lỗi khi lưu dữ liệu');
         }
     };
+     const formatNgaySinh = (ngaySinh) => {
+        if (!ngaySinh) return "Không xác định";
+        const date = new Date(ngaySinh);
+        return new Intl.DateTimeFormat('vi-VN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        }).format(date);
+      };
 
     const datLaiTuKhoa = () => {
         setSearchTerm('');
@@ -338,9 +347,9 @@ const ThemSuaXoaXetNghiem = () => {
                                   {!isCollapsedHoSo && (
                                     <>
                                       <label><strong>Mã bệnh nhân:</strong> {MaBenhNhan} </label>
-                                      <label><strong>Mã bác sĩ:</strong> {MaBacSi}</label>
-                                      <label><strong>Chẩn đoán:</strong> {ChanDoan}</label>
-                                      <label><strong>Ngày lập:</strong> {NgayLap}</label>
+                                      <label><strong>Họ và tên:</strong> {MaBacSi}</label>
+                                      <label><strong>Ngày sinh:</strong> {formatNgaySinh(ChanDoan)}</label>
+                                      <label><strong>Số CCCD_HoChieu:</strong> {NgayLap}</label>
                                     </>
                                   )}
                              </div>
@@ -355,19 +364,20 @@ const ThemSuaXoaXetNghiem = () => {
                                             className="search-item"
                                         >
                                             <div>
-                                                <strong>{hoSo.ID}</strong>
+                                                <strong>Mã hồ sơ: {hoSo.ID}</strong>
                                             </div>
                                             <div>
                                                 <span><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</span>
                                             </div>
                                             <div>
-                                                <span><strong>Mã bác sĩ:</strong> {hoSo.BacSi}</span>
+                                                <span><strong>Họ và tên:</strong> {hoSo.HoVaTen}</span>
                                             </div>
                                             <div>
-                                                <span><strong>Chẩn đoán:</strong> {hoSo.ChanDoan}</span>
+                                                <span><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</span>
                                             </div>
+
                                             <div>
-                                                <span><strong>Ngày tạo hồ sơ:</strong> {hoSo.NgayLap}</span>
+                                                <span><strong>CCCD/HC:</strong> {hoSo.SoCCCD_HoChieu}</span>
                                             </div>
                                         </div>
                                     ))}
