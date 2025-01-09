@@ -48,6 +48,16 @@ const HoaDonChiTiet = () => {
         currentPage * itemsPerPage
     );
 
+    // Tính tổng tiền cho các mục đang hiển thị trên trang
+    const calculateTotalAmount = () => {
+        return paginatedData.reduce((total, item) => {
+            const totalPrice = item.SoLuong * item.DonGia;
+            return total + totalPrice;
+        }, 0);
+    };
+
+    const totalAmount = calculateTotalAmount();
+
     if (loading) {
         return <div className="loading">Đang tải dữ liệu...</div>;
     }
@@ -71,7 +81,6 @@ const HoaDonChiTiet = () => {
                     </div>
                     <div className="card-header">
                         <span>Mã hóa đơn: {item?.MaHoaDon || 'Không có'}</span>
-
                     </div>
                     <div className="table-container">
                         {displayedData.length === 0 ? (
@@ -122,6 +131,10 @@ const HoaDonChiTiet = () => {
                             </div>
                         </div>
                     )}
+                    {/* Hiển thị tổng tiền cho các mục trên trang hiện tại */}
+                    <div className="total-amount" style={{ textAlign: 'right' }}>
+                        <h3>Tổng tiền: {item.TongTien.toLocaleString('vi-VN')} VND</h3>
+                    </div>
                     <div className="action-buttons-hoadon">
                         <button className="action-btn-hoadon brown" disabled={displayedData.length === 0}>
                             <span className="icon"><Printer size={20} /></span> In hóa đơn
@@ -130,7 +143,6 @@ const HoaDonChiTiet = () => {
                             <span className="icon"><Send size={20} /></span> Gửi hóa đơn
                         </button>
                     </div>
-
                 </div>
             </main>
         </div>
