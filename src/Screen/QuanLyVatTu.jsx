@@ -113,7 +113,7 @@ const QuanLyVatTu = () => {
     }, [searchTerm, filters, vattu]);
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Bạn có chắc chắn muốn xóa thuốc này không?')) {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa vật tư này không?')) {
             return;
         }
     
@@ -135,10 +135,10 @@ const QuanLyVatTu = () => {
             if (contentType && contentType.includes('application/json')) {
                 const data = await response.json();
                 if (data.success) {
-                    toast.success('Xóa thuốc thành công!');
+                    toast.success('Xóa vật tư thành công!');
                     fetchvattus();
                 } else {
-                    throw new Error(data.message || 'Có lỗi xảy ra khi xóa thuốc');
+                    throw new Error(data.message || 'Có lỗi xảy ra khi xóa vật tư');
                 }
             } else {
                 throw new Error('Phản hồi không phải JSON');

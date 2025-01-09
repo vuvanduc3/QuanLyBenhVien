@@ -27,14 +27,14 @@ const CRUDVatTu = () => {
         try {
             console.log('Fetching next code from API...');
             const response = await fetch('http://localhost:5000/api/vattu/next-code');
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('API response:', data);
-    
+
             if (data.success) {
                 console.log('Setting new code:', data.nextCode);
                 setFormData(prev => ({
@@ -50,7 +50,7 @@ const CRUDVatTu = () => {
             toast.error('Lỗi khi lấy mã vật tư tự động: ' + error.message);
         }
     };
-    
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;  // Use 'name' to target the correct field in formData
@@ -92,7 +92,7 @@ const CRUDVatTu = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        
+
         try {
             if (!validateForm()) {
                 setLoading(false);
@@ -115,7 +115,7 @@ const CRUDVatTu = () => {
                     giaTien: Number(formData.GiaTien)
                 })
             });
-            
+
             const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 throw new Error("Server không trả về dữ liệu JSON hợp lệ");
@@ -123,15 +123,15 @@ const CRUDVatTu = () => {
 
             const data = await response.json();
             console.log('Server response:', data);
-            
+
             if (!response.ok) {
                 throw new Error(data.message || 'Có lỗi xảy ra khi thêm thuốc');
             }
-            
+
             console.log('Successfully added medicine, fetching next code...');
             const nextCodeResponse = await fetch('http://localhost:5000/api/vattu/next-code');
             const nextCodeData = await nextCodeResponse.json();
-            
+
             if (nextCodeData.success) {
                 setFormData({
                     MaVatTu: nextCodeData.nextCode,
@@ -145,7 +145,7 @@ const CRUDVatTu = () => {
             } else {
                 throw new Error('Không thể lấy mã thuốc mới');
             }
-            
+
         } catch (error) {
             console.error('Error in form submission:', error);
             toast.error(`Lỗi: ${error.message}`);
@@ -207,28 +207,35 @@ const CRUDVatTu = () => {
 
                         <div className="form-group">
                             <label>Loại vật tư</label>
-                            <input
-                                type="text"
-                                name="LoaiVatTu"  // This should match formData.LoaiVatTu
-                                placeholder="Nhập tên thuốc"
+                            <select
+                                name="LoaiVatTu"
                                 value={formData.LoaiVatTu}
                                 onChange={handleChange}
                                 className="form-control"
                                 required
-                            />
+                            >
+                                <option value="">-- Chọn loại vật tư --</option>
+                                <option value="Thuốc">Thuốc</option>
+                                <option value="Dụng cụ y tế">Dụng cụ y tế</option>
+                                <option value="Khác">Khác</option>
+                            </select>
                         </div>
 
                         <div className="form-group">
                             <label>Đơn vị tính</label>
-                            <input
-                                type="text"
-                                name="DonViTinh"  // This should match formData.DonViTinh
-                                placeholder="Nhập đơn vị"
+                            <select
+                                name="DonViTinh"
                                 value={formData.DonViTinh}
                                 onChange={handleChange}
                                 className="form-control"
                                 required
-                            />
+                            >
+                                <option value="">-- Chọn đơn vị tính --</option>
+                                <option value="Hộp">Hộp</option>
+                                <option value="Cái">Cái</option>
+                                <option value="Chiếc">Chiếc</option>
+                                <option value="Lọ">Lọ</option>
+                            </select>
                         </div>
 
                         <div className="form-group">

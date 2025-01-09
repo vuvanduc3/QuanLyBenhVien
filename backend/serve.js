@@ -1414,7 +1414,7 @@ app.delete("/api/vattu/:id", async (req, res) => {
         if (checkResult.recordset.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: `Không tìm thấy thuốc với mã ${id}`,
+                message: `Không tìm thấy vật tư với mã ${id}`,
             });
         }
 
@@ -1428,13 +1428,13 @@ app.delete("/api/vattu/:id", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: "Xóa thuốc thành công",
+            message: "Xóa vật tư thành công",
         });
     } catch (err) {
         console.error("Error deleting medicine:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi xóa thuốc: " + err.message,
+            message: "Lỗi khi xóa vật tư: " + err.message,
         });
     }
 });
@@ -1463,7 +1463,7 @@ app.get("/api/vattu/:id", async (req, res) => {
         console.error("Error fetching medicine detail:", err);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi lấy thông tin thuốc",
+            message: "Lỗi khi lấy thông tin vật tư",
         });
     }
 });
