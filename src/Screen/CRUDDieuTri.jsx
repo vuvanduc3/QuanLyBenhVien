@@ -14,7 +14,7 @@ const ThemSuaXoaDieuTri = () => {
   const [maHoSo, setMaHoSo] = useState('');
   const [moTa, setMoTa] = useState('');
   const [phuongPhap, setPhuongPhap] = useState('');
-  const [ketQua, setKetQua] = useState('');
+  const [ketQua, setKetQua] = useState('Đang điều trị');
   const [ngayDieuTri, setNgayDieuTri] = useState('');
   const [daSuDung, setDaSuDung] = useState('');
   const [daNhapHoaDon, setDaNhapHoaDon] = useState(false);
