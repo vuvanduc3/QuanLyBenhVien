@@ -2574,7 +2574,37 @@ app.get("/api/LichKham", async (req, res) => {
     try {
         // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
         const query = `
-           select * from LichKham ORDER by LichKham.MaLichKham DESC;
+           select
+           LichKham.MaLichKham,
+           LichKham.MaBenhNhan,
+           LichKham.MaBacSi,
+           LichKham.NgayKham,
+           LichKham.GioKham,
+           LichKham.TrangThai,
+           LichKham.PhongKham,
+           bn.DiaChi,
+           bn.Tuoi,
+           DATEADD(YEAR, -bn.Tuoi, GETDATE()) AS NgaySinh,
+           bn.GioiTinh,
+           ND.TenDayDu,
+           ND.Email,
+           ND.SDT,
+           ND.CCCD,
+           ND.NgayTao,
+           ND.VaiTro,
+           BHYT.DonViCungCap,
+           BHYT.SoHopDongBaoHiem,
+           BHYT.SoTienBaoHiem,
+           BHYT.NgayHetHanBaoHiem,
+           BHYT.TrangThaiBaoHiem,
+           BHYT.ID AS MaBaoHiem
+
+
+           from LichKham
+           LEFT JOIN BenhNhanVTP bn ON bn.ID = LichKham.MaBenhNhan
+           LEFT JOIN NguoiDung ND ON ND.ID = bn.ID
+           LEFT JOIN BaoHiemYTe BHYT ON BHYT.MaBenhNhan = nd.ID
+           ORDER by LichKham.MaLichKham DESC;
         `;
 
         // Thực hiện truy vấn SQL
