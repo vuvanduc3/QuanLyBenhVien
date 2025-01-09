@@ -9,167 +9,162 @@ const AddInvoice = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { action, item } = location.state || {}; // Lấy action và item từ state khi điều hướng
+  const { action, item } = location.state || {};
   const [formData, setFormData] = useState({
     MaBenhNhan: '',
     MaBacSi: '',
+    MaHoSo: '',
     TongTien: '',
     TinhTrang: 'Chưa thanh toán',
     NgayLapHoaDon: '',
     NgayThanhToan: ''
   });
 
-  const [users, setUsers] = useState([]); // Lưu danh sách người dùng
-  const [patientSearchTerm, setPatientSearchTerm] = useState(''); // Từ khóa tìm kiếm bệnh nhân
-  const [doctorSearchTerm, setDoctorSearchTerm] = useState(''); // Từ khóa tìm kiếm bác sĩ
-  const [selectedPatient, setSelectedPatient] = useState(null); // Bệnh nhân đã chọn
-  const [selectedDoctor, setSelectedDoctor] = useState(null); // Bác sĩ đã chọn
-  const [isExpanded, setIsExpanded] = useState(false); // Trạng thái mở rộng thông tin
-  const [showPatientResults, setShowPatientResults] = useState(false); // Kiểm soát hiển thị danh sách bệnh nhân
-  const [showDoctorResults, setShowDoctorResults] = useState(false); // Kiểm soát hiển thị danh sách bác sĩ
+  const [patients, setPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
 
-  const [isExpandedBN, setIsExpandedBN] = useState(false); // Trạng thái mở rộng thông tin
+  const [MaBacSis, setMaBacSis] = useState([]);
+  const [MaBenhNhans, setMaBenhNhans] = useState([]);
+
+
+  const [patientSearchTerm, setPatientSearchTerm] = useState('');
+  const [doctorSearchTerm, setDoctorSearchTerm] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpandedBN, setIsExpandedBN] = useState(false);
+
   const handleExpandBenhNhanInfo = () => {
-      setIsExpandedBN(!isExpandedBN); // Chuyển đổi trạng thái mở rộng
+    setIsExpandedBN(!isExpandedBN);
   };
 
-  // Fetch dữ liệu người dùng từ API khi tải trang
+  // Fetch doctors data
   useEffect(() => {
     fetch('http://localhost:5000/api/nguoidung')
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          setUsers(data.data); // Lấy toàn bộ người dùng
+          setDoctors(data.data.filter(user => user.VaiTro === 'Bác sĩ'));
         }
       })
-      .catch((error) => console.error("Lỗi khi lấy dữ liệu người dùng:", error));
+      .catch((error) => console.error("Lỗi khi lấy dữ liệu bác sĩ:", error));
   }, []);
 
-  // Fetch dữ liệu khi sửa hóa đơn
+  // Fetch patients data
+  useEffect(() => {
+    fetch('http://localhost:5000/api/medical-records')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setPatients(data.data);
+        }
+      })
+      .catch((error) => console.error("Lỗi khi lấy dữ liệu bệnh nhân:", error));
+  }, []);
+
+  // Fetch data when editing invoice
   useEffect(() => {
     if (action === 'edit' && item) {
       setFormData({
         MaBenhNhan: item.MaBenhNhan,
-        MaBacSi: item.MaBacSi,
+        MaBacSi: item.MaBacSi?item.MaBacSi:0,
+        MaHoSo: item.MaHoSo,
         TongTien: item.TongTien,
-        TinhTrang: item.TinhTrang?item.TinhTrang:'Chưa thanh toán',
+        TinhTrang: item.TinhTrang || 'Chưa thanh toán',
         NgayLapHoaDon: item.NgayLapHoaDon,
         NgayThanhToan: item.NgayThanhToan,
       });
     }
+    setMaBenhNhans(item.MaBenhNhan);
+    setMaBacSis(item.MaBacSi?item.MaBacSi:0);
   }, [action, item]);
 
-  // Cập nhật thông tin bệnh nhân và bác sĩ khi formData thay đổi
+  // Update selected patient
   useEffect(() => {
     if (formData.MaBenhNhan) {
-      const patient = users.find(user => user.ID === formData.MaBenhNhan);
-      setSelectedPatient(patient); // Cập nhật thông tin bệnh nhân
+      const patient = patients.find(patient => patient.MaBenhNhan === formData.MaBenhNhan);
+      setSelectedPatient(patient);
     }
-  }, [formData.MaBenhNhan, users]);
+  }, [formData.MaBenhNhan, patients]);
 
+  // Update selected doctor
   useEffect(() => {
     if (formData.MaBacSi) {
-      const doctor = users.find(user => user.ID === formData.MaBacSi);
-      setSelectedDoctor(doctor); // Cập nhật thông tin bác sĩ
+      const doctor = doctors.find(doctor => doctor.MaBacSi === formData.MaBacSi);
+      setSelectedDoctor(doctor);
     }
-  }, [formData.MaBacSi, users]);
+  }, [formData.MaBacSi, doctors]);
 
-  // Lọc danh sách người dùng theo từ khóa tìm kiếm bệnh nhân
-  const filteredPatients = users.filter(
-    (user) => user.VaiTro === 'Bệnh nhân' &&
-              (user.TenDayDu.toLowerCase().includes(patientSearchTerm.toLowerCase()) ||
-               user.SDT.includes(patientSearchTerm) ||
-               user.CCCD.includes(patientSearchTerm))
+  // Filter patients based on search term
+  const filteredPatients = patients.filter(
+    (patient) => patient.HoVaTen?.toLowerCase().includes(patientSearchTerm.toLowerCase()) ||
+                patient.SDT?.includes(patientSearchTerm) ||
+                patient.CCCD?.includes(patientSearchTerm)
   );
 
-  // Lọc danh sách người dùng theo từ khóa tìm kiếm bác sĩ
-  const filteredDoctors = users.filter(
-    (user) => user.VaiTro === 'Bác sĩ' &&
-              (user.TenDayDu.toLowerCase().includes(doctorSearchTerm.toLowerCase()) ||
-               user.SDT.includes(doctorSearchTerm) ||
-               user.CCCD.includes(doctorSearchTerm))
+  // Filter doctors based on search term
+  const filteredDoctors = doctors.filter(
+    (doctor) => doctor.TenDayDu?.toLowerCase().includes(doctorSearchTerm.toLowerCase()) ||
+                doctor.SDT?.includes(doctorSearchTerm) ||
+                doctor.CCCD?.includes(doctorSearchTerm)
   );
 
-  // Xử lý thay đổi tìm kiếm bệnh nhân
   const handlePatientSearchChange = (e) => {
     setPatientSearchTerm(e.target.value);
-    setShowPatientResults(true); // Hiển thị lại danh sách tìm kiếm
   };
 
-  // Xử lý thay đổi tìm kiếm bác sĩ
   const handleDoctorSearchChange = (e) => {
     setDoctorSearchTerm(e.target.value);
-    setShowDoctorResults(true); // Hiển thị lại danh sách tìm kiếm
   };
 
-  // Xử lý chọn bệnh nhân
   const handleSelectPatient = (patient) => {
-    setSelectedPatient(patient); // Chọn bệnh nhân
-    setPatientSearchTerm(patient.TenDayDu); // Cập nhật từ khóa tìm kiếm
-    setShowPatientResults(false); // Ẩn danh sách tìm kiếm
-    setFormData({ ...formData, MaBenhNhan: patient.ID }); // Cập nhật MaBenhNhan
+    setSelectedPatient(patient);
+    setPatientSearchTerm(patient.HoVaTen);
+    setMaBenhNhans(patient.MaBenhNhan);
+    setFormData({ ...formData, MaBenhNhan: patient.MaBenhNhan, MaHoSo: patient.ID });
   };
 
-  // Xử lý chọn bác sĩ
   const handleSelectDoctor = (doctor) => {
-    setSelectedDoctor(doctor); // Chọn bác sĩ
-    setDoctorSearchTerm(doctor.TenDayDu); // Cập nhật từ khóa tìm kiếm
-    setShowDoctorResults(false); // Ẩn danh sách tìm kiếm
-    setFormData({ ...formData, MaBacSi: doctor.ID }); // Cập nhật MaBacSi
+    console.log('Bác sĩ đã chọn:', doctor); // Thêm dòng này để kiểm tra xem sự kiện có được kích hoạt không
+    setSelectedDoctor(doctor);
+    setDoctorSearchTerm(doctor.TenDayDu);
+    setMaBacSis(doctor.ID);
+
+    setFormData({ ...formData, MaBacSi: "" + doctor.ID });
   };
 
-  // Xử lý submit form
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!selectedPatient || !selectedDoctor) {
+    if (!MaBenhNhans || !MaBacSis) {
       alert('Vui lòng chọn cả bệnh nhân và bác sĩ!');
       return;
     }
 
-    const updatedFormData = { ...formData, MaBenhNhan: selectedPatient.ID, MaBacSi: selectedDoctor.ID };
+    const updatedFormData = { ...formData, MaBenhNhan: selectedPatient.MaBenhNhan, MaBacSi: MaBacSis };
 
     try {
       if (action === 'add') {
-        // Thêm hóa đơn
         const response = await fetch('http://localhost:5000/api/vienphi', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedFormData),
         });
         const data = await response.json();
-        if (data.success) {
-          alert("Thêm hóa đơn thành công!");
-        } else {
-          alert(data.message);
-        }
+        alert(data.success ? "Thêm hóa đơn thành công!" : data.message);
       } else if (action === 'edit') {
-        // Sửa hóa đơn
         const response = await fetch(`http://localhost:5000/api/vienphi/${item.MaHoaDon}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedFormData),
         });
         const data = await response.json();
-        if (data.success) {
-          alert("Cập nhật hóa đơn thành công!");
-        } else {
-          alert(data.message);
-        }
+        alert(data.success ? "Cập nhật hóa đơn thành công!" : data.message);
       }
     } catch (error) {
       console.error("❌ Lỗi khi thực hiện thao tác:", error.message);
       alert("Đã xảy ra lỗi, vui lòng thử lại!");
     }
-  };
-
-  // Hàm xử lý khi nhấn vào bác sĩ để mở rộng thông tin
-  const handleExpandDoctorInfo = () => {
-    setIsExpanded(!isExpanded); // Chuyển đổi trạng thái mở rộng
   };
 
   return (
@@ -185,7 +180,7 @@ const AddInvoice = () => {
           <form onSubmit={handleSubmit}>
             {/* Tìm kiếm bệnh nhân */}
             <div className="form-group">
-              <label className="form-label">Tìm kiếm bệnh nhân</label>
+              <label className="form-label">Tìm kiếm bệnh nhân (Mã bệnh nhân: {MaBenhNhans})</label>
               <input
                 type="text"
                 className="form-input"
@@ -193,38 +188,21 @@ const AddInvoice = () => {
                 onChange={handlePatientSearchChange}
                 placeholder="Tìm kiếm bệnh nhân bằng tên, CCCD, hoặc số điện thoại..."
               />
-              {showPatientResults && (
-                <div className="search-results">
-                  {filteredPatients.map((user) => (
-                    <div
-                      key={user.ID}
-                      className="search-result-item"
-                      onClick={() => handleSelectPatient(user)}
-                    >
-                      <img src={user.Hinh} alt={user.TenDayDu} width="35" height="30" />
-                      <span>{user.TenDayDu} (SDT: {user.SDT}, CCCD: {user.CCCD})</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+              <div className="search-results">
+                {filteredPatients.map((patient) => (
+                  <div  key={patient.MaBenhNhan}  onClick={() => handleSelectPatient(patient)}>
 
-            {selectedPatient && (
-              <div className="selected-medicine" onClick={handleExpandBenhNhanInfo}>
-                <span>Đã chọn bệnh nhân: {selectedPatient.TenDayDu}</span>
-                            {isExpandedBN && (
-                            <div className="expanded-info">
-                              <span>CCCD: {selectedPatient.CCCD}</span>
-                              <span>SDT: {selectedPatient.SDT}</span>
-
-                            </div>
-                             )}
+                    <span>Mã hồ sơ bệnh án: {patient.ID}</span>
+                    <span> - Mã bệnh nhân: {patient.MaBenhNhan}</span>
+                    <span> - Họ và tên: {patient.HoVaTen} (  CCCD: {patient.SoCCCD_HoChieu})</span>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
 
             {/* Tìm kiếm bác sĩ */}
             <div className="form-group">
-              <label className="form-label">Tìm kiếm bác sĩ</label>
+              <label className="form-label">Tìm kiếm bác sĩ (Mã bác sĩ: {MaBacSis})</label>
               <input
                 type="text"
                 className="form-input"
@@ -232,38 +210,17 @@ const AddInvoice = () => {
                 onChange={handleDoctorSearchChange}
                 placeholder="Tìm kiếm bác sĩ bằng tên, CCCD, hoặc số điện thoại..."
               />
-              {showDoctorResults && (
-                <div className="search-results">
-                  {filteredDoctors.map((user) => (
-                    <div
-                      key={user.ID}
-                      className="search-result-item"
-                      onClick={() => handleSelectDoctor(user)}
-                    >
-                      <img src={user.Hinh} alt={user.TenDayDu} width="35" height="30" />
-                      <span>{user.TenDayDu} (Chuyên môn: {user.ChuyenMon}, Phòng khám: {user.PhongKham})</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="search-results">
+                {filteredDoctors.map((doctor) => (
+                  <div key={doctor.MaBacSi} onClick={() => handleSelectDoctor(doctor)}>
+                    <img src={doctor.Hinh} alt={doctor.TenDayDu} width="35" height="30" />
+                    <span>{doctor.TenDayDu} (Chuyên môn: {doctor.ChuyenMon}, Phòng khám: {doctor.PhongKham})</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {selectedDoctor && (
-              <div className="selected-medicine" onClick={handleExpandDoctorInfo}>
-                <span>Đã chọn bác sĩ: {selectedDoctor.TenDayDu}</span>
-
-
-                {isExpanded && (
-                  <div className="expanded-info" >
-                    <span>CCCD: {selectedDoctor.CCCD}</span>
-                    <span>Chuyên môn: {selectedDoctor.ChuyenMon}</span>
-                    <span>Phòng khám: {selectedDoctor.PhongKham}</span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Các trường còn lại */}
+            {/* Other form fields */}
             <div className="form-group">
               <label className="form-label">Ngày lập hóa đơn</label>
               <input
@@ -297,11 +254,9 @@ const AddInvoice = () => {
               </select>
             </div>
 
-            <div className="content-header">
-              <button className="add-btn" type="submit">
-                {action === 'edit' ? 'Cập nhật' : 'Lưu'}
-              </button>
-            </div>
+            <button className="add-btn" type="submit">
+              {action === 'edit' ? 'Cập nhật' : 'Lưu'}
+            </button>
           </form>
         </div>
       </div>

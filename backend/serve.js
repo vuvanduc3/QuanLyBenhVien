@@ -1738,7 +1738,7 @@ app.get("/api/hoadonchitiet", async (req, res) => {
     try {
         const result = await pool
             .request()
-            .query("SELECT HDCT.MaChiTiet,HDCT.MaHoaDon, HDCT.TenDichVu, HDCT.SoLuong, HDCT.DonGia, HDCT.ThanhTien,VP.MaBenhNhan, VP.MaBacSi FROM HoaDonChiTiet AS HDCT LEFT JOIN VienPhi AS VP ON HDCT.MaHoaDon = VP.MaHoaDon ORDER BY MaChiTiet DESC");
+            .query("SELECT HDCT.MaChiTiet,HDCT.MaHoaDon, HDCT.TenDichVu, HDCT.SoLuong, HDCT.DonGia, HDCT.ThanhTien,VP.MaBenhNhan, VP.MaBacSi, VP.MaHoSo FROM HoaDonChiTiet AS HDCT LEFT JOIN VienPhi AS VP ON HDCT.MaHoaDon = VP.MaHoaDon ORDER BY MaChiTiet DESC");
         res.status(200).json({
             success: true,
             data: result.recordset,
@@ -2451,12 +2451,20 @@ app.get("/api/vienphi", async (req, res) => {
     try {
         // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
         const query = `
-           SELECT
-                  *
-                 FROM VienPhi AS VP
-                 LEFT JOIN BenhNhanVTP AS BN ON BN.ID = VP.MaBenhNhan
-                 LEFT JOIN BacSiVTP AS BS ON BS.ID = VP.MaBacSi
-           	   ORDER BY VP.MaHoaDon DESC;
+          SELECT
+          VP.MaHoaDon,
+          HS.MaBenhNhan,
+          VP.MaBacSi,
+          VP.MaHoSo,
+          VP.TongTien,
+          VP.TinhTrang,
+          VP.NgayLapHoaDon,
+          VP.NgayThanhToan
+
+
+          FROM VienPhi AS VP
+          LEFT JOIN HoSoBenhAn AS HS ON HS.ID = VP.MaHoSo
+          ORDER BY VP.MaHoaDon DESC;
         `;
 
         // Thực hiện truy vấn SQL
@@ -2479,25 +2487,26 @@ app.get("/api/vienphi", async (req, res) => {
 
 //1. API Thêm Hóa Đơn (POST)
 app.post("/api/vienphi", async (req, res) => {
-    const { MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan } = req.body; // Lấy dữ liệu từ body
+    const { MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan,MaHoSo } = req.body; // Lấy dữ liệu từ body
 
     try {
         const result = await pool
             .request()
-            .input("MaBenhNhan", sql.Int, MaBenhNhan)
+            .input("MaBenhNhan", sql.NVarChar(50), MaBenhNhan)
                   .input("MaBacSi", sql.Int, MaBacSi)
                   .input("TongTien", sql.Decimal(18, 2), TongTien)
                   .input("TinhTrang", sql.NVarChar(50), TinhTrang)
+                  .input("MaHoSo", sql.INT, MaHoSo)
                   .input("NgayLapHoaDon", sql.Date, NgayLapHoaDon || new Date()) // Nếu không có, dùng ngày hiện tại
                   .input("NgayThanhToan", sql.Date, NgayThanhToan || new Date()) // Nếu không có, dùng ngày hiện tại
                   .query(`
-                    INSERT INTO VienPhi (MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan)
-                    VALUES (@MaBenhNhan, @MaBacSi, @TongTien, @TinhTrang, @NgayLapHoaDon, @NgayThanhToan);
+                    INSERT INTO VienPhi (MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan,MaHoSo)
+                    VALUES (@MaBenhNhan, @MaBacSi, @TongTien, @TinhTrang, @NgayLapHoaDon, @NgayThanhToan,@MaHoSo);
                   `);
 
-        res.status(201).json({ success: true, message: "Thêm xét nghiệm thành công!" });
+        res.status(201).json({ success: true, message: "Thêm xét viện phí thành công!" });
     } catch (err) {
-        console.error("❌ Lỗi thêm xét nghiệm:", err.message);
+        console.error("❌ Lỗi sửa viện phí:", err.message);
         res.status(500).json({ success: false, message: "Lỗi khi thêm xét nghiệm: " + err.message });
     }
 });
@@ -2505,16 +2514,17 @@ app.post("/api/vienphi", async (req, res) => {
  //2.API Sửa Hóa Đơn (PUT)
  app.put("/api/vienphi/:id", async (req, res) => {
    const { id } = req.params; // Lấy ID từ URL
-   const { MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan } = req.body;
+   const { MaBenhNhan, MaBacSi, TongTien, TinhTrang, NgayLapHoaDon, NgayThanhToan,MaHoSo } = req.body;
 
    try {
       const result = await pool
        .request()
        .input("MaHoaDon", sql.Int, id) // ID hóa đơn
-       .input("MaBenhNhan", sql.Int, MaBenhNhan)
+       .input("MaBenhNhan", sql.NVarChar(50), MaBenhNhan)
        .input("MaBacSi", sql.Int, MaBacSi)
        .input("TongTien", sql.Decimal(18, 2), TongTien)
        .input("TinhTrang", sql.NVarChar(50), TinhTrang)
+       .input("MaHoSo", sql.INT, MaHoSo)
        .input("NgayLapHoaDon", sql.Date, NgayLapHoaDon)
        .input("NgayThanhToan", sql.Date, NgayThanhToan)
        .query(`
@@ -2524,7 +2534,8 @@ app.post("/api/vienphi", async (req, res) => {
              TongTien = @TongTien,
              TinhTrang = @TinhTrang,
              NgayLapHoaDon = @NgayLapHoaDon,
-             NgayThanhToan = @NgayThanhToan
+             NgayThanhToan = @NgayThanhToan,
+             MaHoSo = @MaHoSo
          WHERE MaHoaDon = @MaHoaDon;
        `);
 
