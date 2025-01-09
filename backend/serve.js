@@ -2278,7 +2278,7 @@ app.get("/api/xetnghiem", async (req, res) => {
             SELECT *
             FROM XetNghiem AS XT
             LEFT JOIN HoSoBenhAn AS HS ON XT.MaHoSo = HS.ID
-            LEFT JOIN BenhNhanVTP AS BN ON BN.ID = HS.MaBenhNhan
+
             ORDER BY XT.MaXetNghiem DESC;
         `;
 
