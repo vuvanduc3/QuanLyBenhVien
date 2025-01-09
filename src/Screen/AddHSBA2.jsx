@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 import '../Styles/AddHSBA.css';
 
 const AddMedicalRecord = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { action, item } = location.state || {}; // Lấy action và item từ params
-
     const [formData, setFormData] = useState({
         maBenhNhan: '',
         maLichHen: '',
@@ -32,44 +29,6 @@ const AddMedicalRecord = () => {
         tomTatBenhLy: '',
         hanhDong: ''
     });
-
-    useEffect(() => {
-       if (action === 'add' && item) {
-         setFormData({
-            maBenhNhan: '',
-            maLichHen: '',
-            hoVaTen: item.TenDayDu || '',
-            ngaySinh: new Date(item.NgaySinh).toISOString().split('T')[0] || '',
-            tuoi: item.Tuoi || '',
-            gioiTinh: item.GioiTinh || '',
-            danToc: 'Kinh',
-            diaChiCuTru: item.DiaChi || '',
-            thonPho: '',
-            xaPhuong: '',
-            huyen: '',
-            tinhThanhPho: '',
-            soTheBHYT: item.SoHopDongBaoHiem || '',
-            soCCCD_HoChieu: item.CCCD || '',
-            vaoVien: new Date().toISOString().slice(0, 10),
-            raVien: '',
-            chanDoanVaoVien: '',
-            chanDoanRaVien: '',
-            lyDoVaoVien: '',
-            tomTatBenhLy: '',
-            hanhDong: ''
-         });
-       }
-    }, [action, item]);
-
-    const formatNgaySinh = (ngaySinh) => {
-        if (!ngaySinh) return "Không xác định";
-        const date = new Date(ngaySinh);
-        return new Intl.DateTimeFormat('vi-VN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        }).format(date);
-      };
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -224,39 +183,7 @@ const AddMedicalRecord = () => {
 
             if (data.success) {
                 alert('Thêm hồ sơ bệnh án thành công!');
-                const body2 = {
-                     MaBenhNhanKhamBenh: formData.maBenhNhan,  // Sử dụng item.MaHoaDon nếu có
-                };
-
-                try {
-                    const updateResponse = await fetch(`http://localhost:5000/api/lichkhammabenhnhankhambenh/${item.MaLichKham}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(body2),
-                    });
-
-                    // Kiểm tra xem response có thành công không
-                    if (!updateResponse.ok) {
-                        const errorData = await updateResponse.json(); // Đọc dữ liệu lỗi từ server nếu có
-
-                        return;
-                    }
-
-                    const updateResult = await updateResponse.json();
-                    if (updateResult.success) {
-                        alert('Cập nhập lịch hẹn thành công!');
-                        navigate('/hosobenhan');
-                    } else {
-                       setError(updateResult.message || 'Có lỗi xảy ra khi cập nhật!');
-                    }
-                } catch (error) {
-                    console.error('Lỗi khi gọi API:', error);
-                    setError('Có lỗi xảy ra, vui lòng thử lại!');
-                }
-
-
+                navigate('/hosobenhan');
             } else {
                 setError(data.message || 'Có lỗi xảy ra khi thêm hồ sơ');
             }
@@ -291,7 +218,7 @@ const AddMedicalRecord = () => {
                         {/* Basic Information */}
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="maBenhNhan">Mã bệnh nhân </label>
+                                <label htmlFor="maBenhNhan">Mã bệnh nhân</label>
                                 <input
                                     type="text"
                                     id="maBenhNhan"
