@@ -41,6 +41,10 @@ import CRUDLichKham from './Screen/CRUDLichKham';
 import DieuTri from './Screen/DieuTri';
 import CRUDDieuTri from './Screen/CRUDDieuTri';
 
+import ADDBHYT from './Screen/ADDBHYT';
+import QuanLyBaoHiemNguoiDung from './Screen/QuanLyBaoHiemNguoiDung';
+
+
 function App() {
   return (
     <Router>
@@ -88,6 +92,12 @@ function App() {
 
             <Route path="/lich-su-dieu-tri" element={<DieuTri/>} />
             <Route path="/CRUDDieuTri" element={<CRUDDieuTri/>} />
+
+            <Route path="/ADDBHYT" element={<ADDBHYT/>} />
+            <Route path="/QuanLyBaoHiemNguoiDung" element={<QuanLyBaoHiemNguoiDung/>} />
+
+
+
           </Routes>
         </div>
       </div>
