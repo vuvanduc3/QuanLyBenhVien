@@ -331,7 +331,7 @@ const MedicalRecordDetail = () => {
                                             onChange={handleChange}
                                         />
                                     </div>
-                                   
+
                                 </div>
 
                                 <div className="form-row">
@@ -385,158 +385,176 @@ const MedicalRecordDetail = () => {
                                         </select>
                                     </div>
                                 </div>
-
-                                <div className="form-row">
+                                
                                     <div className="form-group">
-                                        <label>Số thẻ BHYT</label>
-                                        <input
-                                            name="soTheBHYT"
-                                            value={editedData.soTheBHYT}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Số CCCD/Hộ chiếu</label>
-                                        <input
-                                            name="soCCCD_HoChieu"
-                                            value={editedData.soCCCD_HoChieu}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label>Ngày vào viện</label>
-                                        <input
-                                            type="date"
-                                            name="vaoVien"
-                                            value={editedData.vaoVien}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Ngày ra viện</label>
-                                        <input
-                                            type="date"
-                                            name="raVien"
-                                            value={editedData.raVien}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="form-group full-width">
-                                    <label>Chẩn đoán vào viện</label>
-                                    <textarea
-                                        name="chanDoanVaoVien"
-                                        value={editedData.chanDoanVaoVien}
-                                        onChange={handleChange}
-                                        rows="3"
-                                    />
-                                </div>
-
-                                <div className="form-group full-width">
-                                    <label>Chẩn đoán ra viện</label>
-                                    <textarea
-                                        name="chanDoanRaVien"
-                                        value={editedData.chanDoanRaVien}
-                                        onChange={handleChange}
-                                        rows="3"
-                                    />
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label>Trạng thái</label>
+                                        <label htmlFor="xaPhuong">Phường/Xã</label>
                                         <select
-                                            name="trangThai"
-                                            value={editedData.trangThai}
+                                            id="xaPhuong"
+                                            name="xaPhuong"
+                                            value={editedData.xaPhuong}
                                             onChange={handleChange}
-                                            className="form-select"
-                                            required
+                                            disabled={!editedData.huyen }
                                         >
-                                            <option value="">Chọn trạng thái</option>
-                                            {trangThaiList.map(trangThai => {
-                                                let displayText = '';
-                                                switch (trangThai) {
-                                                    case 'DangDieuTri': displayText = 'Đang điều trị'; break;
-                                                    case 'DaKhoi': displayText = 'Đã khỏi'; break;
-                                                    case 'DaXuatVien': displayText = 'Đã xuất viện'; break;
-                                                    case 'ChuyenVien': displayText = 'Chuyển viện'; break;
-                                                    case 'TuVong': displayText = 'Tử vong'; break;
-                                                    default: displayText = trangThai;
-                                                }
-                                                return (
-                                                    <option key={trangThai} value={trangThai}>
-                                                        {displayText}
-                                                    </option>
-                                                );
-                                            })}
+                                            <option value="">Chọn phường/xã</option>
+                                            {wards.map(district => (
+                                                <option key={district.code} value={district.name}>
+                                                    {district.name}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
-                                </div>
-                                <div className="form-group full-width">
-                                    <label>Lý do vào viện</label>
-                                    <textarea
-                                        name="lyDoVaoVien"
-                                        value={editedData.lyDoVaoVien}
-                                        onChange={handleChange}
-                                        rows="3"
-                                    />
-                                </div>
+                                   
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label>Số thẻ BHYT</label>
+                                            <input
+                                                name="soTheBHYT"
+                                                value={editedData.soTheBHYT}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Số CCCD/Hộ chiếu</label>
+                                            <input
+                                                name="soCCCD_HoChieu"
+                                                value={editedData.soCCCD_HoChieu}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    </div>
 
-                                <div className="form-group full-width">
-                                    <label>Tóm tắt bệnh lý</label>
-                                    <textarea
-                                        name="tomTatBenhLy"
-                                        value={editedData.tomTatBenhLy}
-                                        onChange={handleChange}
-                                        rows="4"
-                                    />
-                                </div>
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label>Ngày vào viện</label>
+                                            <input
+                                                type="date"
+                                                name="vaoVien"
+                                                value={editedData.vaoVien}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Ngày ra viện</label>
+                                            <input
+                                                type="date"
+                                                name="raVien"
+                                                value={editedData.raVien}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    </div>
 
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label>Mã lịch hẹn</label>
-                                        <input
-                                            name="maLichHen"
-                                            value={editedData.maLichHen}
+                                    <div className="form-group full-width">
+                                        <label>Chẩn đoán vào viện</label>
+                                        <textarea
+                                            name="chanDoanVaoVien"
+                                            value={editedData.chanDoanVaoVien}
                                             onChange={handleChange}
+                                            rows="3"
                                         />
                                     </div>
-                                    <div className="form-group">
-                                        <label>Hành động</label>
-                                        <select
-                                            name="hanhDong"
-                                            value={editedData.hanhDong}
+
+                                    <div className="form-group full-width">
+                                        <label>Chẩn đoán ra viện</label>
+                                        <textarea
+                                            name="chanDoanRaVien"
+                                            value={editedData.chanDoanRaVien}
                                             onChange={handleChange}
-                                            className="form-select"
-                                        >
-                                            <option value="">Chọn hành động</option>
-                                            {hanhDongList.map(hanhDong => {
-                                                let displayText = '';
-                                                switch (hanhDong) {
-                                                    case 'KhamMoi': displayText = 'Khám mới'; break;
-                                                    case 'TaiKham': displayText = 'Tái khám'; break;
-                                                    case 'CapCuu': displayText = 'Cấp cứu'; break;
-                                                    case 'TheoDoi': displayText = 'Theo dõi'; break;
-                                                    case 'ChuyenVien': displayText = 'Chuyển viện'; break;
-                                                    case 'NhapVien': displayText = 'Nhập viện'; break;
-                                                    case 'XuatVien': displayText = 'Xuất viện'; break;
-                                                    case 'DieuTriNgoaiTru': displayText = 'Điều trị ngoại trú'; break;
-                                                    default: displayText = hanhDong;
-                                                }
-                                                return (
-                                                    <option key={hanhDong} value={hanhDong}>
-                                                        {displayText}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
+                                            rows="3"
+                                        />
                                     </div>
-                                </div>
+
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label>Trạng thái</label>
+                                            <select
+                                                name="trangThai"
+                                                value={editedData.trangThai}
+                                                onChange={handleChange}
+                                                className="form-select"
+                                                required
+                                            >
+                                                <option value="">Chọn trạng thái</option>
+                                                {trangThaiList.map(trangThai => {
+                                                    let displayText = '';
+                                                    switch (trangThai) {
+                                                        case 'DangDieuTri': displayText = 'Đang điều trị'; break;
+                                                        case 'DaKhoi': displayText = 'Đã khỏi'; break;
+                                                        case 'DaXuatVien': displayText = 'Đã xuất viện'; break;
+                                                        case 'ChuyenVien': displayText = 'Chuyển viện'; break;
+                                                        case 'TuVong': displayText = 'Tử vong'; break;
+                                                        default: displayText = trangThai;
+                                                    }
+                                                    return (
+                                                        <option key={trangThai} value={trangThai}>
+                                                            {displayText}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="form-group full-width">
+                                        <label>Lý do vào viện</label>
+                                        <textarea
+                                            name="lyDoVaoVien"
+                                            value={editedData.lyDoVaoVien}
+                                            onChange={handleChange}
+                                            rows="3"
+                                        />
+                                    </div>
+
+                                    <div className="form-group full-width">
+                                        <label>Tóm tắt bệnh lý</label>
+                                        <textarea
+                                            name="tomTatBenhLy"
+                                            value={editedData.tomTatBenhLy}
+                                            onChange={handleChange}
+                                            rows="4"
+                                        />
+                                    </div>
+
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label>Mã lịch hẹn</label>
+                                            <input
+                                                name="maLichHen"
+                                                value={editedData.maLichHen}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Hành động</label>
+                                            <select
+                                                name="hanhDong"
+                                                value={editedData.hanhDong}
+                                                onChange={handleChange}
+                                                className="form-select"
+                                            >
+                                                <option value="">Chọn hành động</option>
+                                                {hanhDongList.map(hanhDong => {
+                                                    let displayText = '';
+                                                    switch (hanhDong) {
+                                                        case 'KhamMoi': displayText = 'Khám mới'; break;
+                                                        case 'TaiKham': displayText = 'Tái khám'; break;
+                                                        case 'CapCuu': displayText = 'Cấp cứu'; break;
+                                                        case 'TheoDoi': displayText = 'Theo dõi'; break;
+                                                        case 'ChuyenVien': displayText = 'Chuyển viện'; break;
+                                                        case 'NhapVien': displayText = 'Nhập viện'; break;
+                                                        case 'XuatVien': displayText = 'Xuất viện'; break;
+                                                        case 'DieuTriNgoaiTru': displayText = 'Điều trị ngoại trú'; break;
+                                                        default: displayText = hanhDong;
+                                                    }
+                                                    return (
+                                                        <option key={hanhDong} value={hanhDong}>
+                                                            {displayText}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
                             </form>
                         ) : (
                             <div className="detail-info">
