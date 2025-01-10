@@ -2,15 +2,26 @@ import Menu1 from "../components/Menu";
 import Search1 from "../components/seach_user";
 import React, { useState, useEffect } from "react";
 import "../Styles/EditPayment.css";
-import { useParams } from "react-router-dom";
+import { useParams,useLocation } from "react-router-dom";
 
-const EditPayment = () => {
+const AddPayment = () => {
   const { paymentId } = useParams();
   const [paymentData, setPaymentData] = useState({});
-  const [NgayBHYTChiTra, setNgayBHYTChiTra] = useState('');
+
+  const [MaBenhNhan, setMaBenhNhan] = useState('');
+  const [MaHoaDon, setMaHoaDon] = useState('');
+
+  const today = new Date();
+  const formattedDate = new Intl.DateTimeFormat('vi-VN').format(today);
+
+
+
+  const location = useLocation();
+  const { action, item } = location.state || {}; // Lấy action và item từ params
+
 
   const [formData, setFormData] = useState({
-    phuongThucThanhToan: "",
+    phuongThucThanhToan: "1",
     maGiaoDich: "",
     trangThaiThanhToan: "",
     cccdCmnd: "",
@@ -20,7 +31,23 @@ const EditPayment = () => {
     maBaoHiemChiTra: "",
     soTienBaoHiemChiTra: "",
   });
-  
+
+  useEffect(() => {
+        if (action === 'add' && item) {
+
+          setFormData({
+              phuongThucThanhToan: "1",
+              maGiaoDich: "N/A",
+              trangThaiThanhToan: "1",
+              cccdCmnd: item.SoCCCD_HoChieu || '',
+              soTienThanhToan:item.TongTien || '0',
+              ngayThanhToan:formattedDate || '',
+              maBaoHiem: item.SoTheBHYT || '',
+              maBaoHiemChiTra: item.MaHoaDon || "",
+              soTienBaoHiemChiTra:  Math.floor(item.TongTien * 0.2) || '',
+          })
+        }
+    }, [action, item]);
   console.log("formData",formData);
 
   const bankCode = "vietcombank";
@@ -33,76 +60,7 @@ const EditPayment = () => {
 
   console.log(count,"count")
 
-  useEffect(() => {
-    let api = `http://localhost:5000/api/ChiTietThanhToan/${paymentId}`;
-    fetch(api)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success && data.data) {
-          const payment = data.data;
-          setPaymentData({
-            paymentMethod: payment.paymentMethod || "",
-            transactionId: payment.transactionId || "",
-            status: payment.status || "",
-            cccd: payment.cccd || "",
-            amount: payment.amount || "",
-            paymentDate: payment.paymentDate
-              ? formatDate(payment.paymentDate)
-              : "",
-            patientId: payment.patientId || "",
-            invoiceId: payment.invoiceId || "",
-            paymentCreateDate: payment.paymentCreateDate
-              ? formatDate(payment.paymentCreateDate)
-              : "",
-          });
-          setFormData({
-            phuongThucThanhToan: payment.paymentMethod !== undefined ? payment.paymentMethod : "",
-            maGiaoDich: payment.transactionId || "",
-            trangThaiThanhToan: payment.status !== undefined ? payment.status : "",
-            cccdCmnd: payment.cccd || "",
-            soTienThanhToan: payment.amount || "",
-            ngayThanhToan: payment.paymentDate
-              ? formatDate(payment.paymentDate)
-              : "",
-            maBaoHiem: "",
-            maBaoHiemChiTra: "",
-            soTienBaoHiemChiTra: "",
-          });
-          fetchChiPhiBHYT(paymentId);
-        } else {
-          console.error("Invalid data format:", data);
-        }
-      })
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-      });
-  }, [paymentId,count]);
-
-  const fetchChiPhiBHYT = (maChiPhiBHYT) => {
-    const api = `http://localhost:5000/api/ChiPhiBHYT/${maChiPhiBHYT}`;
-
-    fetch(api)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success && data.data) {
-          setFormData((prevData) => ({
-            ...prevData, // Giữ nguyên các giá trị cũ của formData
-            maBaoHiem: data.data.MaSoTheBHYT || "", // Cập nhật maBaoHiem
-            maBaoHiemChiTra: data.data.MaChiPhiBHYT || "", // Cập nhật maBaoHiemChiTra
-            soTienBaoHiemChiTra: data.data.SoTienBHYTChiTra || "", // Cập nhật soTienBaoHiemChiTra
-            // Cập nhật soTienBaoHiemChiTra
-          }));
-         setNgayBHYTChiTra(formatDate(data.data.NgayBHYTThanhToan));
-        } else {
-          console.error("Không tìm thấy dữ liệu chi phí BHYT");
-        }
-      })
-      .catch((err) => {
-        console.error("Lỗi khi gọi API:", err);
-      });
-  };
-
-
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -135,38 +93,77 @@ const EditPayment = () => {
     return value.toLocaleString("vi-VN");
   };
 
-  const handleSavePayment = () => {
-    const updatedPaymentData = {
-      paymentMethod: formData.phuongThucThanhToan,
-      transactionId: formData.maGiaoDich,
-      status: parseInt(formData.trangThaiThanhToan, 10),
-      cccd: formData.cccdCmnd,
-      paymentDate: formData.ngayThanhToan || null,
-    };
-  
-    fetch(`http://localhost:5000/api/ChiTietThanhToan/${paymentId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedPaymentData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setCount(count + 1);
-          alert('Cập nhật thông tin thanh toán thành công!');
-          console.log('Payment information updated:', data);
-        } else {
-          alert('Cập nhật thất bại: ' + data.message);
-          console.error('Error:', data.message);
-        }
-      })
-      .catch((error) => {
-        alert('Có lỗi xảy ra khi cập nhật thanh toán!');
-        console.error('Error updating payment:', error);
+  const handleSavePayment = async () => {
+    try {
+      const paymentData = {
+        id: item.MaHoaDon,
+        invoiceId: formData.maBaoHiemChiTra,
+        paymentMethod: formData.phuongThucThanhToan,
+        patientId: item.MaBenhNhan,
+        amount: formData.soTienThanhToan,
+        transactionId: formData.maGiaoDich,
+        status: parseInt(formData.trangThaiThanhToan, 10),
+        cccd: formData.cccdCmnd,
+      };
+
+      const response = await fetch('http://localhost:5000/api/them-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentData),
       });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message); // Hiển thị thông báo thành công
+        // Tiếp tục gửi chi phí bảo hiểm nếu có
+        if (formData.maBaoHiem && formData.soTienBaoHiemChiTra) {
+          const insuranceData = {
+            MaChiPhiBHYT: formData.maBaoHiemChiTra,
+            MaSoTheBHYT: formData.maBaoHiem,
+            SoTienBHYTChiTra: formData.soTienBaoHiemChiTra,
+          };
+
+          const insuranceResponse = await fetch('http://localhost:5000/api/addchiphibhyt', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(insuranceData),
+          });
+
+          const insuranceResult = await insuranceResponse.json();
+          if (insuranceResponse.ok) {
+            alert(insuranceResult.message);
+            const updateResponse2 = await fetch('http://localhost:5000/api/capnhaptinhtrangthanhtoan', {
+                       method: 'PUT', // Sử dụng phương thức POST nếu cần
+                       headers: {
+                         'Content-Type': 'application/json',
+                       },
+                       body: JSON.stringify({ /* Tham số cần thiết cho API */ }),
+                     });
+
+                     const updateData2 = await updateResponse2.json();
+
+                     if (!updateData2.success) {
+                       console.error('Lỗi khi cập nhật tình trạng thanh toán');
+                       return;
+             }
+          } else {
+            throw new Error(insuranceResult.message);
+          }
+        }
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi lưu thanh toán:', error); // Log chi tiết lỗi
+      alert('Đã có lỗi xảy ra khi lưu thanh toán: ' + error.message); // Hiển thị lỗi chi tiết
+    }
   };
+
+
   
 
   return (
@@ -178,19 +175,19 @@ const EditPayment = () => {
           <h2>Thanh toán</h2>
           <div>
             <div style={{ flexDirection: "row" }}>
-              <label>Mã bệnh nhân:</label>
+              <label>Mã bệnh nhân: {item.MaBenhNhan}</label>
               <span style={{ marginLeft: "10px" }}>
                 {paymentData.patientId}
               </span>
             </div>
             <div>
-              <label>Mã hóa đơn:</label>
+              <label>Mã hóa đơn: {item.MaHoaDon}</label>
               <span style={{ marginLeft: "10px" }}>
                 {paymentData.invoiceId}
               </span>
             </div>
             <div>
-              <label>Ngày tạo:</label>
+              <label>Ngày tạo: {formattedDate}</label>
               <span style={{ marginLeft: "10px" }}>
                 {paymentData.paymentCreateDate}
               </span>
@@ -299,13 +296,12 @@ const EditPayment = () => {
                 </div>
               </div>
             </div>
-            <h4>Thông tin thêm (chi phí bảo hiểm chi trả)</h4>
+            <h4>Thông tin thêm (chi phí bảo hiểm chi trả) {item.SoTheBHYT?'':'( Không có thông tin thẻ bảo hiểm )'}</h4>
             <div className="EditPayment_paymentRowInput">
               <div className="EditPayment_paymentColInput">
                 <label>Mã bảo hiểm:</label>
                 <input
                   type="text"
-                  disabled
                   name="maBaoHiem"
                   value={formData.maBaoHiem}
                   onChange={handleChange}
@@ -315,7 +311,6 @@ const EditPayment = () => {
                 <label>Mã chi phí bảo hiểm chi trả:</label>
                 <input
                   type="text"
-                  disabled
                   name="maBaoHiemChiTra"
                   value={formData.maBaoHiemChiTra}
                   onChange={handleChange}
@@ -327,7 +322,6 @@ const EditPayment = () => {
                 <label>Số tiền bảo hiểm chi trả:</label>
                 <input
                   type="number"
-
                   name="soTienBaoHiemChiTra"
                   value={formData.soTienBaoHiemChiTra}
                   onChange={handleChange}
@@ -338,8 +332,7 @@ const EditPayment = () => {
                 <input
                   placeholder="Ngày thanh toán"
                   type="text"
-                  disabled
-                  value={NgayBHYTChiTra}
+                  value={formattedDate}
                   name="ngayThanhToan"
                   onChange={handleChange}
                 />
@@ -359,4 +352,4 @@ const EditPayment = () => {
   );
 };
 
-export default EditPayment;
+export default AddPayment;

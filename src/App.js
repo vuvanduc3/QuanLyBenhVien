@@ -44,7 +44,7 @@ import CRUDDieuTri from './Screen/CRUDDieuTri';
 import ADDBHYT from './Screen/ADDBHYT';
 import QuanLyBaoHiemNguoiDung from './Screen/QuanLyBaoHiemNguoiDung';
 
-
+import AddPayment from './Screen/AddPayment';
 
 function App() {
   return (
@@ -96,6 +96,8 @@ function App() {
 
             <Route path="/ADDBHYT" element={<ADDBHYT/>} />
             <Route path="/QuanLyBaoHiemNguoiDung" element={<QuanLyBaoHiemNguoiDung/>} />
+
+            <Route path="/AddPayment" element={<AddPayment/>} />
 
 
           </Routes>
