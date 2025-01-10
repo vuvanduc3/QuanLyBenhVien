@@ -66,7 +66,8 @@ export default function Dashboard() {
     totalInvoices: 0,
     totalRevenue: 0,
     totalInsurance: 0,
-    totalTests: 0,  // Thêm totalTests vào previousStats
+    totalTests: 0,
+    totalTreatment: 0, // Thêm totalTreatment vào previousStats
   });
 
   // Hàm tính phần trăm thay đổi
@@ -79,20 +80,6 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Cập nhật dữ liệu trước
-        const updateResponse = await fetch('http://localhost:5000/api/thongketonghop_vathuthapthongtin', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ /* Tham số cần thiết cho API */ }),
-        });
-
-        const updateData = await updateResponse.json();
-        if (!updateData.success) {
-          console.error('Lỗi khi cập nhật thông tin');
-          return;
-        }
-
-        // Sau khi cập nhật, gọi API để lấy dữ liệu thống kê
         const response = await fetch('http://localhost:5000/api/tonghopthongtin');
         const data = await response.json();
 
@@ -101,7 +88,8 @@ export default function Dashboard() {
         const totalInvoices = data.data.reduce((acc, curr) => acc + curr.SoLuongHoaDon, 0);
         const totalRevenue = data.data.reduce((acc, curr) => acc + curr.DoanhThu, 0);
         const totalInsurance = data.data.reduce((acc, curr) => acc + curr.ChiPhiBHYT, 0);
-        const totalTests = data.data.reduce((acc, curr) => acc + curr.SoLuongXetNghiem, 0);  // Tính tổng số lượng xét nghiệm
+        const totalTests = data.data.reduce((acc, curr) => acc + curr.SoLuongXetNghiem, 0);
+        const totalTreatment = data.data.reduce((acc, curr) => acc + curr.SoLuongDieuTri, 0); // Tính tổng số lượng điều trị
 
         // Cập nhật dữ liệu thống kê chính
         setStatsData([
@@ -138,12 +126,20 @@ export default function Dashboard() {
             isPositive: totalRevenue >= 0
           },
           {
-            title: "Số lượng xét nghiệm",  // Thêm thông tin số lượng xét nghiệm
+            title: "Số lượng xét nghiệm",
             value: totalTests.toString(),
             change: `${calculateChangePercentage(totalTests, previousStats.totalTests)}% Up from yesterday`,
             icon: <FileText size={20} />,
             iconColor: "#ff5722",
             isPositive: totalTests >= 0
+          },
+          {
+            title: "Số lượng điều trị",  // Thêm thông tin số lượng điều trị
+            value: totalTreatment.toString(),
+            change: `${calculateChangePercentage(totalTreatment, previousStats.totalTreatment)}% Up from yesterday`,
+            icon: <FileText size={20} />,
+            iconColor: "#fbbf24",
+            isPositive: totalTreatment >= 0
           }
         ]);
 
@@ -171,7 +167,8 @@ export default function Dashboard() {
           invoice: item.SoLuongHoaDon,
           patients: item.SoLuongBenhNhan,
           doctors: item.SoLuongBacSi,
-          tests: item.SoLuongXetNghiem  // Thêm số lượng xét nghiệm vào dữ liệu biểu đồ
+          tests: item.SoLuongXetNghiem,
+          treatment: item.SoLuongDieuTri  // Thêm số lượng điều trị vào dữ liệu biểu đồ
         }));
         setChartData(updatedChartData);
         setSoLuongBN(totalPatients);
@@ -183,7 +180,8 @@ export default function Dashboard() {
           totalInvoices,
           totalRevenue,
           totalInsurance,
-          totalTests  // Lưu số lượng xét nghiệm vào previousStats
+          totalTests,
+          totalTreatment  // Lưu số lượng điều trị vào previousStats
         });
 
       } catch (error) {
@@ -254,6 +252,7 @@ export default function Dashboard() {
             <Area type="monotone" dataKey="patients" name="Số lượng bệnh nhân" stroke="#6366f1" fill="#6366f1" />
             <Area type="monotone" dataKey="doctors" name="Số lượng bác sĩ" stroke="#16a34a" fill="#16a34a" />
             <Area type="monotone" dataKey="tests" name="Số lượng xét nghiệm" stroke="#ff5722" fill="#ffccbc" />
+            <Area type="monotone" dataKey="treatment" name="Số lượng điều trị" stroke="#fbbf24" fill="#fef3c7" /> {/* Thêm điều trị vào biểu đồ */}
           </AreaChart>
         </div>
       </div>

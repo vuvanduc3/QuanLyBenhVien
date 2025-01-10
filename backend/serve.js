@@ -3357,6 +3357,8 @@ app.put("/api/thongketonghop_vathuthapthongtin", async (req, res) => {
                DECLARE @SoLuongHoaDon INT;
                DECLARE @NgayXetNghiem DATE;
                DECLARE @SoLuongXetNghiem INT;
+               DECLARE @NgayDieuTri DATE;
+               DECLARE @SoLuongDieuTri INT;
 
                -- Cập nhật chi phí bảo hiểm y tế từ bảng ChiPhiBHYT
                DECLARE ChiPhiBHYTCursor CURSOR FOR
@@ -3512,6 +3514,40 @@ app.put("/api/thongketonghop_vathuthapthongtin", async (req, res) => {
                END
                CLOSE XetNghiemCursor;
                DEALLOCATE XetNghiemCursor;
+
+               -- Cập nhật số lượng điều trị từ bảng DieuTri
+               DECLARE DieuTriCursor CURSOR FOR
+               SELECT DISTINCT CAST(NgayDieuTri AS DATE) AS NgayDieuTri
+               FROM DieuTri;
+
+               OPEN DieuTriCursor;
+               FETCH NEXT FROM DieuTriCursor INTO @NgayDieuTri;
+
+               WHILE @@FETCH_STATUS = 0
+               BEGIN
+                   -- Đếm số lượng điều trị trong ngày
+                   SELECT @SoLuongDieuTri = COUNT(*)
+                   FROM DieuTri
+                   WHERE CAST(NgayDieuTri AS DATE) = @NgayDieuTri;
+
+                   -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
+                   IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayDieuTri)
+                   BEGIN
+                       -- Nếu ngày đã có, cập nhật số lượng điều trị
+                       UPDATE TongHopThongTin
+                       SET SoLuongDieuTri = @SoLuongDieuTri
+                       WHERE Ngay = @NgayDieuTri;
+                   END
+                   ELSE
+                   BEGIN
+                       -- Nếu ngày chưa có, thêm mới số lượng điều trị
+                       INSERT INTO TongHopThongTin (Ngay, SoLuongDieuTri)
+                       VALUES (@NgayDieuTri, @SoLuongDieuTri);
+                   END
+                   FETCH NEXT FROM DieuTriCursor INTO @NgayDieuTri;
+               END
+               CLOSE DieuTriCursor;
+               DEALLOCATE DieuTriCursor;
             `);
 
         res.status(200).json({ success: true, message: "Cập nhật thông tin thành công!" });
