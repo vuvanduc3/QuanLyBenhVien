@@ -713,7 +713,8 @@ app.put("/api/thuoc/:id", async (req, res) => {
                     MoTa = @description,
                     SoLuong = @quantity,
                     GiaThuoc = @price,
-                    MaDanhMuc = @maDanhMuc
+                    MaDanhMuc = @maDanhMuc,
+                    NgayNhapHangCuaThuoc =  GETDATE()
                 WHERE ID = @id
             `);
 
@@ -1703,7 +1704,8 @@ app.put("/api/vattu/:id", async (req, res) => {
                     LoaiVatTu = @loaivattu,
                     DonViTinh = @donvitinh,
                     SoLuong = @soluong,
-                    GiaTien = @giatien
+                    GiaTien = @giatien,
+                    NgayNhapHang = GETDATE()
                 WHERE MaVatTu = @id
             `);
 
@@ -1792,7 +1794,7 @@ app.put("/api/hoadonchitiet/:id", async (req, res) => {
             .input("SoLuong", SoLuong)
             .input("DonGia", DonGia)
             .query(
-                "UPDATE HoaDonChiTiet SET TenDichVu = @TenDichVu, SoLuong = @SoLuong, DonGia = @DonGia WHERE MaChiTiet = @MaChiTiet"
+                "UPDATE HoaDonChiTiet SET TenDichVu = @TenDichVu, SoLuong = @SoLuong, DonGia = @DonGia, NgayNhapHoaDonChiTiet = GETDATE() WHERE MaChiTiet = @MaChiTiet"
             );
 
         res
@@ -2063,6 +2065,7 @@ app.put("/api/donthuoc/:id", async (req, res) => {
                     MaHoSo = @MaHoSo,
                     SoLuongDonThuoc = @SoLuongDonThuoc,
                     HuongDanSuDung = @HuongDanSuDung,
+                    NgayNhapHangCuaDonThuoc =  GETDATE(),
                     DaNhapHoaDon = @DaNhapHoaDon -- Cập nhật cột mới
                 WHERE MaDonThuoc = @MaDonThuoc
             `);
@@ -3347,207 +3350,380 @@ app.put("/api/thongketonghop_vathuthapthongtin", async (req, res) => {
         const result = await pool
             .request()
             .query(`
-               DECLARE @NgayBHYTThanhToan DATE;
-               DECLARE @SoTienBHYTChiTra DECIMAL(18, 2);
-               DECLARE @NgayLapHoaDon DATE;
-               DECLARE @TongTien DECIMAL(18, 2);
-               DECLARE @NgayTao DATE;
-               DECLARE @SoLuongBenhNhan INT;
-               DECLARE @SoLuongBacSi INT;
-               DECLARE @SoLuongHoaDon INT;
-               DECLARE @NgayXetNghiem DATE;
-               DECLARE @SoLuongXetNghiem INT;
-               DECLARE @NgayDieuTri DATE;
-               DECLARE @SoLuongDieuTri INT;
+                    DECLARE @NgayBHYTThanhToan DATE;
+                    DECLARE @SoTienBHYTChiTra DECIMAL(18, 2);
+                    DECLARE @NgayLapHoaDon DATE;
+                    DECLARE @TongTien DECIMAL(18, 2);
+                    DECLARE @NgayTao DATE;
+                    DECLARE @SoLuongBenhNhan INT;
+                    DECLARE @SoLuongBacSi INT;
+                    DECLARE @SoLuongHoaDon INT;
+                    DECLARE @NgayXetNghiem DATE;
+                    DECLARE @SoLuongXetNghiem INT;
+                    DECLARE @NgayDieuTri DATE;
+                    DECLARE @SoLuongDieuTri INT;
+                    DECLARE @NgayNhapHang DATE;
+                    DECLARE @SoLuongVatTu INT;
 
-               -- Cập nhật chi phí bảo hiểm y tế từ bảng ChiPhiBHYT
-               DECLARE ChiPhiBHYTCursor CURSOR FOR
-               SELECT DISTINCT NgayBHYTThanhToan, SUM(SoTienBHYTChiTra) AS SoTienBHYTChiTra
-               FROM ChiPhiBHYT
-               GROUP BY NgayBHYTThanhToan;
+                    -- Cập nhật chi phí bảo hiểm y tế từ bảng ChiPhiBHYT
+                    DECLARE ChiPhiBHYTCursor CURSOR FOR
+                    SELECT DISTINCT NgayBHYTThanhToan, SUM(SoTienBHYTChiTra) AS SoTienBHYTChiTra
+                    FROM ChiPhiBHYT
+                    GROUP BY NgayBHYTThanhToan;
 
-               OPEN ChiPhiBHYTCursor;
-               FETCH NEXT FROM ChiPhiBHYTCursor INTO @NgayBHYTThanhToan, @SoTienBHYTChiTra;
+                    OPEN ChiPhiBHYTCursor;
+                    FETCH NEXT FROM ChiPhiBHYTCursor INTO @NgayBHYTThanhToan, @SoTienBHYTChiTra;
 
-               WHILE @@FETCH_STATUS = 0
-               BEGIN
-                   IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayBHYTThanhToan)
-                   BEGIN
-                       UPDATE TongHopThongTin
-                       SET ChiPhiBHYT = @SoTienBHYTChiTra
-                       WHERE Ngay = @NgayBHYTThanhToan;
-                   END
-                   ELSE
-                   BEGIN
-                       INSERT INTO TongHopThongTin (Ngay, ChiPhiBHYT)
-                       VALUES (@NgayBHYTThanhToan, @SoTienBHYTChiTra);
-                   END
-                   FETCH NEXT FROM ChiPhiBHYTCursor INTO @NgayBHYTThanhToan, @SoTienBHYTChiTra;
-               END
-               CLOSE ChiPhiBHYTCursor;
-               DEALLOCATE ChiPhiBHYTCursor;
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayBHYTThanhToan)
+                        BEGIN
+                            UPDATE TongHopThongTin
+                            SET ChiPhiBHYT = @SoTienBHYTChiTra
+                            WHERE Ngay = @NgayBHYTThanhToan;
+                        END
+                        ELSE
+                        BEGIN
+                            INSERT INTO TongHopThongTin (Ngay, ChiPhiBHYT)
+                            VALUES (@NgayBHYTThanhToan, @SoTienBHYTChiTra);
+                        END
+                        FETCH NEXT FROM ChiPhiBHYTCursor INTO @NgayBHYTThanhToan, @SoTienBHYTChiTra;
+                    END
+                    CLOSE ChiPhiBHYTCursor;
+                    DEALLOCATE ChiPhiBHYTCursor;
 
-               -- Cập nhật doanh thu từ bảng VienPhi
-               DECLARE VienPhiCursor CURSOR FOR
-               SELECT DISTINCT NgayLapHoaDon, SUM(TongTien) AS TongTien
-               FROM VienPhi
-               GROUP BY NgayLapHoaDon;
+                    -- Cập nhật doanh thu từ bảng VienPhi
+                    DECLARE VienPhiCursor CURSOR FOR
+                    SELECT DISTINCT NgayLapHoaDon, SUM(TongTien) AS TongTien
+                    FROM VienPhi
+                    GROUP BY NgayLapHoaDon;
 
-               OPEN VienPhiCursor;
-               FETCH NEXT FROM VienPhiCursor INTO @NgayLapHoaDon, @TongTien;
+                    OPEN VienPhiCursor;
+                    FETCH NEXT FROM VienPhiCursor INTO @NgayLapHoaDon, @TongTien;
 
-               WHILE @@FETCH_STATUS = 0
-               BEGIN
-                   IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayLapHoaDon)
-                   BEGIN
-                       UPDATE TongHopThongTin
-                       SET DoanhThu = @TongTien
-                       WHERE Ngay = @NgayLapHoaDon;
-                   END
-                   ELSE
-                   BEGIN
-                       INSERT INTO TongHopThongTin (Ngay, DoanhThu)
-                       VALUES (@NgayLapHoaDon, @TongTien);
-                   END
-                   FETCH NEXT FROM VienPhiCursor INTO @NgayLapHoaDon, @TongTien;
-               END
-               CLOSE VienPhiCursor;
-               DEALLOCATE VienPhiCursor;
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayLapHoaDon)
+                        BEGIN
+                            UPDATE TongHopThongTin
+                            SET DoanhThu = @TongTien
+                            WHERE Ngay = @NgayLapHoaDon;
+                        END
+                        ELSE
+                        BEGIN
+                            INSERT INTO TongHopThongTin (Ngay, DoanhThu)
+                            VALUES (@NgayLapHoaDon, @TongTien);
+                        END
+                        FETCH NEXT FROM VienPhiCursor INTO @NgayLapHoaDon, @TongTien;
+                    END
+                    CLOSE VienPhiCursor;
+                    DEALLOCATE VienPhiCursor;
 
-               -- Cập nhật số lượng bệnh nhân và bác sĩ từ bảng NguoiDung
-               DECLARE NguoiDungCursor CURSOR FOR
-               SELECT DISTINCT CAST(NgayTao AS DATE) AS NgayTao
-               FROM NguoiDung
-               WHERE VaiTro IN (N'Bệnh nhân', N'Bác sĩ');
+                    -- Cập nhật số lượng bệnh nhân và bác sĩ từ bảng NguoiDung
+                    DECLARE NguoiDungCursor CURSOR FOR
+                    SELECT DISTINCT CAST(NgayTao AS DATE) AS NgayTao
+                    FROM NguoiDung
+                    WHERE VaiTro IN (N'Bệnh nhân', N'Bác sĩ');
 
-               OPEN NguoiDungCursor;
-               FETCH NEXT FROM NguoiDungCursor INTO @NgayTao;
+                    OPEN NguoiDungCursor;
+                    FETCH NEXT FROM NguoiDungCursor INTO @NgayTao;
 
-               WHILE @@FETCH_STATUS = 0
-               BEGIN
-                   -- Tính số lượng người dùng "Bệnh nhân" trong ngày
-                   SELECT @SoLuongBenhNhan = COUNT(*)
-                   FROM NguoiDung
-                   WHERE VaiTro = N'Bệnh nhân' AND CAST(NgayTao AS DATE) = @NgayTao;
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        -- Tính số lượng người dùng "Bệnh nhân" trong ngày
+                        SELECT @SoLuongBenhNhan = COUNT(*)
+                        FROM NguoiDung
+                        WHERE VaiTro = N'Bệnh nhân' AND CAST(NgayTao AS DATE) = @NgayTao;
 
-                   -- Tính số lượng người dùng "Bác sĩ" trong ngày
-                   SELECT @SoLuongBacSi = COUNT(*)
-                   FROM NguoiDung
-                   WHERE VaiTro = N'Bác sĩ' AND CAST(NgayTao AS DATE) = @NgayTao;
+                        -- Tính số lượng người dùng "Bác sĩ" trong ngày
+                        SELECT @SoLuongBacSi = COUNT(*)
+                        FROM NguoiDung
+                        WHERE VaiTro = N'Bác sĩ' AND CAST(NgayTao AS DATE) = @NgayTao;
 
-                   -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
-                   IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayTao)
-                   BEGIN
-                       -- Nếu ngày đã có, cập nhật số lượng bệnh nhân và bác sĩ
-                       UPDATE TongHopThongTin
-                       SET SoLuongBenhNhan = @SoLuongBenhNhan, SoLuongBacSi = @SoLuongBacSi
-                       WHERE Ngay = @NgayTao;
-                   END
-                   ELSE
-                   BEGIN
-                       -- Nếu ngày chưa có, thêm mới số lượng bệnh nhân và bác sĩ
-                       INSERT INTO TongHopThongTin (Ngay, SoLuongBenhNhan, SoLuongBacSi)
-                       VALUES (@NgayTao, @SoLuongBenhNhan, @SoLuongBacSi);
-                   END
-                   FETCH NEXT FROM NguoiDungCursor INTO @NgayTao;
-               END
-               CLOSE NguoiDungCursor;
-               DEALLOCATE NguoiDungCursor;
+                        -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayTao)
+                        BEGIN
+                            -- Nếu ngày đã có, cập nhật số lượng bệnh nhân và bác sĩ
+                            UPDATE TongHopThongTin
+                            SET SoLuongBenhNhan = @SoLuongBenhNhan, SoLuongBacSi = @SoLuongBacSi
+                            WHERE Ngay = @NgayTao;
+                        END
+                        ELSE
+                        BEGIN
+                            -- Nếu ngày chưa có, thêm mới số lượng bệnh nhân và bác sĩ
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongBenhNhan, SoLuongBacSi)
+                            VALUES (@NgayTao, @SoLuongBenhNhan, @SoLuongBacSi);
+                        END
+                        FETCH NEXT FROM NguoiDungCursor INTO @NgayTao;
+                    END
+                    CLOSE NguoiDungCursor;
+                    DEALLOCATE NguoiDungCursor;
 
-               -- Cập nhật số lượng hóa đơn từ bảng VienPhi
-               DECLARE VienPhiCursorForHoaDon CURSOR FOR
-               SELECT DISTINCT NgayLapHoaDon, COUNT(*) AS SoLuongHoaDon
-               FROM VienPhi
-               GROUP BY NgayLapHoaDon;
+                    -- Cập nhật số lượng hóa đơn từ bảng VienPhi
+                    DECLARE VienPhiCursorForHoaDon CURSOR FOR
+                    SELECT DISTINCT NgayLapHoaDon, COUNT(*) AS SoLuongHoaDon
+                    FROM VienPhi
+                    GROUP BY NgayLapHoaDon;
 
-               OPEN VienPhiCursorForHoaDon;
-               FETCH NEXT FROM VienPhiCursorForHoaDon INTO @NgayLapHoaDon, @SoLuongHoaDon;
+                    OPEN VienPhiCursorForHoaDon;
+                    FETCH NEXT FROM VienPhiCursorForHoaDon INTO @NgayLapHoaDon, @SoLuongHoaDon;
 
-               WHILE @@FETCH_STATUS = 0
-               BEGIN
-                   IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayLapHoaDon)
-                   BEGIN
-                       UPDATE TongHopThongTin
-                       SET SoLuongHoaDon = @SoLuongHoaDon
-                       WHERE Ngay = @NgayLapHoaDon;
-                   END
-                   ELSE
-                   BEGIN
-                       INSERT INTO TongHopThongTin (Ngay, SoLuongHoaDon)
-                       VALUES (@NgayLapHoaDon, @SoLuongHoaDon);
-                   END
-                   FETCH NEXT FROM VienPhiCursorForHoaDon INTO @NgayLapHoaDon, @SoLuongHoaDon;
-               END
-               CLOSE VienPhiCursorForHoaDon;
-               DEALLOCATE VienPhiCursorForHoaDon;
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayLapHoaDon)
+                        BEGIN
+                            UPDATE TongHopThongTin
+                            SET SoLuongHoaDon = @SoLuongHoaDon
+                            WHERE Ngay = @NgayLapHoaDon;
+                        END
+                        ELSE
+                        BEGIN
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongHoaDon)
+                            VALUES (@NgayLapHoaDon, @SoLuongHoaDon);
+                        END
+                        FETCH NEXT FROM VienPhiCursorForHoaDon INTO @NgayLapHoaDon, @SoLuongHoaDon;
+                    END
+                    CLOSE VienPhiCursorForHoaDon;
+                    DEALLOCATE VienPhiCursorForHoaDon;
 
-               -- Cập nhật số lượng xét nghiệm từ bảng XetNghiem
-               DECLARE XetNghiemCursor CURSOR FOR
-               SELECT DISTINCT CAST(NgayXetNghiem AS DATE) AS NgayXetNghiem
-               FROM XetNghiem;
+                    -- Cập nhật số lượng xét nghiệm từ bảng XetNghiem
+                    DECLARE XetNghiemCursor CURSOR FOR
+                    SELECT DISTINCT CAST(NgayXetNghiem AS DATE) AS NgayXetNghiem
+                    FROM XetNghiem;
 
-               OPEN XetNghiemCursor;
-               FETCH NEXT FROM XetNghiemCursor INTO @NgayXetNghiem;
+                    OPEN XetNghiemCursor;
+                    FETCH NEXT FROM XetNghiemCursor INTO @NgayXetNghiem;
 
-               WHILE @@FETCH_STATUS = 0
-               BEGIN
-                   -- Đếm số lượng xét nghiệm trong ngày
-                   SELECT @SoLuongXetNghiem = COUNT(*)
-                   FROM XetNghiem
-                   WHERE CAST(NgayXetNghiem AS DATE) = @NgayXetNghiem;
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        -- Đếm số lượng xét nghiệm trong ngày
+                        SELECT @SoLuongXetNghiem = COUNT(*)
+                        FROM XetNghiem
+                        WHERE CAST(NgayXetNghiem AS DATE) = @NgayXetNghiem;
 
-                   -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
-                   IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayXetNghiem)
-                   BEGIN
-                       -- Nếu ngày đã có, cập nhật số lượng xét nghiệm
-                       UPDATE TongHopThongTin
-                       SET SoLuongXetNghiem = @SoLuongXetNghiem
-                       WHERE Ngay = @NgayXetNghiem;
-                   END
-                   ELSE
-                   BEGIN
-                       -- Nếu ngày chưa có, thêm mới số lượng xét nghiệm
-                       INSERT INTO TongHopThongTin (Ngay, SoLuongXetNghiem)
-                       VALUES (@NgayXetNghiem, @SoLuongXetNghiem);
-                   END
-                   FETCH NEXT FROM XetNghiemCursor INTO @NgayXetNghiem;
-               END
-               CLOSE XetNghiemCursor;
-               DEALLOCATE XetNghiemCursor;
+                        -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayXetNghiem)
+                        BEGIN
+                            -- Nếu ngày đã có, cập nhật số lượng xét nghiệm
+                            UPDATE TongHopThongTin
+                            SET SoLuongXetNghiem = @SoLuongXetNghiem
+                            WHERE Ngay = @NgayXetNghiem;
+                        END
+                        ELSE
+                        BEGIN
+                            -- Nếu ngày chưa có, thêm mới số lượng xét nghiệm
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongXetNghiem)
+                            VALUES (@NgayXetNghiem, @SoLuongXetNghiem);
+                        END
+                        FETCH NEXT FROM XetNghiemCursor INTO @NgayXetNghiem;
+                    END
+                    CLOSE XetNghiemCursor;
+                    DEALLOCATE XetNghiemCursor;
 
-               -- Cập nhật số lượng điều trị từ bảng DieuTri
-               DECLARE DieuTriCursor CURSOR FOR
-               SELECT DISTINCT CAST(NgayDieuTri AS DATE) AS NgayDieuTri
-               FROM DieuTri;
+                    -- Cập nhật số lượng điều trị từ bảng DieuTri
+                    DECLARE DieuTriCursor CURSOR FOR
+                    SELECT DISTINCT CAST(NgayDieuTri AS DATE) AS NgayDieuTri
+                    FROM DieuTri;
 
-               OPEN DieuTriCursor;
-               FETCH NEXT FROM DieuTriCursor INTO @NgayDieuTri;
+                    OPEN DieuTriCursor;
+                    FETCH NEXT FROM DieuTriCursor INTO @NgayDieuTri;
 
-               WHILE @@FETCH_STATUS = 0
-               BEGIN
-                   -- Đếm số lượng điều trị trong ngày
-                   SELECT @SoLuongDieuTri = COUNT(*)
-                   FROM DieuTri
-                   WHERE CAST(NgayDieuTri AS DATE) = @NgayDieuTri;
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        -- Đếm số lượng điều trị trong ngày
+                        SELECT @SoLuongDieuTri = COUNT(*)
+                        FROM DieuTri
+                        WHERE CAST(NgayDieuTri AS DATE) = @NgayDieuTri;
 
-                   -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
-                   IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayDieuTri)
-                   BEGIN
-                       -- Nếu ngày đã có, cập nhật số lượng điều trị
-                       UPDATE TongHopThongTin
-                       SET SoLuongDieuTri = @SoLuongDieuTri
-                       WHERE Ngay = @NgayDieuTri;
-                   END
-                   ELSE
-                   BEGIN
-                       -- Nếu ngày chưa có, thêm mới số lượng điều trị
-                       INSERT INTO TongHopThongTin (Ngay, SoLuongDieuTri)
-                       VALUES (@NgayDieuTri, @SoLuongDieuTri);
-                   END
-                   FETCH NEXT FROM DieuTriCursor INTO @NgayDieuTri;
-               END
-               CLOSE DieuTriCursor;
-               DEALLOCATE DieuTriCursor;
+                        -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayDieuTri)
+                        BEGIN
+                            -- Nếu ngày đã có, cập nhật số lượng điều trị
+                            UPDATE TongHopThongTin
+                            SET SoLuongDieuTri = @SoLuongDieuTri
+                            WHERE Ngay = @NgayDieuTri;
+                        END
+                        ELSE
+                        BEGIN
+                            -- Nếu ngày chưa có, thêm mới số lượng điều trị
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongDieuTri)
+                            VALUES (@NgayDieuTri, @SoLuongDieuTri);
+                        END
+                        FETCH NEXT FROM DieuTriCursor INTO @NgayDieuTri;
+                    END
+                    CLOSE DieuTriCursor;
+                    DEALLOCATE DieuTriCursor;
+
+                    -- Cập nhật số lượng vật tư từ bảng VatTuYTe
+                    DECLARE VatTuYTeCursor CURSOR FOR
+                    SELECT DISTINCT CAST(NgayNhapHang AS DATE) AS NgayNhapHang
+                    FROM VatTuYTe
+                    WHERE NgayNhapHang IS NOT NULL;
+
+                    OPEN VatTuYTeCursor;
+                    FETCH NEXT FROM VatTuYTeCursor INTO @NgayNhapHang;
+
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        -- Đếm số lượng vật tư nhập vào trong ngày
+                        SELECT @SoLuongVatTu = COUNT(*)
+                        FROM VatTuYTe
+                        WHERE CAST(NgayNhapHang AS DATE) = @NgayNhapHang;
+
+                        -- Kiểm tra xem ngày đã có trong bảng TongHopThongTin chưa
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayNhapHang)
+                        BEGIN
+                            -- Nếu ngày đã có, cập nhật số lượng vật tư
+                            UPDATE TongHopThongTin
+                            SET SoLuongVatTuYTe = @SoLuongVatTu
+                            WHERE Ngay = @NgayNhapHang;
+                        END
+                        ELSE
+                        BEGIN
+                            -- Nếu ngày chưa có, thêm mới số lượng vật tư
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongVatTuYTe)
+                            VALUES (@NgayNhapHang, @SoLuongVatTu);
+                        END
+
+                        FETCH NEXT FROM VatTuYTeCursor INTO @NgayNhapHang;
+                    END
+
+                    CLOSE VatTuYTeCursor;
+                    DEALLOCATE VatTuYTeCursor;
+
+                    DECLARE @NgayNhapHoaDon DATE;
+                    DECLARE @SoLuongHoaDonChiTiet INT;
+
+                    -- Cập nhật số lượng hóa đơn từ bảng HoaDonChiTiet
+                    DECLARE HoaDonChiTietCursor CURSOR FOR
+                    SELECT DISTINCT CAST(NgayNhapHoaDonChiTiet AS DATE) AS NgayNhapHoaDon
+                    FROM HoaDonChiTiet
+                    WHERE NgayNhapHoaDonChiTiet IS NOT NULL;
+
+                    OPEN HoaDonChiTietCursor;
+                    FETCH NEXT FROM HoaDonChiTietCursor INTO @NgayNhapHoaDon;
+
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        -- Đếm số lượng hóa đơn trong ngày từ HoaDonChiTiet
+                        SELECT @SoLuongHoaDonChiTiet = COUNT(*)
+                        FROM HoaDonChiTiet
+                        WHERE CAST(NgayNhapHoaDonChiTiet AS DATE) = @NgayNhapHoaDon;
+
+                        -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayNhapHoaDon)
+                        BEGIN
+                            -- Nếu ngày đã có, cập nhật số lượng hóa đơn
+                            UPDATE TongHopThongTin
+                            SET SoLuongHoaDonChiTiet = @SoLuongHoaDonChiTiet
+                            WHERE Ngay = @NgayNhapHoaDon;
+                        END
+                        ELSE
+                        BEGIN
+                            -- Nếu ngày chưa có, thêm mới số lượng hóa đơn
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongHoaDonChiTiet)
+                            VALUES (@NgayNhapHoaDon, @SoLuongHoaDonChiTiet);
+                        END
+
+                        FETCH NEXT FROM HoaDonChiTietCursor INTO @NgayNhapHoaDon;
+                    END
+
+                    CLOSE HoaDonChiTietCursor;
+                    DEALLOCATE HoaDonChiTietCursor;
+
+                    DECLARE @NgayNhapHangCuaThuoc DATE;
+                    DECLARE @SoLuongThuoc INT;
+
+                    -- Cập nhật số lượng thuốc từ bảng Thuoc
+                    DECLARE ThuocCursor CURSOR FOR
+                    SELECT DISTINCT CAST(NgayNhapHangCuaThuoc AS DATE) AS NgayNhapHangCuaThuoc
+                    FROM Thuoc
+                    WHERE NgayNhapHangCuaThuoc IS NOT NULL;
+
+                    OPEN ThuocCursor;
+                    FETCH NEXT FROM ThuocCursor INTO @NgayNhapHangCuaThuoc;
+
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        -- Đếm số lượng thuốc trong ngày
+                        SELECT @SoLuongThuoc = COUNT(*)
+                        FROM Thuoc
+                        WHERE CAST(NgayNhapHangCuaThuoc AS DATE) = @NgayNhapHangCuaThuoc;
+
+                        -- Kiểm tra xem ngày đã có trong bảng TongHopThongTin chưa
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayNhapHangCuaThuoc)
+                        BEGIN
+                            -- Nếu ngày đã có, cập nhật số lượng thuốc
+                            UPDATE TongHopThongTin
+                            SET SoLuongThuoc = @SoLuongThuoc
+                            WHERE Ngay = @NgayNhapHangCuaThuoc;
+                        END
+                        ELSE
+                        BEGIN
+                            -- Nếu ngày chưa có, thêm mới số lượng thuốc
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongThuoc)
+                            VALUES (@NgayNhapHangCuaThuoc, @SoLuongThuoc);
+                        END
+
+                        FETCH NEXT FROM ThuocCursor INTO @NgayNhapHangCuaThuoc;
+                    END
+
+                    CLOSE ThuocCursor;
+                    DEALLOCATE ThuocCursor;
+
+                    DECLARE @NgayNhapHangCuaDonThuoc DATE;
+                    DECLARE @SoLuongDonThuoc INT;
+
+                    -- Cập nhật số lượng đơn thuốc từ bảng DonThuoc
+                    DECLARE DonThuocCursor CURSOR FOR
+                    SELECT DISTINCT CAST(NgayNhapHangCuaDonThuoc AS DATE) AS NgayNhapHangCuaDonThuoc
+                    FROM DonThuoc
+                    WHERE NgayNhapHangCuaDonThuoc IS NOT NULL;
+
+                    OPEN DonThuocCursor;
+                    FETCH NEXT FROM DonThuocCursor INTO @NgayNhapHangCuaDonThuoc;
+
+                    WHILE @@FETCH_STATUS = 0
+                    BEGIN
+                        -- Đếm số lượng đơn thuốc trong ngày
+                        SELECT @SoLuongDonThuoc = COUNT(*)
+                        FROM DonThuoc
+                        WHERE CAST(NgayNhapHangCuaDonThuoc AS DATE) = @NgayNhapHangCuaDonThuoc;
+
+                        -- Kiểm tra xem ngày đã có trong bảng TongHopThongTin chưa
+                        IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayNhapHangCuaDonThuoc)
+                        BEGIN
+                            -- Nếu ngày đã có, cập nhật số lượng đơn thuốc
+                            UPDATE TongHopThongTin
+                            SET SoLuongDonThuoc = @SoLuongDonThuoc
+                            WHERE Ngay = @NgayNhapHangCuaDonThuoc;
+                        END
+                        ELSE
+                        BEGIN
+                            -- Nếu ngày chưa có, thêm mới số lượng đơn thuốc
+                            INSERT INTO TongHopThongTin (Ngay, SoLuongDonThuoc)
+                            VALUES (@NgayNhapHangCuaDonThuoc, @SoLuongDonThuoc);
+                        END
+
+                        FETCH NEXT FROM DonThuocCursor INTO @NgayNhapHangCuaDonThuoc;
+                    END
+
+                    CLOSE DonThuocCursor;
+                    DEALLOCATE DonThuocCursor;
+
+                    WITH CTE AS (
+                        SELECT *,
+                               ROW_NUMBER() OVER (PARTITION BY Ngay ORDER BY Ngay DESC) AS rn
+                        FROM TongHopThongTin
+                    )
+                    DELETE FROM TongHopThongTin
+                    WHERE Id IN (
+                        SELECT Id
+                        FROM CTE
+                        WHERE rn > 1
+                    );
+
+
             `);
 
         res.status(200).json({ success: true, message: "Cập nhật thông tin thành công!" });
