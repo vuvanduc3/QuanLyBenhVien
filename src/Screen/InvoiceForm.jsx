@@ -24,7 +24,7 @@ const InvoiceForm = () => {
         body: JSON.stringify({ /* Tham số cần thiết cho API */ }),
       });
 
-          const updateData = await updateResponse.json();
+      const updateData = await updateResponse.json();
 
       if (!updateData.success) {
             console.error('Lỗi khi cập nhật tổng tiền');
