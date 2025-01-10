@@ -60,22 +60,20 @@ export default function Dashboard() {
   const [secondaryStats, setSecondaryStats] = useState([]);
   const [SoLuongBN, setSoLuongBN] = useState('');
   const [chartData, setChartData] = useState([]);
-
   const [previousStats, setPreviousStats] = useState({
     totalPatients: 0,
     totalDoctors: 0,
     totalInvoices: 0,
     totalRevenue: 0,
     totalInsurance: 0,
+    totalTests: 0,  // Thêm totalTests vào previousStats
   });
 
-  // Hàm tính phần trăm thay đổi
   // Hàm tính phần trăm thay đổi
   const calculateChangePercentage = (newValue, oldValue) => {
     if (oldValue === 0) return newValue === 0 ? 0 : 1; // Tránh chia cho 0, và nếu newValue > 0 thì trả về 1%
     return ((newValue - oldValue) / oldValue * 100).toFixed(2);
   };
-
 
   // Fetch dữ liệu từ API
   useEffect(() => {
@@ -103,6 +101,7 @@ export default function Dashboard() {
         const totalInvoices = data.data.reduce((acc, curr) => acc + curr.SoLuongHoaDon, 0);
         const totalRevenue = data.data.reduce((acc, curr) => acc + curr.DoanhThu, 0);
         const totalInsurance = data.data.reduce((acc, curr) => acc + curr.ChiPhiBHYT, 0);
+        const totalTests = data.data.reduce((acc, curr) => acc + curr.SoLuongXetNghiem, 0);  // Tính tổng số lượng xét nghiệm
 
         // Cập nhật dữ liệu thống kê chính
         setStatsData([
@@ -137,6 +136,14 @@ export default function Dashboard() {
             icon: <FileText size={20} />,
             iconColor: "#6366f1",
             isPositive: totalRevenue >= 0
+          },
+          {
+            title: "Số lượng xét nghiệm",  // Thêm thông tin số lượng xét nghiệm
+            value: totalTests.toString(),
+            change: `${calculateChangePercentage(totalTests, previousStats.totalTests)}% Up from yesterday`,
+            icon: <FileText size={20} />,
+            iconColor: "#ff5722",
+            isPositive: totalTests >= 0
           }
         ]);
 
@@ -163,7 +170,8 @@ export default function Dashboard() {
           insurance: item.ChiPhiBHYT,
           invoice: item.SoLuongHoaDon,
           patients: item.SoLuongBenhNhan,
-          doctors: item.SoLuongBacSi
+          doctors: item.SoLuongBacSi,
+          tests: item.SoLuongXetNghiem  // Thêm số lượng xét nghiệm vào dữ liệu biểu đồ
         }));
         setChartData(updatedChartData);
         setSoLuongBN(totalPatients);
@@ -174,7 +182,8 @@ export default function Dashboard() {
           totalDoctors,
           totalInvoices,
           totalRevenue,
-          totalInsurance
+          totalInsurance,
+          totalTests  // Lưu số lượng xét nghiệm vào previousStats
         });
 
       } catch (error) {
@@ -229,33 +238,23 @@ export default function Dashboard() {
               <Tooltip />
               <Legend />
               <Bar dataKey="revenue" name="Doanh thu" fill="#6366f1" />
-              <Bar dataKey="insurance" name="Chi phí BHYT" fill="#22c55e" />
+              <Bar dataKey="insurance" name="Chi phí BHYT" fill="#dc2626" />
             </BarChart>
           </div>
         </div>
 
-        {/* Các thông tin khác - Biểu đồ miền */}
+        {/* Số lượng người dùng, bác sĩ, hóa đơn - Area Chart */}
         <div className="chart-section">
-          <div className="chart-header">
-            <h2 className="chart-title">Thông tin khác</h2>
-          </div>
-          <div className="chart-container">
-            <AreaChart
-              width={1000}
-              height={400}
-              data={chartData}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Area type="monotone" dataKey="patients" name="Bệnh nhân" stroke="#ff9800" fill="#ffeb3b" />
-              <Area type="monotone" dataKey="doctors" name="Bác sĩ" stroke="#ff5722" fill="#ffccbc" />
-              <Area type="monotone" dataKey="invoice" name="Số hóa đơn" stroke="#94a3b8" fill="#e2e8f0" />
-            </AreaChart>
-          </div>
+          <AreaChart width={1000} height={400} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Area type="monotone" dataKey="patients" name="Số lượng bệnh nhân" stroke="#6366f1" fill="#6366f1" />
+            <Area type="monotone" dataKey="doctors" name="Số lượng bác sĩ" stroke="#16a34a" fill="#16a34a" />
+            <Area type="monotone" dataKey="tests" name="Số lượng xét nghiệm" stroke="#ff5722" fill="#ffccbc" />
+          </AreaChart>
         </div>
       </div>
     </div>
