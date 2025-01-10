@@ -3,10 +3,20 @@ import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import '../Styles/DonThuoc.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const DonThuoc = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { action, item } = location.state || {}; // Lấy action và item từ params
+
+
+    const [MaBenhNhans, setMaBenhNhans] = useState('');
+    useEffect(() => {
+         if (action === 'xem' && item) {
+            setMaBenhNhans(item.MaBenhNhan);
+         }
+    }, [action, item]);
 
     // State
     const [page, setPage] = useState(1); // Trang hiện tại
@@ -63,6 +73,12 @@ const DonThuoc = () => {
     // Lọc và sắp xếp dữ liệu theo các bộ lọc
     const filteredPrescriptions = prescriptions
         .filter((prescription) => {
+            // Nếu có mã bệnh nhân, chỉ lọc các đơn thuốc của mã bệnh nhân đó
+            if (MaBenhNhans && prescription.MaBenhNhan !== MaBenhNhans) {
+                return false;
+            }
+
+            // Lọc theo từ khóa tìm kiếm
             const searchFields = [
                 prescription.MaBenhNhan,
                 prescription.MaDonThuoc,
@@ -89,6 +105,7 @@ const DonThuoc = () => {
             }
         });
 
+
     // Phân trang
     const paginatedPrescriptions = filteredPrescriptions.slice(
         (page - 1) * itemsPerPage,
@@ -114,7 +131,7 @@ const DonThuoc = () => {
                 <Search1 />
                 <div className="content">
                     <div className="card-header">
-                        <h2 className="card-title">Đơn thuốc</h2>
+                        <h2 className="card-title">Đơn thuốc {MaBenhNhans?'(Mã bệnh nhân: '+MaBenhNhans+')':''}</h2>
                     </div>
                     <div className="filter-container">
                         <button className="add-button" onClick={handleAdd}>

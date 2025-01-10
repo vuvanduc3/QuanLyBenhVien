@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '../Styles/XetNghiem.css';
 import Menu1 from '../components/Menu';
@@ -14,7 +14,18 @@ const XetNghiem = () => {
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
     const [filterByInvoice, setFilterByInvoice] = useState('all'); // Lọc hóa đơn
+    const [MaBenhNhans, setMaBenhNhans] = useState(''); // Lọc theo mã bệnh nhân
+
     const navigate = useNavigate();
+    const location = useLocation();
+    const { action, item } = location.state || {}; // Lấy action và item từ params
+
+    // Thiết lập mã bệnh nhân nếu có
+    useEffect(() => {
+        if (action === 'xem' && item) {
+            setMaBenhNhans(item.MaBenhNhan);
+        }
+    }, [action, item]);
 
     // Hàm gọi API để lấy danh sách xét nghiệm
     const fetchXetNghiems = async () => {
@@ -40,6 +51,11 @@ const XetNghiem = () => {
     // Hàm xử lý tìm kiếm và lọc
     useEffect(() => {
         let data = [...xetNghiems];
+
+        // Lọc theo mã bệnh nhân
+        if (MaBenhNhans) {
+            data = data.filter((item) => item.MaBenhNhan === MaBenhNhans);
+        }
 
         // Tìm kiếm
         if (searchQuery) {
@@ -73,7 +89,7 @@ const XetNghiem = () => {
 
         setFilteredXetNghiems(data);
         setCurrentPage(1); // Reset về trang đầu
-    }, [searchQuery, sortField, sortOrder, filterByInvoice, xetNghiems]);
+    }, [searchQuery, sortField, sortOrder, filterByInvoice, xetNghiems, MaBenhNhans]);
 
     // Hàm sửa dữ liệu
     const handleEdit = (item) => {
@@ -106,6 +122,7 @@ const XetNghiem = () => {
             }
         }
     };
+
     const resetFilters = () => {
         setSearchQuery('');         // Reset ô tìm kiếm
         setFilterByInvoice('all');  // Reset bộ lọc hóa đơn
@@ -113,7 +130,6 @@ const XetNghiem = () => {
         setSortOrder('asc');        // Reset thứ tự sắp xếp
         setCurrentPage(1);          // Quay lại trang đầu tiên
     };
-
 
     // Xử lý phân trang
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -134,10 +150,12 @@ const XetNghiem = () => {
             <main className="main-content">
                 <Search1 />
                 <div className="content">
-                    <h2 className="page-title">Quản Lý Xét Nghiệm</h2>
+                    <h2 className="page-title">
+                        Xét Nghiệm {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}
+                    </h2>
                     <div className="filters">
                         <button className="add-button" onClick={handleAdd}>
-                             Thêm xét nghiệm
+                            Thêm xét nghiệm
                         </button>
                         <input
                             type="text"
@@ -192,19 +210,15 @@ const XetNghiem = () => {
                                     >
                                         Ngày xét nghiệm
                                     </th>
-
                                     <th
                                         className={sortField === 'DaNhapHoaDon' ? 'sorted' : ''}
                                         onClick={() => setSortField('DaNhapHoaDon')}
                                     >
-                                      Nhập hóa đơn
+                                        Nhập hóa đơn
                                     </th>
-                                    <th>
-                                        Action
-                                    </th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 {currentItems.map((xetNghiem) => (
                                     <tr key={xetNghiem.MaXetNghiem}>
@@ -214,11 +228,11 @@ const XetNghiem = () => {
                                         <td>{xetNghiem.TenXetNghiem}</td>
                                         <td>{xetNghiem.KetQua}</td>
                                         <td>{new Date(xetNghiem.NgayXetNghiem).toLocaleDateString('vi-VN')}</td>
-                                        <td>{xetNghiem.DaNhapHoaDon}</td>
+                                        <td>{xetNghiem.DaNhapHoaDon ? 'Có' : 'Không'}</td>
                                         <td>
                                             <div className="action-buttons-row">
-                                            <button className="edit-button" onClick={() => handleEdit(xetNghiem)}>Sửa</button>
-                                            <button className="delete-button" onClick={() => handleDelete(xetNghiem.MaXetNghiem)}>Xóa</button>
+                                                <button className="edit-button" onClick={() => handleEdit(xetNghiem)}>Sửa</button>
+                                                <button className="delete-button" onClick={() => handleDelete(xetNghiem.MaXetNghiem)}>Xóa</button>
                                             </div>
                                         </td>
                                     </tr>

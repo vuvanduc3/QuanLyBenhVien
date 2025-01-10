@@ -3,31 +3,52 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '../Styles/DieuTri.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const DieuTri = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState([]);
+  const location = useLocation();
+  const { action, item } = location.state || {}; // Lấy action và item từ params
+
+  const [MaBenhNhans, setMaBenhNhans] = useState('');
+  const [originalData, setOriginalData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-  const [totalPages, setTotalPages] = useState(1); // Tổng số trang
-  const itemsPerPage = 10; // Số lượng mục trên mỗi trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // Trạng thái sắp xếp
+  const itemsPerPage = 10;
 
-  const fetchDieuTriData = async (page = 1) => {
+  useEffect(() => {
+    if (action === 'xem' && item) {
+      setMaBenhNhans(item.MaBenhNhan);
+    }
+  }, [action, item]);
+
+  useEffect(() => {
+    if (MaBenhNhans) {
+      const filtered = originalData.filter(data => data.MaBenhNhan === MaBenhNhans);
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(originalData);
+    }
+  }, [MaBenhNhans, originalData]);
+
+  const fetchDieuTriData = async () => {
     setLoading(true);
-
     try {
-      const response = await fetch(`http://localhost:5000/api/DieuTri?page=${page}&limit=${itemsPerPage}`);
+      const response = await fetch(`http://localhost:5000/api/DieuTri`);
       const data = await response.json();
 
       if (data.success) {
-        setData(data.data); // Lưu dữ liệu
-        setTotalPages(data.totalPages || 1); // Tổng số trang từ API
+        setOriginalData(data.data);
+        setFilteredData(data.data);
+        setTotalPages(Math.ceil(data.data.length / itemsPerPage));
       } else {
         console.error('Lỗi khi lấy dữ liệu điều trị');
       }
     } catch (error) {
-      console.error('Lỗi kết nối API:', error);
+      console.error('Lỗi kết nối:', error);
     } finally {
       setLoading(false);
     }
@@ -37,7 +58,6 @@ const DieuTri = () => {
     const nextPage = currentPage + direction;
     if (nextPage > 0 && nextPage <= totalPages) {
       setCurrentPage(nextPage);
-      fetchDieuTriData(nextPage);
     }
   };
 
@@ -49,9 +69,41 @@ const DieuTri = () => {
     navigate('/CRUDDieuTri', { state: { action: 'edit', item } });
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Bạn có chắc muốn xóa?')) {
+      try {
+        await fetch(`http://localhost:5000/api/DieuTri/${id}`, { method: 'DELETE' });
+        fetchDieuTriData();
+      } catch (error) {
+        console.error('Lỗi khi xóa điều trị:', error);
+      }
+    }
+  };
+
+  const sortData = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+
+    const sortedData = [...filteredData].sort((a, b) => {
+      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    setSortConfig({ key, direction });
+    setFilteredData(sortedData);
+  };
+
   useEffect(() => {
-    fetchDieuTriData(currentPage);
-  }, [currentPage]);
+    fetchDieuTriData();
+  }, []);
+
+  const displayedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="container">
@@ -59,8 +111,8 @@ const DieuTri = () => {
       <main className="main-content">
         <Search1 />
         <div className="content">
-          <div className="content-header">
-            <h2>Quản lý điều trị</h2>
+          <div className="card-header">
+            <h2>Điều trị {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}</h2>
             <button className="add-btn" onClick={handleAdd}>Thêm điều trị</button>
           </div>
 
@@ -68,21 +120,22 @@ const DieuTri = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Mã điều trị</th>
-                  <th>Hồ sơ bệnh án</th>
-                  <th>Mô tả</th>
-                  <th>Phương pháp</th>
-                  <th>Kết quả</th>
-                  <th>Ngày điều trị</th>
-                  <th>Đã sử dụng</th>
+                  <th onClick={() => sortData('MaDieuTri')}>Mã điều trị</th>
+                  <th onClick={() => sortData('MaBenhNhan')}>Mã bệnh nhân</th>
+                  <th onClick={() => sortData('MaHoSo')}>Hồ sơ bệnh án</th>
+                  <th onClick={() => sortData('MoTa')}>Mô tả</th>
+                  <th onClick={() => sortData('PhuongPhap')}>Phương pháp</th>
+                  <th onClick={() => sortData('KetQua')}>Kết quả</th>
+                  <th onClick={() => sortData('NgayDieuTri')}>Ngày điều trị</th>
+                  <th onClick={() => sortData('DaSuDung')}>Đã sử dụng</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan="8">Đang tải dữ liệu...</td></tr>
+                  <tr><td colSpan="9">Đang tải dữ liệu...</td></tr>
                 ) : (
-                  data.map((dieutri) => {
+                  displayedData.map((dieutri) => {
                     const formattedDate = new Date(dieutri.NgayDieuTri).toLocaleDateString('vi-VN', {
                       day: '2-digit',
                       month: '2-digit',
@@ -92,6 +145,7 @@ const DieuTri = () => {
                     return (
                       <tr key={dieutri.MaDieuTri}>
                         <td>{dieutri.MaDieuTri}</td>
+                        <td>{dieutri.MaBenhNhan}</td>
                         <td>{dieutri.MaHoSo}</td>
                         <td>{dieutri.MoTa}</td>
                         <td>{dieutri.PhuongPhap}</td>
@@ -101,17 +155,7 @@ const DieuTri = () => {
                         <td>
                           <div className="action-buttons">
                             <button className="action-btn green" onClick={() => handleEdit(dieutri)}>Sửa</button>
-                            <button className="action-btn red"
-                              onClick={async () => {
-                                if (window.confirm('Bạn có chắc muốn xóa?')) {
-                                  await fetch(
-                                    `http://localhost:5000/api/DieuTri/${dieutri.MaDieuTri}`,
-                                    { method: 'DELETE' }
-                                  );
-                                  fetchDieuTriData(currentPage);
-                                }
-                              }}
-                            >Xóa</button>
+                            <button className="action-btn red" onClick={() => handleDelete(dieutri.MaDieuTri)}>Xóa</button>
                           </div>
                         </td>
                       </tr>
