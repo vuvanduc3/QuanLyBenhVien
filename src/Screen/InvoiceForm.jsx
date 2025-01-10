@@ -24,11 +24,26 @@ const InvoiceForm = () => {
         body: JSON.stringify({ /* Tham số cần thiết cho API */ }),
       });
 
-      const updateData = await updateResponse.json();
+          const updateData = await updateResponse.json();
 
       if (!updateData.success) {
-        console.error('Lỗi khi cập nhật tổng tiền');
-        return;
+            console.error('Lỗi khi cập nhật tổng tiền');
+            return;
+      }
+
+      const updateResponse2 = await fetch('http://localhost:5000/api/capnhaptinhtrangthanhtoan', {
+           method: 'PUT', // Sử dụng phương thức POST nếu cần
+           headers: {
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({ /* Tham số cần thiết cho API */ }),
+         });
+
+         const updateData2 = await updateResponse2.json();
+
+         if (!updateData2.success) {
+           console.error('Lỗi khi cập nhật tình trạng thanh toán');
+           return;
       }
 
       // Sau khi cập nhật tổng tiền thành công, gọi API lấy dữ liệu viện phí
@@ -71,6 +86,14 @@ const InvoiceForm = () => {
 
   const handleChuyenTrangHD = (item) => {
     navigate('/XuatHoaDon', { state: { action: 'edit', item } });
+  };
+
+  const handleChuyenTrangAddPayment = (item) => {
+      navigate('/addPayment', { state: { action: 'add', item } });
+  };
+
+  const handleEditPayment = (paymentId) => {
+      navigate(`/editPayment/${paymentId}`);
   };
 
 
@@ -132,9 +155,17 @@ const InvoiceForm = () => {
                           {/* Ẩn nút Thanh toán và Tra cứu & nhập nếu hóa đơn đã thanh toán */}
                           {invoice.TinhTrang !== "Đã thanh toán" && (
                             <>
-                              <button className="action-btn">Thanh toán</button>
+                              <button className="action-btn" onClick={() => handleChuyenTrangAddPayment(invoice)}>Thanh toán</button>
 
                               <button className="action-btn" onClick={() => handleChuyenTrang2(invoice)}>Tra cứu & nhập</button>
+                            </>
+                          )}
+                          {invoice.TinhTrang === "Đã thanh toán" && (
+                            <>
+                              <button className="action-btn brown"
+                                onClick={() => handleEditPayment(invoice.MaHoaDon)}
+                              >Xem thanh toán
+                              </button>
                             </>
                           )}
                         </div>

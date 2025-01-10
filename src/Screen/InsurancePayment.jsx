@@ -1,43 +1,170 @@
-import React from 'react';
-import { Search, Clock, Package, Heart, FileText, List, Activity, LayoutList, Grid, Settings, LogOut, Edit, Trash, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Edit, Trash, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../Styles/InsurancePayment.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
-const InsurancePayment = () => {
-  const menuItems = [
-    { icon: <Clock />, text: "Lịch hẹn" },
-    { icon: <Package />, text: "Danh sách thuốc" },
-    { icon: <Heart />, text: "Hồ sơ bệnh án" },
-    { icon: <FileText />, text: "Đơn thuốc" },
-    { icon: <List />, text: "Xét nghiệm" },
-    { icon: <Activity />, text: "Lịch sử điều trị" },
-    { icon: <Grid />, text: "Hóa đơn" },
-    { icon: <LayoutList />, text: "Hóa đơn chi tiết", active: true },
-    { icon: <Settings />, text: "Settings" },
-    { icon: <LogOut />, text: "Logout" }
-  ];
 
-  const paymentData = [
-    {
-      id: "00001",
-      invoiceId: "BN001",
-      insuranceId: "Kutch Green Apt.",
-      patientId: "0123 xxx xxx",
-      amount: "800.000 VND",
-      paymentDate: "23/12/2025"
+const InsurancePayment = () => {
+  const [paymentData, setPaymentData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]); // Dữ liệu đã lọc theo tìm kiếm
+  const [editingData, setEditingData] = useState(null); // Lưu thông tin đang sửa
+  const [searchTerm, setSearchTerm] = useState(''); // Từ khóa tìm kiếm
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const [itemsPerPage] = useState(5); // Số bản ghi mỗi trang
+
+  // Lấy dữ liệu từ API khi component render
+  useEffect(() => {
+    const api = 'http://localhost:5000/api/getAllChiPhiBHYT'; // Địa chỉ API
+
+    fetch(api)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          setPaymentData(data.data);
+          setFilteredData(data.data); // Dữ liệu khi chưa tìm kiếm
+        } else {
+          console.error('Không tìm thấy dữ liệu chi phí BHYT');
+        }
+      })
+      .catch((err) => {
+        console.error('Lỗi khi gọi API:', err);
+      });
+  }, []);
+
+  // Lọc dữ liệu khi thay đổi từ khóa tìm kiếm
+  useEffect(() => {
+    const filtered = paymentData.filter((item) =>
+      item.MaSoTheBHYT.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered);
+    setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
+  }, [searchTerm, paymentData]);
+
+  // Tính toán dữ liệu hiển thị theo phân trang
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Hàm xóa dữ liệu
+  const handleDelete = (id) => {
+    const api = `http://localhost:5000/api/ChiPhiBHYT/${id}`;
+
+    if (window.confirm('Bạn có chắc muốn xóa dữ liệu này không?')) {
+      fetch(api, { method: 'DELETE' })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert('Xóa dữ liệu thành công!');
+            setPaymentData(paymentData.filter((item) => item.MaChiPhiBHYT !== id));
+          } else {
+            console.error('Xóa thất bại:', data.message);
+          }
+        })
+        .catch((err) => console.error('Lỗi khi gọi API xóa:', err));
     }
-  ];
+  };
+
+  // Hàm lưu chỉnh sửa
+  const handleUpdate = () => {
+    const api = `http://localhost:5000/api/ChiPhiBHYT/${editingData.MaChiPhiBHYT}`;
+
+    fetch(api, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editingData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert('Cập nhật thành công!');
+          setPaymentData(
+            paymentData.map((item) =>
+              item.MaChiPhiBHYT === editingData.MaChiPhiBHYT ? editingData : item
+            )
+          );
+          setEditingData(null);
+        } else {
+          console.error('Cập nhật thất bại:', data.message);
+        }
+      })
+      .catch((err) => console.error('Lỗi khi gọi API cập nhật:', err));
+  };
+
+  // Chuyển đến trang trước
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Chuyển đến trang kế tiếp
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(filteredData.length / itemsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div className="container">
-       <Menu1/>
-      {/* Main Content */}
+      <Menu1 />
       <div className="main-content">
-      <Search1/>
+        {/* Tìm kiếm */}
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã số thẻ BHYT"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)} // Cập nhật từ khóa tìm kiếm
+            className="search-input"
+          />
+        </div>
 
-        <h1 style={{fontSize: '1.5rem', fontWeight: 600, marginBottom: '2rem'}}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '2rem' }}>
           Quản lý chi phí bảo hiểm y tế
         </h1>
+
+        {editingData && (
+          <div className="edit-form">
+            <h2>Chỉnh sửa thông tin</h2>
+            <label>
+              Mã số thẻ BHYT:
+              <input
+                type="text"
+                value={editingData.MaSoTheBHYT}
+                onChange={(e) =>
+                  setEditingData({ ...editingData, MaSoTheBHYT: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Số tiền BHYT chi trả:
+              <input
+                type="number"
+                value={editingData.SoTienBHYTChiTra}
+                onChange={(e) =>
+                  setEditingData({ ...editingData, SoTienBHYTChiTra: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Ngày thanh toán:
+              <input
+                type="date"
+                value={new Date(editingData.NgayBHYTThanhToan)
+                  .toISOString()
+                  .split('T')[0]}
+                onChange={(e) =>
+                  setEditingData({
+                    ...editingData,
+                    NgayBHYTThanhToan: new Date(e.target.value).toISOString(),
+                  })
+                }
+              />
+            </label>
+            <button onClick={handleUpdate}>Lưu</button>
+            <button onClick={() => setEditingData(null)}>Hủy</button>
+          </div>
+        )}
 
         <div className="table-container">
           <table className="table">
@@ -46,28 +173,32 @@ const InsurancePayment = () => {
                 <th>ID</th>
                 <th>Mã hóa đơn</th>
                 <th>Mã bảo hiểm</th>
-                <th>Mã bệnh nhân</th>
                 <th>Số tiền đã thanh toán</th>
                 <th>Ngày thanh toán</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {paymentData.map(item => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.invoiceId}</td>
-                  <td>{item.insuranceId}</td>
-                  <td>{item.patientId}</td>
-                  <td>{item.amount}</td>
-                  <td>{item.paymentDate}</td>
+              {currentItems.map((item) => (
+                <tr key={item.MaChiPhiBHYT}>
+                  <td>{item.MaChiPhiBHYT}</td>
+                  <td>{item.MaSoTheBHYT}</td>
+                  <td>{item.MaSoTheBHYT}</td>
+                  <td>{item.SoTienBHYTChiTra}</td>
+                  <td>{new Date(item.NgayBHYTThanhToan).toLocaleDateString()}</td>
                   <td>
                     <div className="action-buttons">
-                      <button className="action-button">
-                        <Edit size={16} />
+                      <button
+                        className="action-button"
+                        onClick={() => setEditingData(item)}
+                      >
+                        <Edit size={16} /> Sửa
                       </button>
-                      <button className="action-button delete">
-                        <Trash size={16} />
+                      <button
+                        className="action-button delete"
+                        onClick={() => handleDelete(item.MaChiPhiBHYT)}
+                      >
+                        <Trash size={16} /> Xóa
                       </button>
                     </div>
                   </td>
@@ -75,20 +206,25 @@ const InsurancePayment = () => {
               ))}
             </tbody>
           </table>
-          
-          <div className="pagination">
-            <div className="pagination-info">
-              Trang 1 của 84
-            </div>
-            <div className="pagination-buttons">
-              <button className="pagination-button" disabled>
-                <ChevronLeft size={16} />
-              </button>
-              <button className="pagination-button">
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
+        </div>
+
+        {/* Phân trang */}
+        <div className="pagination">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="pagination-button"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <span>{`Trang ${currentPage} / ${Math.ceil(filteredData.length / itemsPerPage)}`}</span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage)}
+            className="pagination-button"
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
       </div>
     </div>

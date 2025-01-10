@@ -69,6 +69,20 @@ const PaymentList = () => {
       return "";
     }
   };
+  const formatNgaySinh = (ngaySinh) => {
+    if (!ngaySinh) return "Không xác định";
+    const date = new Date(ngaySinh);
+    return new Intl.DateTimeFormat('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false // Định dạng 24 giờ
+    }).format(date);
+  };
+
 
   const formatCurrency = (value) => {
     return value.toLocaleString("vi-VN");

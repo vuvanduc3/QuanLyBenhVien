@@ -1888,7 +1888,7 @@ app.get("/api/ChiTietThanhToan/:paymentId", async (req, res) => {
         // Thực hiện truy vấn
         const result = await pool
             .request()
-            .input("paymentId", sql.Int, paymentId) // Dùng SQL Injection bảo vệ
+            .input("paymentId", sql.NVarChar, paymentId) // Dùng SQL Injection bảo vệ
             .query(query);
 
         // Kiểm tra nếu có kết quả
@@ -2452,19 +2452,21 @@ app.get("/api/vienphi", async (req, res) => {
         // Câu truy vấn SQL kết hợp bảng XetNghiem, HoSoBenhAn, và BenhNhanVTP
         const query = `
           SELECT
-          VP.MaHoaDon,
-          HS.MaBenhNhan,
-          VP.MaBacSi,
-          VP.MaHoSo,
-          VP.TongTien,
-          VP.TinhTrang,
-          VP.NgayLapHoaDon,
-          VP.NgayThanhToan
+                    VP.MaHoaDon,
+                    HS.MaBenhNhan,
+                    VP.MaBacSi,
+                    VP.MaHoSo,
+                    VP.TongTien,
+                    VP.TinhTrang,
+                    VP.NgayLapHoaDon,
+                    VP.NgayThanhToan,
+          		  HS.SoCCCD_HoChieu,
+          		  HS.SoTheBHYT
 
 
-          FROM VienPhi AS VP
-          LEFT JOIN HoSoBenhAn AS HS ON HS.ID = VP.MaHoSo
-          ORDER BY VP.MaHoaDon DESC;
+                    FROM VienPhi AS VP
+                    LEFT JOIN HoSoBenhAn AS HS ON HS.ID = VP.MaHoSo
+                    ORDER BY VP.MaHoaDon DESC;
         `;
 
         // Thực hiện truy vấn SQL
@@ -3165,4 +3167,175 @@ app.put("/api/lichkhammabenhnhankhambenh/:id", async (req, res) => {
             message: "Lỗi khi cập nhật lịch khám: " + err.message,
         });
     }
+});
+
+// API thêm thanh toán
+app.post('/api/them-payment', async (req, res) => {
+  const { id, invoiceId, paymentMethod, patientId, amount, transactionId, status, cccd } = req.body;
+
+  try {
+    await sql.connect(config);
+    const result = await sql.query`
+      INSERT INTO ThanhToan (id, invoiceId, paymentMethod, patientId, amount, transactionId, status, cccd)
+      VALUES (${id}, ${invoiceId}, ${paymentMethod}, ${patientId}, ${amount}, ${transactionId}, ${status}, ${cccd})
+    `;
+
+    res.status(201).json({ message: 'Thanh toán đã được thêm thành công!' });
+  } catch (err) {
+    console.error('Lỗi khi thêm thanh toán:', err); // Hiển thị lỗi chi tiết trong console
+    res.status(500).json({ message: 'Lỗi khi thêm thanh toán', error: err.message });
+  }
+});
+
+
+// API thêm chi phí bảo hiểm y tế
+app.post('/api/addchiphibhyt', async (req, res) => {
+  const { MaChiPhiBHYT, MaSoTheBHYT, SoTienBHYTChiTra } = req.body;
+
+  // Kiểm tra nếu thiếu tham số
+  if (!MaChiPhiBHYT || !MaSoTheBHYT || !SoTienBHYTChiTra) {
+    return res.status(400).json({ message: 'Thiếu thông tin yêu cầu!' });
+  }
+
+  try {
+    await sql.connect(config);
+    // Thực hiện câu lệnh INSERT vào cơ sở dữ liệu
+    await sql.query`
+      INSERT INTO ChiPhiBHYT (MaChiPhiBHYT, MaSoTheBHYT, SoTienBHYTChiTra, NgayBHYTThanhToan)
+      VALUES (${MaChiPhiBHYT}, ${MaSoTheBHYT}, ${SoTienBHYTChiTra}, GETDATE())
+    `;
+    res.status(201).json({ message: 'Chi phí BHYT đã được thêm thành công!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Lỗi khi thêm chi phí BHYT', error: err.message });
+  }
+});
+
+// API cập nhập trạng thái thanh toán ở viện phí
+app.put("/api/capnhaptinhtrangthanhtoan", async (req, res) => {
+    try {
+        const result = await pool
+            .request()
+            .query(`
+                UPDATE VienPhi
+                SET TinhTrang = N'Đã thanh toán'
+                FROM VienPhi v
+                JOIN ThanhToan t ON v.MaHoaDon = t.invoiceId;
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật tình trạng thanh toán viện phí thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi cập nhật tình trạng thanh toán viện phí:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi cập nhật tình trạng thanh toán viện phí: " + err.message });
+    }
+});
+
+app.get("/api/ChiPhiBHYT/:maChiPhiBHYT", async (req, res) => {
+    const maChiPhiBHYT = req.params.maChiPhiBHYT; // Lấy MaChiPhiBHYT từ tham số URL
+
+    try {
+        // Truy vấn cơ sở dữ liệu để lấy chi phí BHYT với MaChiPhiBHYT
+        const query = `SELECT * FROM ChiPhiBHYT WHERE MaChiPhiBHYT = @maChiPhiBHYT`;
+
+        // Thực hiện truy vấn
+        const result = await pool
+            .request()
+            .input("maChiPhiBHYT", sql.NVarChar, maChiPhiBHYT) // Dùng kiểu dữ liệu NVarChar cho MaChiPhiBHYT
+            .query(query);
+
+        // Kiểm tra nếu có kết quả
+        if (result.recordset.length > 0) {
+            res.json({ success: true, data: result.recordset[0] });
+        } else {
+            res
+                .status(404)
+                .json({
+                    success: false,
+                    message: "Không tìm thấy chi phí BHYT với Mã chi phí đã cho",
+                });
+        }
+    } catch (err) {
+        console.error("Lỗi truy vấn:", err.message);
+        res
+            .status(500)
+            .json({ success: false, message: "Lỗi truy vấn cơ sở dữ liệu" });
+    }
+});
+
+// Tạo API GET để lấy tất cả thông tin ChiPhiBHYT
+app.get("/api/getAllChiPhiBHYT", async (req, res) => {
+    try {
+        const result = await pool.request().query(`
+            Select * FROM ChiPhiBHYT ORDER BY ChiPhiBHYT.MaChiPhiBHYT DESC
+        `);
+
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error("❌ Lỗi lấy dữ liệu người dùng:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
+
+// API sửa
+app.put("/api/ChiPhiBHYT/:id", async (req, res) => {
+  const MaChiPhiBHYT = req.params.id;
+  const { MaSoTheBHYT, SoTienBHYTChiTra, NgayBHYTThanhToan } = req.body;
+
+  try {
+    const query = `
+      UPDATE ChiPhiBHYT
+      SET
+        MaSoTheBHYT = @MaSoTheBHYT,
+        SoTienBHYTChiTra = @SoTienBHYTChiTra,
+        NgayBHYTThanhToan = @NgayBHYTThanhToan
+      WHERE MaChiPhiBHYT = @MaChiPhiBHYT
+    `;
+    const result = await pool
+      .request()
+      .input("MaChiPhiBHYT", sql.NVarChar, MaChiPhiBHYT)
+      .input("MaSoTheBHYT", sql.NVarChar, MaSoTheBHYT)
+      .input("SoTienBHYTChiTra", sql.Decimal(18, 2), SoTienBHYTChiTra)
+      .input("NgayBHYTThanhToan", sql.DateTime, NgayBHYTThanhToan)
+      .query(query);
+
+    if (result.rowsAffected[0] > 0) {
+      res.json({ success: true, message: "Cập nhật ChiPhiBHYT thành công!" });
+    } else {
+      res.status(404).json({ success: false, message: "Không tìm thấy ChiPhiBHYT để cập nhật" });
+    }
+  } catch (err) {
+    console.error("Lỗi cập nhật:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi cập nhật dữ liệu" });
+  }
+});
+
+// API xóa
+app.delete("/api/ChiPhiBHYT/:id", async (req, res) => {
+  const MaChiPhiBHYT = req.params.id;
+
+  try {
+    const query = `
+      DELETE FROM ChiPhiBHYT
+      WHERE MaChiPhiBHYT = @MaChiPhiBHYT
+    `;
+    const result = await pool
+      .request()
+      .input("MaChiPhiBHYT", sql.NVarChar, MaChiPhiBHYT)
+      .query(query);
+
+    if (result.rowsAffected[0] > 0) {
+      res.json({ success: true, message: "Xóa ChiPhiBHYT thành công!" });
+    } else {
+      res.status(404).json({ success: false, message: "Không tìm thấy ChiPhiBHYT để xóa" });
+    }
+  } catch (err) {
+    console.error("Lỗi xóa:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi xóa dữ liệu" });
+  }
 });
