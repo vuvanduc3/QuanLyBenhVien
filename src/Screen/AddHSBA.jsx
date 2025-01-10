@@ -227,36 +227,35 @@ const AddMedicalRecord = () => {
                 const body2 = {
                      MaBenhNhanKhamBenh: formData.maBenhNhan,  // Sử dụng item.MaHoaDon nếu có
                 };
+                if (action === 'add' && item) {
+                    try {
+                        const updateResponse = await fetch(`http://localhost:5000/api/lichkhammabenhnhankhambenh/${item.MaLichKham}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(body2),
+                        });
 
-                try {
-                    const updateResponse = await fetch(`http://localhost:5000/api/lichkhammabenhnhankhambenh/${item.MaLichKham}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(body2),
-                    });
+                        // Kiểm tra xem response có thành công không
+                        if (!updateResponse.ok) {
+                            const errorData = await updateResponse.json(); // Đọc dữ liệu lỗi từ server nếu có
 
-                    // Kiểm tra xem response có thành công không
-                    if (!updateResponse.ok) {
-                        const errorData = await updateResponse.json(); // Đọc dữ liệu lỗi từ server nếu có
+                            return;
+                        }
 
-                        return;
+                        const updateResult = await updateResponse.json();
+                        if (updateResult.success) {
+                            alert('Cập nhập lịch hẹn thành công!');
+                            navigate('/hosobenhan');
+                        } else {
+                           setError(updateResult.message || 'Có lỗi xảy ra khi cập nhật!');
+                        }
+                    } catch (error) {
+                        console.error('Lỗi khi gọi API:', error);
+                        setError('Có lỗi xảy ra, vui lòng thử lại!');
                     }
-
-                    const updateResult = await updateResponse.json();
-                    if (updateResult.success) {
-                        alert('Cập nhập lịch hẹn thành công!');
-                        navigate('/hosobenhan');
-                    } else {
-                       setError(updateResult.message || 'Có lỗi xảy ra khi cập nhật!');
-                    }
-                } catch (error) {
-                    console.error('Lỗi khi gọi API:', error);
-                    setError('Có lỗi xảy ra, vui lòng thử lại!');
                 }
-
-
             } else {
                 setError(data.message || 'Có lỗi xảy ra khi thêm hồ sơ');
             }
