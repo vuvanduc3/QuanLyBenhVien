@@ -3339,3 +3339,167 @@ app.delete("/api/ChiPhiBHYT/:id", async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi xóa dữ liệu" });
   }
 });
+
+// API cập nhập doanh thu và chi phí b
+// API cập nhập số lượng hóa đơn
+app.put("/api/thongketonghop_vathuthapthongtin", async (req, res) => {
+    try {
+        const result = await pool
+            .request()
+            .query(`
+               DECLARE @NgayBHYTThanhToan DATE;
+                   DECLARE @SoTienBHYTChiTra DECIMAL(18, 2);
+                   DECLARE @NgayLapHoaDon DATE;
+                   DECLARE @TongTien DECIMAL(18, 2);
+                   DECLARE @NgayTao DATE;
+                   DECLARE @SoLuongBenhNhan INT;
+                   DECLARE @SoLuongBacSi INT;
+                   DECLARE @SoLuongHoaDon INT;
+
+                   -- Cập nhật chi phí bảo hiểm y tế từ bảng ChiPhiBHYT
+                   DECLARE ChiPhiBHYTCursor CURSOR FOR
+                   SELECT DISTINCT NgayBHYTThanhToan, SUM(SoTienBHYTChiTra) AS SoTienBHYTChiTra
+                   FROM ChiPhiBHYT
+                   GROUP BY NgayBHYTThanhToan;
+
+                   OPEN ChiPhiBHYTCursor;
+                   FETCH NEXT FROM ChiPhiBHYTCursor INTO @NgayBHYTThanhToan, @SoTienBHYTChiTra;
+
+                   WHILE @@FETCH_STATUS = 0
+                   BEGIN
+                       IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayBHYTThanhToan)
+                       BEGIN
+                           UPDATE TongHopThongTin
+                           SET ChiPhiBHYT = @SoTienBHYTChiTra
+                           WHERE Ngay = @NgayBHYTThanhToan;
+                       END
+                       ELSE
+                       BEGIN
+                           INSERT INTO TongHopThongTin (Ngay, ChiPhiBHYT)
+                           VALUES (@NgayBHYTThanhToan, @SoTienBHYTChiTra);
+                       END
+                       FETCH NEXT FROM ChiPhiBHYTCursor INTO @NgayBHYTThanhToan, @SoTienBHYTChiTra;
+                   END
+                   CLOSE ChiPhiBHYTCursor;
+                   DEALLOCATE ChiPhiBHYTCursor;
+
+                   -- Cập nhật doanh thu từ bảng VienPhi
+                   DECLARE VienPhiCursor CURSOR FOR
+                   SELECT DISTINCT NgayLapHoaDon, SUM(TongTien) AS TongTien
+                   FROM VienPhi
+                   GROUP BY NgayLapHoaDon;
+
+                   OPEN VienPhiCursor;
+                   FETCH NEXT FROM VienPhiCursor INTO @NgayLapHoaDon, @TongTien;
+
+                   WHILE @@FETCH_STATUS = 0
+                   BEGIN
+                       IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayLapHoaDon)
+                       BEGIN
+                           UPDATE TongHopThongTin
+                           SET DoanhThu = @TongTien
+                           WHERE Ngay = @NgayLapHoaDon;
+                       END
+                       ELSE
+                       BEGIN
+                           INSERT INTO TongHopThongTin (Ngay, DoanhThu)
+                           VALUES (@NgayLapHoaDon, @TongTien);
+                       END
+                       FETCH NEXT FROM VienPhiCursor INTO @NgayLapHoaDon, @TongTien;
+                   END
+                   CLOSE VienPhiCursor;
+                   DEALLOCATE VienPhiCursor;
+
+                   -- Cập nhật số lượng bệnh nhân và bác sĩ từ bảng NguoiDung
+                   DECLARE NguoiDungCursor CURSOR FOR
+                   SELECT DISTINCT CAST(NgayTao AS DATE) AS NgayTao
+                   FROM NguoiDung
+                   WHERE VaiTro IN (N'Bệnh nhân', N'Bác sĩ');
+
+                   OPEN NguoiDungCursor;
+                   FETCH NEXT FROM NguoiDungCursor INTO @NgayTao;
+
+                   WHILE @@FETCH_STATUS = 0
+                   BEGIN
+                       -- Tính số lượng người dùng "Bệnh nhân" trong ngày
+                       SELECT @SoLuongBenhNhan = COUNT(*)
+                       FROM NguoiDung
+                       WHERE VaiTro = N'Bệnh nhân' AND CAST(NgayTao AS DATE) = @NgayTao;
+
+                       -- Tính số lượng người dùng "Bác sĩ" trong ngày
+                       SELECT @SoLuongBacSi = COUNT(*)
+                       FROM NguoiDung
+                       WHERE VaiTro = N'Bác sĩ' AND CAST(NgayTao AS DATE) = @NgayTao;
+
+                       -- Kiểm tra xem ngày đã có trong TongHopThongTin chưa
+                       IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayTao)
+                       BEGIN
+                           -- Nếu ngày đã có, cập nhật số lượng bệnh nhân và bác sĩ
+                           UPDATE TongHopThongTin
+                           SET SoLuongBenhNhan = @SoLuongBenhNhan, SoLuongBacSi = @SoLuongBacSi
+                           WHERE Ngay = @NgayTao;
+                       END
+                       ELSE
+                       BEGIN
+                           -- Nếu ngày chưa có, thêm mới số lượng bệnh nhân và bác sĩ
+                           INSERT INTO TongHopThongTin (Ngay, SoLuongBenhNhan, SoLuongBacSi)
+                           VALUES (@NgayTao, @SoLuongBenhNhan, @SoLuongBacSi);
+                       END
+                       FETCH NEXT FROM NguoiDungCursor INTO @NgayTao;
+                   END
+                   CLOSE NguoiDungCursor;
+                   DEALLOCATE NguoiDungCursor;
+
+                   -- Cập nhật số lượng hóa đơn từ bảng VienPhi
+                   DECLARE VienPhiCursorForHoaDon CURSOR FOR
+                   SELECT DISTINCT NgayLapHoaDon, COUNT(*) AS SoLuongHoaDon
+                   FROM VienPhi
+                   GROUP BY NgayLapHoaDon;
+
+                   OPEN VienPhiCursorForHoaDon;
+                   FETCH NEXT FROM VienPhiCursorForHoaDon INTO @NgayLapHoaDon, @SoLuongHoaDon;
+
+                   WHILE @@FETCH_STATUS = 0
+                   BEGIN
+                       IF EXISTS (SELECT 1 FROM TongHopThongTin WHERE Ngay = @NgayLapHoaDon)
+                       BEGIN
+                           UPDATE TongHopThongTin
+                           SET SoLuongHoaDon = @SoLuongHoaDon
+                           WHERE Ngay = @NgayLapHoaDon;
+                       END
+                       ELSE
+                       BEGIN
+                           INSERT INTO TongHopThongTin (Ngay, SoLuongHoaDon)
+                           VALUES (@NgayLapHoaDon, @SoLuongHoaDon);
+                       END
+                       FETCH NEXT FROM VienPhiCursorForHoaDon INTO @NgayLapHoaDon, @SoLuongHoaDon;
+                   END
+                   CLOSE VienPhiCursorForHoaDon;
+                   DEALLOCATE VienPhiCursorForHoaDon;
+            `);
+
+        res.status(200).json({ success: true, message: "Cập nhật thông tin thành công!" });
+    } catch (err) {
+        console.error("❌ Lỗi khi cập nhập thông tin thống kê:", err.message);
+        res.status(500).json({ success: false, message: "Lỗi khi thông tin thống kê: " + err.message });
+    }
+});
+
+app.get("/api/tonghopthongtin", async (req, res) => {
+    try {
+        const result = await pool.request().query(`
+            SELECT * FROM TongHopThongTin ORDER BY TongHopThongTin.ID DESC
+        `);
+
+        res.status(200).json({
+            success: true,
+            data: result.recordset,
+        });
+    } catch (err) {
+        console.error("❌ Lỗi lấy dữ liệu tonghopthongtin:", err.message);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+        });
+    }
+});
