@@ -540,6 +540,7 @@ const MedicalRecordDetail = () => {
                                         <div className="form-group">
                                             <label>Mã lịch hẹn</label>
                                             <input
+                                                disabled
                                                 name="maLichHen"
                                                 value={editedData.maLichHen}
                                                 onChange={handleChange}

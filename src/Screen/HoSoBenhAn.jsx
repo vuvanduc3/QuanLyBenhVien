@@ -97,6 +97,18 @@ const MedicalRecordList = () => {
         navigate(action + maBenhNhan);
     };
 
+    const handleXemDonThuoc = (item) => {
+            navigate('/donthuoc', { state: { action: 'xem', item } });
+    };
+
+    const handleXemXetNghiem = (item) => {
+            navigate('/xet-nghiem', { state: { action: 'xem', item } });
+    };
+
+    const handleXemDieuTri = (item) => {
+            navigate('/lich-su-dieu-tri', { state: { action: 'xem', item } });
+    };
+
     // Filter records based on criteria
     const filteredRecords = records.filter(record => {
         const matchMaBenhNhan = record.MaBenhNhan.toLowerCase().includes(filters.maBenhNhan.toLowerCase());
@@ -232,7 +244,7 @@ const MedicalRecordList = () => {
                                                         <div className="action-buttons-row">
                                                             <button 
                                                                 className="action-btn green"
-                                                                onClick={(e) => handleButtonClick(e, '/medical-records/history/', record.MaBenhNhan)}
+                                                                onClick={() => handleXemDieuTri(record)}
                                                             >
                                                                 Lịch sử điều trị
                                                             </button>
@@ -244,7 +256,7 @@ const MedicalRecordList = () => {
                                                             </button>
                                                             <button 
                                                                 className="action-btn"
-                                                                onClick={(e) => handleButtonClick(e, '/prescriptions/', record.MaBenhNhan)}
+                                                                onClick={() => handleXemDonThuoc(record)}
                                                             >
                                                                 Đơn thuốc
                                                             </button>
@@ -258,7 +270,7 @@ const MedicalRecordList = () => {
                                                             </button>
                                                             <button 
                                                                 className="action-btn brown"
-                                                                onClick={(e) => handleButtonClick(e, '/lab-tests/', record.MaBenhNhan)}
+                                                                onClick={() => handleXemXetNghiem(record)}
                                                             >
                                                                 Xét nghiệm
                                                             </button>
