@@ -97,8 +97,8 @@ const XetNghiem = () => {
     };
 
     // Hàm thêm dữ liệu
-    const handleAdd = () => {
-        navigate('/crud-xet-nghiem', { state: { action: 'add' } });
+    const handleAdd = (item) => {
+        navigate('/crud-xet-nghiem', { state: { action: 'add', item } });
     };
 
     // Hàm xóa dữ liệu
@@ -154,7 +154,7 @@ const XetNghiem = () => {
                         Xét Nghiệm {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}
                     </h2>
                     <div className="filters">
-                        <button className="add-button" onClick={handleAdd}>
+                        <button className="add-button" onClick={() => handleAdd(item?item:'')}>
                             Thêm xét nghiệm
                         </button>
                         <input

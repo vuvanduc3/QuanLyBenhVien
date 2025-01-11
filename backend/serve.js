@@ -3877,3 +3877,73 @@ app.post("/api/themtaikhoandangnhap", async (req, res) => {
     }
 });
 
+
+// API -- Kiểm tra xem bảng TongHopThongTinKhac có dữ liệu hay không,Nếu không có dữ liệu, insert dữ liệu mới với giá trị mặc định, Nếu có dữ liệu, cập nhật số liệu từ bảng HoSoBenhAn dựa trên HanhDong
+app.put("/api/ThongKe_TongHopThongTinKhac", async (req, res) => {
+  try {
+    const query = `
+      IF NOT EXISTS (SELECT 1 FROM TongHopThongTinKhac)
+      BEGIN
+          -- Nếu không có dữ liệu, insert dữ liệu mới với giá trị mặc định
+          INSERT INTO TongHopThongTinKhac
+          (
+              KhamMoi, TaiKham, CapCuu, TheoDoi, ChuyenVien,
+              DieuTriNgoaiTru, XuatVien, NhapVien
+          )
+          VALUES
+          (
+              0, 0, 0, 0, 0, 0, 0, 0
+          )
+      END
+      ELSE
+      BEGIN
+          -- Nếu có dữ liệu, cập nhật số liệu từ bảng HoSoBenhAn dựa trên HanhDong
+          UPDATE t
+          SET
+              t.KhamMoi = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'KhamMoi'),
+              t.TaiKham = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'TaiKham'),
+              t.CapCuu = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'CapCuu'),
+              t.TheoDoi = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'TheoDoi'),
+              t.ChuyenVien = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'ChuyenVien'),
+              t.DieuTriNgoaiTru = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'DieuTriNgoaiTru'),
+              t.XuatVien = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'XuatVien'),
+              t.NhapVien = (SELECT COUNT(*) FROM HoSoBenhAn WHERE HanhDong = 'NhapVien')
+          FROM TongHopThongTinKhac t
+      END
+
+    `;
+    const result = await pool
+      .request()
+      .query(query);
+
+    if (result.rowsAffected[0] > 0) {
+      res.json({ success: true, message: "Cập nhật TongHopThongTinKhac thành công!" });
+    } else {
+      res.status(404).json({ success: false, message: "Không tìm thấy TongHopThongTinKhac để cập nhật" });
+    }
+  } catch (err) {
+    console.error("Lỗi cập nhật:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi cập nhật dữ liệu" });
+  }
+});
+
+
+//Lấy dữ liệu ThongKe_TongHopThongTinKhac
+app.get('/api/ThongKe_TongHopThongTinKhac', async (req, res) => {
+   try {
+          const result = await pool.request().query(`
+             SELECT * FROM TongHopThongTinKhac
+          `);
+
+          res.status(200).json({
+              success: true,
+              data: result.recordset,
+          });
+      } catch (err) {
+          console.error("❌ Lỗi lấy dữ liệu ThongKe_TongHopThongTinKhac:", err.message);
+          res.status(500).json({
+              success: false,
+              message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+          });
+      }
+});

@@ -2,9 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Bell, Search, ChevronLeft, ChevronRight, Settings, LogOut } from 'lucide-react';
 import { ChevronUp, ChevronDown, Users, FileText } from 'lucide-react';
 import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Chart as ChartJS, Title, Tooltip as ChartTooltip, Legend as ChartLegend, ArcElement, CategoryScale } from 'chart.js';
+
+import { Pie } from 'react-chartjs-2';
+
+
 import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+
+// Đảm bảo đường dẫn đúng
+ChartJS.register(ArcElement, CategoryScale, ChartTooltip, ChartLegend, Title);
 
 // Hàm định dạng tiền VND
 const formatCurrency = (value, currency = 'USD', locale = 'en-US') => {
@@ -67,11 +75,61 @@ export default function Dashboard() {
     totalInvoicesDetails: 0
   });
 
+  const [pieChartData, setPieChartData] = useState({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: ['#ff5722', '#16a34a', '#dc2626', '#6366f1', '#fbbf24', '#4f8c91'],
+          hoverBackgroundColor: ['#ff7043', '#38a169', '#f87171', '#3b82f6', '#fbbf24', '#4f8c91'],
+        },
+      ],
+  });
+
   // Hàm tính phần trăm thay đổi
   const calculateChangePercentage = (newValue, oldValue) => {
     if (oldValue === 0) return newValue === 0 ? 0 : 1;
     return ((newValue - oldValue) / oldValue * 100).toFixed(2);
   };
+
+  // Hàm lấy và chuẩn bị dữ liệu cho biểu đồ tròn
+    const fetchAndPrepareData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
+        const data = await response.json();
+
+        const stats = data.data[0]; // Lấy đối tượng đầu tiên trong mảng "data"
+
+        // Chuẩn bị dữ liệu cho Pie Chart
+        setPieChartData({
+          labels: [
+            'Số lượng khám mới',
+            'Số lượng tái khám',
+            'Số lượng cấp cứu',
+            'Số lượng theo dõi',
+            'Số lượng chuyển viện',
+            'Số lượng điều trị ngoại trú',
+          ],
+          datasets: [
+            {
+              data: [
+                stats.KhamMoi || 0,
+                stats.TaiKham || 0,
+                stats.CapCuu || 0,
+                stats.TheoDoi || 0,
+                stats.ChuyenVien || 0,
+                stats.DieuTriNgoaiTru || 0,
+              ],
+              backgroundColor: ['#ff5722', '#16a34a', '#dc2626', '#6366f1', '#fbbf24', '#4f8c91'],
+              hoverBackgroundColor: ['#ff7043', '#38a169', '#f87171', '#3b82f6', '#fbbf24', '#4f8c91'],
+            },
+          ],
+        });
+
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error);
+      }
+    };
 
   // Fetch dữ liệu từ API
   useEffect(() => {
@@ -91,6 +149,23 @@ export default function Dashboard() {
           console.error('Lỗi khi cập nhật tổng tiền');
           return; // Dừng lại nếu không cập nhật thành công
         }
+
+       const updateResponse2 = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac', {
+           method: 'PUT', // Sử dụng phương thức PUT để cập nhật dữ liệu
+           headers: {
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({ /* Tham số cần thiết cho API */ }),
+       });
+
+        const updateData2 = await updateResponse2.json();
+
+        if (!updateData2.success) {
+           console.error('Lỗi khi cập nhật thông tin khác');
+           return; // Dừng lại nếu không cập nhật thành công
+        }
+
+
         const response = await fetch('http://localhost:5000/api/tonghopthongtin');
         const data = await response.json();
 
@@ -195,6 +270,144 @@ export default function Dashboard() {
           }
         ]);
 
+        const otherStatsResponse = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
+        const otherStatsData = await otherStatsResponse.json();
+
+        // Lấy đối tượng đầu tiên trong mảng "data"
+        const stats = otherStatsData.data[0];
+        setPieChartData({
+              labels: [
+                'Số lượng khám mới',
+                'Số lượng tái khám',
+                'Số lượng cấp cứu',
+                'Số lượng theo dõi',
+                'Số lượng chuyển viện',
+                'Số lượng điều trị ngoại trú',
+                'Số lượng xuất viện', // Thêm nhãn "XuatVien"
+                'Số lượng nhập viện', // Thêm nhãn "NhapVien"
+              ],
+              datasets: [
+                {
+                  data: [
+                    stats.KhamMoi || 0,
+                    stats.TaiKham || 0,
+                    stats.CapCuu || 0,
+                    stats.TheoDoi || 0,
+                    stats.ChuyenVien || 0,
+                    stats.DieuTriNgoaiTru || 0,
+                    stats.XuatVien || 0, // Thêm dữ liệu "XuatVien"
+                    stats.NhapVien || 0, // Thêm dữ liệu "NhapVien"
+                  ],
+                  backgroundColor: [
+                    '#ff5722',
+                    '#16a34a',
+                    '#dc2626',
+                    '#6366f1',
+                    '#fbbf24',
+                    '#4f8c91',
+                    '#1e88e5', // Màu cho "XuatVien"
+                    '#9c27b0', // Màu cho "NhapVien"
+                  ],
+                  hoverBackgroundColor: [
+                    '#ff7043',
+                    '#38a169',
+                    '#f87171',
+                    '#3b82f6',
+                    '#fbbf24',
+                    '#4f8c91',
+                    '#42a5f5', // Màu hover cho "XuatVien"
+                    '#ba68c8', // Màu hover cho "NhapVien"
+                  ],
+                },
+              ],
+            });
+
+        // Kiểm tra và xử lý dữ liệu
+        setStatsData((prevStatsData) => [
+          ...prevStatsData,
+          {
+            title: "Số lượng khám mới",
+            value: stats.KhamMoi != null ? stats.KhamMoi.toString() : "0",
+            change: previousStats.KhamMoi != null
+              ? `${calculateChangePercentage(stats.KhamMoi, previousStats.KhamMoi)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.KhamMoi >= 0
+          },
+          {
+            title: "Số lượng tái khám",
+            value: stats.TaiKham != null ? stats.TaiKham.toString() : "0",
+            change: previousStats.TaiKham != null
+              ? `${calculateChangePercentage(stats.TaiKham, previousStats.TaiKham)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.TaiKham >= 0
+          },
+          {
+            title: "Số lượng cấp cứu",
+            value: stats.CapCuu != null ? stats.CapCuu.toString() : "0",
+            change: previousStats.CapCuu != null
+              ? `${calculateChangePercentage(stats.CapCuu, previousStats.CapCuu)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.CapCuu >= 0
+          },
+          {
+            title: "Số lượng theo dõi",
+            value: stats.TheoDoi != null ? stats.TheoDoi.toString() : "0",
+            change: previousStats.TheoDoi != null
+              ? `${calculateChangePercentage(stats.TheoDoi, previousStats.TheoDoi)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.TheoDoi >= 0
+          },
+          {
+            title: "Số lượng chuyển viện",
+            value: stats.ChuyenVien != null ? stats.ChuyenVien.toString() : "0",
+            change: previousStats.ChuyenVien != null
+              ? `${calculateChangePercentage(stats.ChuyenVien, previousStats.ChuyenVien)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.ChuyenVien >= 0
+          },
+          {
+            title: "Số lượng điều trị ngoại trú",
+            value: stats.DieuTriNgoaiTru != null ? stats.DieuTriNgoaiTru.toString() : "0",
+            change: previousStats.DieuTriNgoaiTru != null
+              ? `${calculateChangePercentage(stats.DieuTriNgoaiTru, previousStats.DieuTriNgoaiTru)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.DieuTriNgoaiTru >= 0
+          },
+          {
+            title: "Số lượng xuất viện",
+            value: stats.XuatVien != null ? stats.XuatVien.toString() : "0",
+            change: previousStats.XuatVien != null
+              ? `${calculateChangePercentage(stats.XuatVien, previousStats.XuatVien)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.XuatVien >= 0
+          },
+          {
+            title: "Số lượng nhập viện",
+            value: stats.NhapVien != null ? stats.NhapVien.toString() : "0",
+            change: previousStats.NhapVien != null
+              ? `${calculateChangePercentage(stats.NhapVien, previousStats.NhapVien)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.NhapVien >= 0
+          }
+        ]);
+
+
         // Cập nhật secondaryStats
         setSecondaryStats([
           {
@@ -245,6 +458,7 @@ export default function Dashboard() {
     };
 
     fetchData();
+
   }, []);
 
 
@@ -306,6 +520,48 @@ export default function Dashboard() {
           </AreaChart>
 
         </div>
+        {/* Các thẻ thống kê */}
+
+
+        {/* Biểu đồ tròn */}
+        <div className="chart-section">
+          <div className="chart-header">
+            <h2 className="chart-title">Thống kê Khám, Tái khám, Cấp cứu, Điều trị</h2>
+          </div>
+          <div className="chart-content" style={{ display: 'flex' }}>
+            {/* Biểu đồ tròn bên trái */}
+            <div className="chart-container" style={{ flex: 1 }}>
+              <Pie
+                data={pieChartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                  },
+                }}
+              />
+            </div>
+
+            {/* Thông tin phụ bên phải */}
+            <div className="info-container" style={{ flex: 1, marginLeft: '20px' }}>
+              <h3>Thông tin chi tiết</h3>
+              <ul>
+                    <li>Khám mới: {pieChartData.datasets[0].data[0] || 0}</li>
+                    <li>Tái khám: {pieChartData.datasets[0].data[1] || 0}</li>
+                    <li>Cấp cứu: {pieChartData.datasets[0].data[2] || 0}</li>
+                    <li>Theo dõi: {pieChartData.datasets[0].data[3] || 0}</li>
+                    <li>Chuyển viện: {pieChartData.datasets[0].data[4] || 0}</li>
+                    <li>Điều trị ngoại trú: {pieChartData.datasets[0].data[5] || 0}</li>
+                    <li>Xuất viện: {pieChartData.datasets[0].data[6] || 0}</li> {/* Hiển thị số lượng "XuatVien" */}
+                    <li>Nhập viện: {pieChartData.datasets[0].data[7] || 0}</li> {/* Hiển thị số lượng "NhapVien" */}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
   );

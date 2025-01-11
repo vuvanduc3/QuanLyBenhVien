@@ -93,16 +93,23 @@ const ThemSuaXoaXetNghiem = () => {
     };
 
     useEffect(() => {
+        if (action === 'add' && item) {
+            setMaHoSo(item.ID);
+             setSearchTermHoSo(item.ID);
+
+        }
         if (action === 'edit' && item) {
             setMaHoSo(item.MaHoSo);
             setMaBenhNhan(item.MaBenhNhan);
             setMaBacSi(item.MaBacSi);
             setChanDoan(item.ChanDoan);
             setNgayLap(item.NgayLap);
+
             setTenXetNghiem(item.TenXetNghiem);
             setKetQua(item.KetQua);
-             setNgayXetNghiem(convertToISODate(formatNgayXetNghiem(item.NgayXetNghiem)));
+            setNgayXetNghiem(convertToISODate(formatNgayXetNghiem(item.NgayXetNghiem)));
             setDaNhapHoaDon(item.DaNhapHoaDon);
+
             setSearchTermHoSo(item.MaHoSo);
         }
     }, [action, item]);

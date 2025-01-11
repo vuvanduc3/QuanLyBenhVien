@@ -120,8 +120,8 @@ const DonThuoc = () => {
         navigate('/cruddonthuoc', { state: { action: 'edit', item } });
     };
 
-    const handleAdd = () => {
-        navigate('/cruddonthuoc', { state: { action: 'add' } });
+    const handleAdd = (item) => {
+        navigate('/cruddonthuoc', { state: { action: 'add', item } });
     };
 
     return (
@@ -134,7 +134,9 @@ const DonThuoc = () => {
                         <h2 className="card-title">Đơn thuốc {MaBenhNhans?'(Mã bệnh nhân: '+MaBenhNhans+')':''}</h2>
                     </div>
                     <div className="filter-container">
-                        <button className="add-button" onClick={handleAdd}>
+                        <button className="add-button"
+                        onClick={() => handleAdd(item?item:'')}
+                        >
                             Thêm đơn thuốc
                         </button>
                         <button
