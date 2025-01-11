@@ -50,6 +50,9 @@ import CaiDatThongTin from './Screen/CaiDatThongTin';
 import Login from './Screen/Login';
 import Register from './Screen/Register';
 
+import ThongKeBieuDoTron from './Screen/ThongKeBieuDoTron';
+import Setting from './Screen/Setting';
+
 function App() {
   return (
     <Router>
@@ -106,6 +109,9 @@ function App() {
             <Route path="/quan-ly-tai-khoan" element={<CaiDatThongTin/>} />
             <Route path="/Login" element={<Login/>} />
             <Route path="/Register" element={<Register/>} />
+
+            <Route path="/ThongKeBieuDoTron" element={<ThongKeBieuDoTron/>} />
+            <Route path="/CaiDat" element={<Setting/>} />
 
 
           </Routes>

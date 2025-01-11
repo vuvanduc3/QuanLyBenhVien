@@ -40,12 +40,13 @@ const pageItems = [
   { text: "Thanh toán", icon: <Wallet size={20} />, path: "/payments" },
 
   { text: "Quản lý người dùng", icon: <UserCircle size={20} />, path: "/quanlynguoidung" },
-  { text: "Quản lý tài khoản", icon: <UserCircle size={20} />, path: "/quan-ly-tai-khoan" },
+
   { text: "Table", icon: <Table2 size={20} />, path: "/table" }
 ];
 
 const bottomItems = [
-  { text: "Settings", icon: <Settings size={20} />, path: "/settings" },
+  { text: "Quản lý tài khoản", icon: <UserCircle size={20} />, path: "/quan-ly-tai-khoan" },
+  { text: "Settings", icon: <Settings size={20} />, path: "/CaiDat" },
   { text: "Logout", icon: <LogOut size={20} />, path: "/Login" }
 ];
 
