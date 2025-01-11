@@ -1074,66 +1074,21 @@ app.get("/api/medical-records/next-appointment-code",   async (req, res) => {
 // API: Lấy danh sách tất cả hồ sơ bệnh án với phân trang và tìm kiếm
 app.get("/api/medical-records",   async (req, res) => {
     try {
-        const { 
-            page = 1, 
-            limit = 10, 
-            searchTerm = '',
-            sortBy = 'VaoVien',
-            sortOrder = 'DESC'
-        } = req.query;
+            const result = await pool
+                .request()
+                .query("SELECT *  FROM HoSoBenhAn ORDER BY HoSoBenhAn.ID DESC");
 
-        const offset = (page - 1) * limit;
-
-        // Xây dựng câu query với điều kiện tìm kiếm
-        let query = `
-            SELECT *
-            FROM HoSoBenhAn
-            WHERE 
-                MaBenhNhan LIKE @searchTerm OR
-                HoVaTen LIKE @searchTerm OR
-                SoTheBHYT LIKE @searchTerm OR
-                SoCCCD_HoChieu LIKE @searchTerm
-            ORDER BY ${sortBy} ${sortOrder}
-            OFFSET @offset ROWS
-            FETCH NEXT @limit ROWS ONLY;
-
-            SELECT COUNT(*) as totalCount
-            FROM HoSoBenhAn
-            WHERE 
-                MaBenhNhan LIKE @searchTerm OR
-                HoVaTen LIKE @searchTerm OR
-                SoTheBHYT LIKE @searchTerm OR
-                SoCCCD_HoChieu LIKE @searchTerm;
-        `;
-
-        const result = await pool
-            .request()
-            .input('searchTerm', sql.NVarChar, `%${searchTerm}%`)
-            .input('offset', sql.Int, offset)
-            .input('limit', sql.Int, parseInt(limit))
-            .query(query);
-
-        const records = result.recordsets[0];
-        const totalCount = result.recordsets[1][0].totalCount;
-        const totalPages = Math.ceil(totalCount / limit);
-
-        res.status(200).json({
-            success: true,
-            data: records,
-            pagination: {
-                currentPage: parseInt(page),
-                totalPages,
-                totalRecords: totalCount,
-                limit: parseInt(limit)
-            }
-        });
-    } catch (err) {
-        console.error("Error fetching medical records:", err);
-        res.status(500).json({
-            success: false,
-            message: "Lỗi khi lấy danh sách hồ sơ bệnh án: " + err.message
-        });
-    }
+            res.json({
+                success: true,
+                data: result.recordset
+            });
+        } catch (err) {
+            console.error("Lỗi khi lấy danh sách hồ sơ bệnh án:", err);
+            res.status(500).json({
+                success: false,
+                message: "Lỗi server khi lấy danh sách hồ sơ bệnh án: " + err.message
+            });
+        }
 });
 
 // API: Lấy chi tiết hồ sơ bệnh án theo mã bệnh nhân
