@@ -51,6 +51,7 @@ import Login from './Screen/Login';
 import Register from './Screen/Register';
 
 import ThongKeBieuDoTron from './Screen/ThongKeBieuDoTron';
+import Setting from './Screen/Setting';
 
 function App() {
   return (
@@ -110,6 +111,7 @@ function App() {
             <Route path="/Register" element={<Register/>} />
 
             <Route path="/ThongKeBieuDoTron" element={<ThongKeBieuDoTron/>} />
+            <Route path="/CaiDat" element={<Setting/>} />
 
 
           </Routes>
