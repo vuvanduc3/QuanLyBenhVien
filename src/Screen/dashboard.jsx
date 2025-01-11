@@ -6,7 +6,6 @@ import { Chart as ChartJS, Title, Tooltip as ChartTooltip, Legend as ChartLegend
 
 import { Pie } from 'react-chartjs-2';
 
-
 import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
@@ -92,44 +91,6 @@ export default function Dashboard() {
     return ((newValue - oldValue) / oldValue * 100).toFixed(2);
   };
 
-  // Hàm lấy và chuẩn bị dữ liệu cho biểu đồ tròn
-    const fetchAndPrepareData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
-        const data = await response.json();
-
-        const stats = data.data[0]; // Lấy đối tượng đầu tiên trong mảng "data"
-
-        // Chuẩn bị dữ liệu cho Pie Chart
-        setPieChartData({
-          labels: [
-            'Số lượng khám mới',
-            'Số lượng tái khám',
-            'Số lượng cấp cứu',
-            'Số lượng theo dõi',
-            'Số lượng chuyển viện',
-            'Số lượng điều trị ngoại trú',
-          ],
-          datasets: [
-            {
-              data: [
-                stats.KhamMoi || 0,
-                stats.TaiKham || 0,
-                stats.CapCuu || 0,
-                stats.TheoDoi || 0,
-                stats.ChuyenVien || 0,
-                stats.DieuTriNgoaiTru || 0,
-              ],
-              backgroundColor: ['#ff5722', '#16a34a', '#dc2626', '#6366f1', '#fbbf24', '#4f8c91'],
-              hoverBackgroundColor: ['#ff7043', '#38a169', '#f87171', '#3b82f6', '#fbbf24', '#4f8c91'],
-            },
-          ],
-        });
-
-      } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
-      }
-    };
 
   // Fetch dữ liệu từ API
   useEffect(() => {
@@ -457,7 +418,16 @@ export default function Dashboard() {
       }
     };
 
+     // Lấy dữ liệu lần đầu khi component được mount
     fetchData();
+
+    // Thiết lập interval để lấy dữ liệu mỗi 10 giây
+    const interval = setInterval(() => {
+            fetchData();
+    }, 30000);
+
+    // Dọn dẹp interval khi component bị unmount
+    return () => clearInterval(interval);
 
   }, []);
 
