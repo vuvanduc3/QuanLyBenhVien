@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../Styles/Register.module.css"; // CSS Module
 import videoSource from './login_video.mp4';
@@ -13,15 +13,44 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email && fullName && phone && cccd && age && address && password) {
-      console.log("Đăng ký thành công!");
-      navigate("/dashboard");
-    } else {
-      console.log("Vui lòng nhập đầy đủ thông tin!");
-    }
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (email && fullName && phone && cccd && age && address && password) {
+          try {
+              const response = await fetch("http://localhost:5000/api/themtaikhoandangnhap", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                      TenDayDu: fullName,
+                      Email: email,
+                      SDT: phone,
+                      CCCD: cccd,
+                      DiaChi: address,
+                      Tuoi: parseInt(age),
+                      MatKhau: password,
+                      VaiTro: "Bệnh nhân", // Gửi vai trò là bệnh nhân
+                  }),
+              });
+
+              const data = await response.json();
+              if (data.success) {
+                  alert("Tạo tài khoản thành công!");
+                  navigate("/login");
+              } else {
+                  alert(data.message);
+              }
+          } catch (error) {
+              console.error("Lỗi khi gửi dữ liệu:", error);
+              alert("Có lỗi xảy ra khi gửi dữ liệu, vui lòng thử lại.");
+          }
+      } else {
+          alert("Vui lòng điền đầy đủ thông tin!");
+      }
   };
+
 
   return (
     <div className="loginContainer">

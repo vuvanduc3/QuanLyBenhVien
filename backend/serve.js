@@ -3752,6 +3752,8 @@ app.get("/api/tonghopthongtin", async (req, res) => {
     }
 });
 
+
+//Đọc thông tài khoản đang đăng nhập
 app.get('/api/login_info', async (req, res) => {
    try {
           const result = await pool.request().query(`
@@ -3770,3 +3772,153 @@ app.get('/api/login_info', async (req, res) => {
           });
       }
 });
+
+// API lưu mã đăng nhập
+app.put("/api/capnhapdangnhap", async (req, res) => {
+  const { DangDangNhap } = req.body;
+  try {
+    const query = `
+      UPDATE KiemTraDangNhap SET DangDangNhap = @DangDangNhap , ThoiGianDangNhap = GETDATE() WHERE KiemTraDangNhap.ID = 1
+    `;
+    const result = await pool
+      .request()
+      .input("DangDangNhap", sql.Int, DangDangNhap)
+      .query(query);
+
+    if (result.rowsAffected[0] > 0) {
+      res.json({ success: true, message: "Cập nhật capnhapdangnhap thành công!" });
+    } else {
+      res.status(404).json({ success: false, message: "Không tìm thấy capnhapdangnhap để cập nhật" });
+    }
+  } catch (err) {
+    console.error("Lỗi cập nhật:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi cập nhật dữ liệu" });
+  }
+});
+
+//Lấy dữ liệu người dùng
+app.get('/api/thongtindedangnhap', async (req, res) => {
+   try {
+          const result = await pool.request().query(`
+             SELECT
+                            nd.ID,
+                            nd.Hinh,
+                            nd.TenDayDu,
+                            nd.Email,
+                            nd.SDT,
+                            nd.CCCD,
+                            nd.VaiTro,
+                            nd.MatKhau ,
+                            COALESCE(bn.DiaChi, 'Không có địa chỉ') AS DiaChi,
+                            COALESCE(bn.Tuoi, 0) AS Tuoi,
+                            COALESCE(bn.GioiTinh, 'Không xác định') AS GioiTinh,
+                            COALESCE(bs.ChuyenMon, 'Không có chuyên môn') AS ChuyenMon,
+                            COALESCE(bs.PhongKham, 'Không có phòng khám') AS PhongKham
+                        FROM NguoiDung nd
+                        LEFT JOIN BenhNhanVTP bn
+                            ON nd.ID = bn.ID
+                        LEFT JOIN BacSiVTP bs
+                            ON nd.ID = bs.ID
+          `);
+
+          res.status(200).json({
+              success: true,
+              data: result.recordset,
+          });
+      } catch (err) {
+          console.error("❌ Lỗi lấy dữ liệu login_info:", err.message);
+          res.status(500).json({
+              success: false,
+              message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+          });
+      }
+});
+
+// API: Thêm người dùng mới
+app.post("/api/themtaikhoandangnhap", async (req, res) => {
+    const {
+        Hinh = null,
+        TenDayDu,
+        Email,
+        SDT,
+        CCCD,
+        DiaChi = null,
+        Tuoi = null,
+        GioiTinh = null,
+        MatKhau,
+    } = req.body;
+
+    if (!TenDayDu || !Email || !SDT || !CCCD || !MatKhau) {
+        return res.status(400).json({
+            success: false,
+            message: "Vui lòng điền đầy đủ thông tin bắt buộc!",
+        });
+    }
+
+    try {
+        const checkResult = await pool
+            .request()
+            .input("Email", sql.NVarChar, Email)
+            .input("CCCD", sql.NVarChar, CCCD)
+            .input("SDT", sql.NVarChar, SDT).query(`
+                SELECT * FROM NguoiDung
+                WHERE Email = @Email OR CCCD = @CCCD OR SDT = @SDT
+            `);
+
+        if (checkResult.recordset.length > 0) {
+            const existingUser = checkResult.recordset[0];
+            if (existingUser.Email === Email) {
+                return res.status(400).json({ success: false, message: "Email đã tồn tại!" });
+            }
+            if (existingUser.CCCD === CCCD) {
+                return res.status(400).json({ success: false, message: "CCCD/CMND đã tồn tại!" });
+            }
+            if (existingUser.SDT === SDT) {
+                return res.status(400).json({ success: false, message: "Số điện thoại đã tồn tại!" });
+            }
+        }
+
+        const result = await pool
+            .request()
+            .input("Hinh", sql.NVarChar, Hinh)
+            .input("TenDayDu", sql.NVarChar, TenDayDu)
+            .input("Email", sql.NVarChar, Email)
+            .input("SDT", sql.NVarChar, SDT)
+            .input("MatKhau", sql.NVarChar, MatKhau)
+            .input("CCCD", sql.NVarChar, CCCD)
+            .input("VaiTro", sql.NVarChar, "Bệnh nhân").query(`
+                INSERT INTO NguoiDung (Hinh, TenDayDu, Email, SDT, CCCD, VaiTro, MatKhau)
+                OUTPUT INSERTED.ID
+                VALUES (@Hinh, @TenDayDu, @Email, @SDT, @CCCD, @VaiTro, @MatKhau);
+            `);
+
+        const newUserId = result.recordset[0].ID;
+
+        await pool
+            .request()
+            .input("ID", sql.Int, newUserId)
+            .input("DiaChi", sql.NVarChar, DiaChi)
+            .input("Tuoi", sql.Int, Tuoi)
+            .input("GioiTinh", sql.NVarChar, GioiTinh).query(`
+                INSERT INTO BenhNhanVTP (ID, DiaChi, Tuoi, GioiTinh)
+                VALUES (@ID, @DiaChi, @Tuoi, @GioiTinh);
+            `);
+
+        res.status(201).json({
+            success: true,
+            message: "Tài khoản bệnh nhân đã được tạo thành công.",
+            data: {
+                ID: newUserId,
+                TenDayDu,
+                Email,
+                SDT,
+                CCCD,
+                VaiTro: "Bệnh nhân",
+            },
+        });
+    } catch (err) {
+        console.error("❌ Lỗi khi thêm tài khoản:", err.message);
+        res.status(500).json({ success: false, message: "Có lỗi xảy ra khi thêm tài khoản." });
+    }
+});
+

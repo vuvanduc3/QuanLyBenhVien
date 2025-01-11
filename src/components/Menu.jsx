@@ -21,7 +21,7 @@ import {
 import './Menu.css';
 
 const menuItems = [
-  { text: "Thống kê", icon: <ClipboardList size={20} />, path: "/dashboad" },
+  { text: "Thống kê", icon: <ClipboardList size={20} />, path: "/dashboard" },
   { text: "Lịch hẹn", icon: <Calendar size={20} />, path: "/lich-hen" },
   { text: "Danh sách thuốc", icon: <Pill size={20} />, path: "/quanlythuoc" },
   { text: "Hồ sơ bệnh án", icon: <FileText size={20} />, path: "/hosobenhan" },
