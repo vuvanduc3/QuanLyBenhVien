@@ -57,7 +57,7 @@ function App() {
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboad" element={<Dashboard/>} />
+            <Route path="/dashboard" element={<Dashboard/>} />
             <Route path="/medicines" element={<InsuranceList />} />
             <Route path="/medical-records" element={<h2>Hồ sơ bệnh án</h2>} />
             <Route path="/donthuoc" element={<DonThuoc/>} />

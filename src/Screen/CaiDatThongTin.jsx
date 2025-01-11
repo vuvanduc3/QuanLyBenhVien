@@ -21,7 +21,7 @@ const QuanLyNguoiDungScreen = () => {
         VaiTro: '',
         DiaChi: '',
         Tuoi: '',
-        GioiTinh: '',
+        GioiTinh: 'Nam',
         ChuyenMon: '',
         PhongKham: '',
     });
@@ -43,8 +43,8 @@ const QuanLyNguoiDungScreen = () => {
 
                 if (loginData.success && loginData.data.length > 0) {
                     const firstLogin = loginData.data[0]; // Lấy dòng đầu tiên
-                    setDangDangNhap(firstLogin.ID); // Lưu ID vào state
-                    return firstLogin.ID; // Trả về ID để sử dụng tiếp
+                    setDangDangNhap(firstLogin.DangDangNhap); // Lưu ID vào state
+                    return firstLogin.DangDangNhap; // Trả về ID để sử dụng tiếp
                 }
             } catch (error) {
                 console.error('Lỗi khi gọi API login_info:', error);
@@ -219,7 +219,7 @@ const QuanLyNguoiDungScreen = () => {
             setCurrentUserId(user.ID);
             setFormData({
                 ID: user.ID,
-                Hinh: user.Hinh,
+                Hinh: user.Hinh || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-h1vrv3P4-_aHOIkmZjhtiIfxWKD6n4f3ig&s',
                 TenDayDu: user.TenDayDu,
                 Email: user.Email,
                 SDT: user.SDT,
@@ -227,7 +227,7 @@ const QuanLyNguoiDungScreen = () => {
                 VaiTro: user.VaiTro || '',
                 DiaChi: user.DiaChi || '',
                 Tuoi: user.Tuoi || '',
-                GioiTinh: user.GioiTinh || '', // Giới tính lấy giá trị từ người dùng
+                GioiTinh: user.GioiTinh || 'Nam', // Giới tính lấy giá trị từ người dùng
                 ChuyenMon: user.ChuyenMon || '',
                 PhongKham: user.PhongKham || ''
             });
