@@ -15,11 +15,13 @@ import {
   UserCircle, 
   Settings, 
   LogOut, 
-  Table2 
+  Table2
 } from 'lucide-react';
+
 import './Menu.css';
 
 const menuItems = [
+  { text: "Thống kê", icon: <ClipboardList size={20} />, path: "/dashboad" },
   { text: "Lịch hẹn", icon: <Calendar size={20} />, path: "/lich-hen" },
   { text: "Danh sách thuốc", icon: <Pill size={20} />, path: "/quanlythuoc" },
   { text: "Hồ sơ bệnh án", icon: <FileText size={20} />, path: "/hosobenhan" },
@@ -36,7 +38,7 @@ const pageItems = [
   { text: "Vật tư y tế", icon: <Stethoscope size={20} />, path: "/quanlyvattu" },
   { text: "Quản lý BHYT chi trả", icon: <BadgeDollarSign size={20} />, path: "/insurance-payment" },
   { text: "Thanh toán", icon: <Wallet size={20} />, path: "/payments" },
-  { text: "Tổng hợp chi phí", icon: <Receipt size={20} />, path: "/dashboad" },
+
   { text: "Quản lý người dùng", icon: <UserCircle size={20} />, path: "/quanlynguoidung" },
   { text: "Quản lý tài khoản", icon: <UserCircle size={20} />, path: "/quan-ly-tai-khoan" },
   { text: "Table", icon: <Table2 size={20} />, path: "/table" }
@@ -44,7 +46,7 @@ const pageItems = [
 
 const bottomItems = [
   { text: "Settings", icon: <Settings size={20} />, path: "/settings" },
-  { text: "Logout", icon: <LogOut size={20} />, path: "/logout" }
+  { text: "Logout", icon: <LogOut size={20} />, path: "/Login" }
 ];
 
 export default function Menu() {

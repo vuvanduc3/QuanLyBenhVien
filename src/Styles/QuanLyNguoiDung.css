@@ -14,6 +14,7 @@
     border-radius: 8px;
 }
 
+
 /* Tên trang */
 .card-header {
     display: flex;
@@ -377,4 +378,154 @@
 .pagination span {
     font-size: 18px;
     font-weight: bold;
+}
+
+.modal2 {
+
+}
+
+.modal-content2 {
+    background-color: #fff;
+    padding:15px 40px;
+    border-radius: 8px;
+    width: 1200px;  /* Tăng chiều rộng modal */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/*-------*/
+.input-container {
+    width: 90%;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column; /* Sắp xếp nhãn trên input */
+}
+
+.input-container label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px; /* Khoảng cách giữa nhãn và input */
+}
+
+.input-container input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-container input:focus {
+    border-color: #16a2de; /* Đổi màu viền khi input được chọn */
+    outline: none;
+    box-shadow: 0 0 5px rgba(22, 162, 222, 0.5); /* Hiệu ứng sáng khi focus */
+}
+
+.input-container select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-container select:focus {
+    border-color: #16a2de; /* Đổi màu viền khi input được chọn */
+    outline: none;
+    box-shadow: 0 0 5px rgba(22, 162, 222, 0.5); /* Hiệu ứng sáng khi focus */
+}
+
+
+
+/*----------2----------*/
+.input-container2 {
+    width: 48%;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column; /* Sắp xếp nhãn trên input */
+}
+
+.input-container2 label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px; /* Khoảng cách giữa nhãn và input */
+}
+
+.input-container2 input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-container2 input:focus {
+    border-color: #16a2de; /* Đổi màu viền khi input được chọn */
+    outline: none;
+    box-shadow: 0 0 5px rgba(22, 162, 222, 0.5); /* Hiệu ứng sáng khi focus */
+}
+
+.input-container2 select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-container2 select:focus {
+    border-color: #16a2de; /* Đổi màu viền khi input được chọn */
+    outline: none;
+    box-shadow: 0 0 5px rgba(22, 162, 222, 0.5); /* Hiệu ứng sáng khi focus */
+}
+
+/*-------------3*-------------*/
+
+.input-container3 {
+    width: 99%;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column; /* Sắp xếp nhãn trên input */
+}
+
+.input-container3 label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px; /* Khoảng cách giữa nhãn và input */
+}
+
+.input-container3 input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-container3 input:focus {
+    border-color: #16a2de; /* Đổi màu viền khi input được chọn */
+    outline: none;
+    box-shadow: 0 0 5px rgba(22, 162, 222, 0.5); /* Hiệu ứng sáng khi focus */
+}
+
+.input-container3 select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-container3 select:focus {
+    border-color: #16a2de; /* Đổi màu viền khi input được chọn */
+    outline: none;
+    box-shadow: 0 0 5px rgba(22, 162, 222, 0.5); /* Hiệu ứng sáng khi focus */
 }

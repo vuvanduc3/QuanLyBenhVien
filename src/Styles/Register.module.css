@@ -1,0 +1,203 @@
+/* Tổng quát */
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden; /* Đảm bảo không bị tràn khi sử dụng video */
+}
+
+
+.loginBox {
+  background: rgba(255, 255, 255, 0.85); /* Hộp nền trong suốt */
+  padding: 15px 20px; /* Giảm padding để tiết kiệm không gian */
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+  width: 100%;
+  max-width: 400px;
+  z-index: 1;
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Hiệu ứng fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tiêu đề */
+.title {
+  font-size: 18px; /* Giảm kích thước tiêu đề */
+  font-weight: bold;
+  color: #444;
+  text-align: center;
+  margin-bottom: 8px; /* Giảm khoảng cách dưới tiêu đề */
+}
+
+.subtitle {
+  font-size: 12px; /* Giảm kích thước phụ đề */
+  color: #888;
+  text-align: center;
+  margin-bottom: 15px; /* Giảm khoảng cách dưới phụ đề */
+  line-height: 1.4;
+}
+
+/* Các trường nhập liệu */
+.inputGroup {
+  margin-bottom: 15px; /* Giảm khoảng cách giữa các trường nhập liệu */
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 12px; /* Giảm font size cho label */
+  color: #555;
+  margin-bottom: 4px; /* Giảm khoảng cách dưới label */
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px; /* Giảm kích thước font cho input */
+  color: #333;
+  background: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input:focus {
+  border-color: #2575fc;
+  box-shadow: 0 4px 8px rgba(37, 117, 252, 0.2);
+  background: #fff;
+  outline: none;
+}
+
+/* Nút đăng ký */
+.signInButton {
+  width: 100%;
+  padding: 10px 0;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px; /* Giảm kích thước font cho button */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.signInButton:hover {
+  background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+  transform: translateY(-2px); /* Nổi lên khi hover */
+}
+
+.signInButton:active {
+  transform: translateY(0);
+  background: linear-gradient(135deg, #4b12a9 0%, #204eaa 100%);
+}
+
+/* Đăng ký tài khoản */
+.createAccount {
+  font-size: 12px; /* Giảm kích thước chữ */
+  text-align: center;
+  margin-top: 10px; /* Giảm khoảng cách trên */
+  color: #555;
+}
+
+.createAccount a {
+  color: #2575fc;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.createAccount a:hover {
+  text-decoration: underline;
+}
+
+/* CSS cho video */
+.backgroundVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Đảm bảo video nằm phía sau nội dung */
+  object-position: center; /* Đảm bảo video luôn căn giữa */
+  min-height: 100vh; /* Đảm bảo video phủ hết chiều cao màn hình */
+}
+
+
+/* Tạo hiệu ứng blur cho nền video */
+.loginContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url('https://images.pexels.com/photos/30108610/pexels-photo-30108610/free-photo-of-hoang-hon-yen-binh-t-i-nha-thuy-n-g-bavaria.jpeg?auto=compress&cs=tinysrgb&w=600');
+  background-size: cover; /* Đảm bảo hình ảnh bao phủ toàn bộ */
+  background-position: center; /* Căn giữa hình ảnh */
+  filter: blur(50px);
+  animation: gradientMove 10s infinite alternate;
+  z-index: -1;
+}
+
+
+@keyframes gradientMove {
+  from {
+    transform: translate(-30%, -30%);
+  }
+  to {
+    transform: translate(30%, 30%);
+  }
+}
+
+/* Media Queries - Điều chỉnh cho màn hình cực nhỏ */
+@media (max-width: 1200px) {
+  .loginBox {
+    max-width: 85%; /* Giảm chiều rộng của login box */
+    padding: 15px; /* Giảm padding để tạo không gian */
+  }
+
+  .title {
+    font-size: 16px; /* Giảm kích thước tiêu đề */
+  }
+
+  .subtitle {
+    font-size: 10px; /* Giảm kích thước phụ đề */
+  }
+
+  .input, .signInButton {
+    font-size: 12px; /* Giảm kích thước font cho các input và nút */
+  }
+}
+
+@media (max-width: 800px) {
+  .loginBox {
+    max-width: 95%; /* Giảm chiều rộng thêm nữa */
+  }
+
+  .title {
+    font-size: 14px; /* Giảm kích thước tiêu đề cho màn hình nhỏ hơn */
+  }
+
+  .subtitle {
+    font-size: 8px; /* Giảm kích thước phụ đề cho màn hình nhỏ */
+  }
+
+  .input {
+    font-size: 10px; /* Giảm font size của input */
+  }
+
+  .signInButton {
+    font-size: 10px; /* Giảm font size của button */
+  }
+}

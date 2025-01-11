@@ -71,7 +71,7 @@ const AddPayment = () => {
   };
 
   const handleGenerateQRCode = () => {
-    const generatedQrUrl = `https://img.vietqr.io/image/${bankCode}-${accountNumber}-${template}.jpg?amount=${paymentData.amount}&addInfo=${paymentId}&accountName=${accountName}`;
+    const generatedQrUrl = `https://img.vietqr.io/image/${bankCode}-${accountNumber}-${template}.jpg?amount=${item.TongTien}&addInfo=${paymentId}&accountName=${accountName}`;
     setQrUrl(generatedQrUrl);
     setQrGenerated(true);
   };
