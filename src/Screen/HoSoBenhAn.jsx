@@ -203,8 +203,13 @@ const MedicalRecordList = () => {
                                             <option value="TaiKham">Tái khám</option>
                                             <option value="CapCuu">Cấp cứu</option>
                                             <option value="TheoDoi">Theo dõi</option>
+                                            <option value="ChuyenVien">Chuyển viện</option>
+                                            <option value="DieuTriNgoaiTru">Điều trị ngoại trú</option>
+                                            <option value="XuatVien">Xuất viện</option>
+                                            <option value="NhapVien">Nhập viện</option>
                                         </select>
                                     </div>
+
                                 </div>
                             </div>
                         )}

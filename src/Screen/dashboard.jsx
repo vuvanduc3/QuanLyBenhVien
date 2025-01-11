@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Bell, Search, ChevronLeft, ChevronRight, Settings, LogOut } from 'lucide-react';
 import { ChevronUp, ChevronDown, Users, FileText } from 'lucide-react';
 import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Chart as ChartJS, Title, Tooltip as ChartTooltip, Legend as ChartLegend, ArcElement, CategoryScale } from 'chart.js';
+
+import { Pie } from 'react-chartjs-2';
+
 
 import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+
+// Đảm bảo đường dẫn đúng
+ChartJS.register(ArcElement, CategoryScale, ChartTooltip, ChartLegend, Title);
 
 // Hàm định dạng tiền VND
 const formatCurrency = (value, currency = 'USD', locale = 'en-US') => {
@@ -68,11 +75,61 @@ export default function Dashboard() {
     totalInvoicesDetails: 0
   });
 
+  const [pieChartData, setPieChartData] = useState({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: ['#ff5722', '#16a34a', '#dc2626', '#6366f1', '#fbbf24', '#4f8c91'],
+          hoverBackgroundColor: ['#ff7043', '#38a169', '#f87171', '#3b82f6', '#fbbf24', '#4f8c91'],
+        },
+      ],
+  });
+
   // Hàm tính phần trăm thay đổi
   const calculateChangePercentage = (newValue, oldValue) => {
     if (oldValue === 0) return newValue === 0 ? 0 : 1;
     return ((newValue - oldValue) / oldValue * 100).toFixed(2);
   };
+
+  // Hàm lấy và chuẩn bị dữ liệu cho biểu đồ tròn
+    const fetchAndPrepareData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
+        const data = await response.json();
+
+        const stats = data.data[0]; // Lấy đối tượng đầu tiên trong mảng "data"
+
+        // Chuẩn bị dữ liệu cho Pie Chart
+        setPieChartData({
+          labels: [
+            'Số lượng khám mới',
+            'Số lượng tái khám',
+            'Số lượng cấp cứu',
+            'Số lượng theo dõi',
+            'Số lượng chuyển viện',
+            'Số lượng điều trị ngoại trú',
+          ],
+          datasets: [
+            {
+              data: [
+                stats.KhamMoi || 0,
+                stats.TaiKham || 0,
+                stats.CapCuu || 0,
+                stats.TheoDoi || 0,
+                stats.ChuyenVien || 0,
+                stats.DieuTriNgoaiTru || 0,
+              ],
+              backgroundColor: ['#ff5722', '#16a34a', '#dc2626', '#6366f1', '#fbbf24', '#4f8c91'],
+              hoverBackgroundColor: ['#ff7043', '#38a169', '#f87171', '#3b82f6', '#fbbf24', '#4f8c91'],
+            },
+          ],
+        });
+
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error);
+      }
+    };
 
   // Fetch dữ liệu từ API
   useEffect(() => {
@@ -218,6 +275,52 @@ export default function Dashboard() {
 
         // Lấy đối tượng đầu tiên trong mảng "data"
         const stats = otherStatsData.data[0];
+        setPieChartData({
+              labels: [
+                'Số lượng khám mới',
+                'Số lượng tái khám',
+                'Số lượng cấp cứu',
+                'Số lượng theo dõi',
+                'Số lượng chuyển viện',
+                'Số lượng điều trị ngoại trú',
+                'Số lượng xuất viện', // Thêm nhãn "XuatVien"
+                'Số lượng nhập viện', // Thêm nhãn "NhapVien"
+              ],
+              datasets: [
+                {
+                  data: [
+                    stats.KhamMoi || 0,
+                    stats.TaiKham || 0,
+                    stats.CapCuu || 0,
+                    stats.TheoDoi || 0,
+                    stats.ChuyenVien || 0,
+                    stats.DieuTriNgoaiTru || 0,
+                    stats.XuatVien || 0, // Thêm dữ liệu "XuatVien"
+                    stats.NhapVien || 0, // Thêm dữ liệu "NhapVien"
+                  ],
+                  backgroundColor: [
+                    '#ff5722',
+                    '#16a34a',
+                    '#dc2626',
+                    '#6366f1',
+                    '#fbbf24',
+                    '#4f8c91',
+                    '#1e88e5', // Màu cho "XuatVien"
+                    '#9c27b0', // Màu cho "NhapVien"
+                  ],
+                  hoverBackgroundColor: [
+                    '#ff7043',
+                    '#38a169',
+                    '#f87171',
+                    '#3b82f6',
+                    '#fbbf24',
+                    '#4f8c91',
+                    '#42a5f5', // Màu hover cho "XuatVien"
+                    '#ba68c8', // Màu hover cho "NhapVien"
+                  ],
+                },
+              ],
+            });
 
         // Kiểm tra và xử lý dữ liệu
         setStatsData((prevStatsData) => [
@@ -355,6 +458,7 @@ export default function Dashboard() {
     };
 
     fetchData();
+
   }, []);
 
 
@@ -416,6 +520,48 @@ export default function Dashboard() {
           </AreaChart>
 
         </div>
+        {/* Các thẻ thống kê */}
+
+
+        {/* Biểu đồ tròn */}
+        <div className="chart-section">
+          <div className="chart-header">
+            <h2 className="chart-title">Thống kê Khám, Tái khám, Cấp cứu, Điều trị</h2>
+          </div>
+          <div className="chart-content" style={{ display: 'flex' }}>
+            {/* Biểu đồ tròn bên trái */}
+            <div className="chart-container" style={{ flex: 1 }}>
+              <Pie
+                data={pieChartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                  },
+                }}
+              />
+            </div>
+
+            {/* Thông tin phụ bên phải */}
+            <div className="info-container" style={{ flex: 1, marginLeft: '20px' }}>
+              <h3>Thông tin chi tiết</h3>
+              <ul>
+                    <li>Khám mới: {pieChartData.datasets[0].data[0] || 0}</li>
+                    <li>Tái khám: {pieChartData.datasets[0].data[1] || 0}</li>
+                    <li>Cấp cứu: {pieChartData.datasets[0].data[2] || 0}</li>
+                    <li>Theo dõi: {pieChartData.datasets[0].data[3] || 0}</li>
+                    <li>Chuyển viện: {pieChartData.datasets[0].data[4] || 0}</li>
+                    <li>Điều trị ngoại trú: {pieChartData.datasets[0].data[5] || 0}</li>
+                    <li>Xuất viện: {pieChartData.datasets[0].data[6] || 0}</li> {/* Hiển thị số lượng "XuatVien" */}
+                    <li>Nhập viện: {pieChartData.datasets[0].data[7] || 0}</li> {/* Hiển thị số lượng "NhapVien" */}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
   );
