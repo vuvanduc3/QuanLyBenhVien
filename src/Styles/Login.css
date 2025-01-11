@@ -1,0 +1,225 @@
+/* Tổng quát */
+/* Trong Styles/Login.css */
+.loginContainer {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('https://images.pexels.com/photos/30108610/pexels-photo-30108610/free-photo-of-hoang-hon-yen-binh-t-i-nha-thuy-n-g-bavaria.jpeg?auto=compress&cs=tinysrgb&w=600');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+
+.loginContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  background-image: url('https://images.pexels.com/photos/30108610/pexels-photo-30108610/free-photo-of-hoang-hon-yen-binh-t-i-nha-thuy-n-g-bavaria.jpeg?auto=compress&cs=tinysrgb&w=600');
+  filter: blur(50px);
+  animation: gradientMove 10s infinite alternate;
+  z-index: -1;
+}
+
+/* Hiệu ứng động cho nền */
+@keyframes gradientMove {
+  from {
+    transform: translate(-30%, -30%);
+  }
+  to {
+    transform: translate(30%, 30%);
+  }
+}
+
+.loginBox {
+  background: rgba(255, 255, 255, 0.9); /* Hộp nền trong suốt nhẹ */
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Hiệu ứng fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tiêu đề */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #444;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+/* Nhóm nhập liệu */
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #333;
+  background: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input:focus {
+  border-color: #2575fc;
+  box-shadow: 0 4px 8px rgba(37, 117, 252, 0.2);
+  background: #fff;
+  outline: none;
+}
+
+/* Quên mật khẩu */
+.forgotPassword {
+  font-size: 13px;
+  color: #2575fc;
+  text-decoration: none;
+  float: right;
+  margin-top: 10px;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+/* Checkbox */
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.checkboxGroup input {
+  margin-right: 12px;
+  accent-color: #2575fc; /* Thay đổi màu checkbox */
+}
+
+.checkboxGroup label {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Nút đăng nhập */
+.signInButton {
+  width: 100%;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.signInButton:hover {
+  background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+  transform: translateY(-2px); /* Nổi lên khi hover */
+}
+
+.signInButton:active {
+  transform: translateY(0);
+  background: linear-gradient(135deg, #4b12a9 0%, #204eaa 100%);
+}
+
+/* Đăng ký tài khoản */
+.createAccount {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 25px;
+  color: #555;
+}
+
+.createAccount a {
+  color: #2575fc;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.createAccount a:hover {
+  text-decoration: underline;
+}
+
+/* CSS cho video */
+.backgroundVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Để video ở phía sau nội dung */
+}
+
+
+/* Tổng quát */
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative; /* Để nội dung nằm trên video */
+  font-family: 'Arial', sans-serif;
+}
+
+.loginBox {
+  background: rgba(255, 255, 255, 0.85); /* Hộp nền trong suốt */
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Đổ bóng */
+  width: 100%;
+  max-width: 400px;
+  z-index: 1; /* Đảm bảo nội dung nổi trên video */
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Hiệu ứng fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Các phần tử còn lại sử dụng quy tắc CSS hiện tại */

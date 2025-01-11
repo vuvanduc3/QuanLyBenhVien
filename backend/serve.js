@@ -3751,3 +3751,22 @@ app.get("/api/tonghopthongtin", async (req, res) => {
         });
     }
 });
+
+app.get('/api/login_info', async (req, res) => {
+   try {
+          const result = await pool.request().query(`
+              SELECT * FROM KiemTraDangNhap WHERE ID = 1
+          `);
+
+          res.status(200).json({
+              success: true,
+              data: result.recordset,
+          });
+      } catch (err) {
+          console.error("❌ Lỗi lấy dữ liệu login_info:", err.message);
+          res.status(500).json({
+              success: false,
+              message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+          });
+      }
+});

@@ -46,6 +46,10 @@ import QuanLyBaoHiemNguoiDung from './Screen/QuanLyBaoHiemNguoiDung';
 
 import AddPayment from './Screen/AddPayment';
 
+import CaiDatThongTin from './Screen/CaiDatThongTin';
+import Login from './Screen/Login';
+import Register from './Screen/Register';
+
 function App() {
   return (
     <Router>
@@ -98,6 +102,10 @@ function App() {
             <Route path="/QuanLyBaoHiemNguoiDung" element={<QuanLyBaoHiemNguoiDung/>} />
 
             <Route path="/AddPayment" element={<AddPayment/>} />
+
+            <Route path="/quan-ly-tai-khoan" element={<CaiDatThongTin/>} />
+            <Route path="/Login" element={<Login/>} />
+            <Route path="/Register" element={<Register/>} />
 
 
           </Routes>

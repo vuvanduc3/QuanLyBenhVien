@@ -1,0 +1,133 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "../Styles/Register.module.css"; // CSS Module
+import videoSource from './login_video.mp4';
+
+const Register = () => {
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [cccd, setCccd] = useState("");
+  const [age, setAge] = useState("");
+  const [address, setAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email && fullName && phone && cccd && age && address && password) {
+      console.log("Đăng ký thành công!");
+      navigate("/dashboard");
+    } else {
+      console.log("Vui lòng nhập đầy đủ thông tin!");
+    }
+  };
+
+  return (
+    <div className="loginContainer">
+    <video
+        className="backgroundVideo"
+        src={videoSource}
+        autoPlay
+        loop
+        muted
+    ></video>
+      <div className={styles.loginBox}>
+        <h2 className={styles.title}>Create Account</h2>
+        <p className={styles.subtitle}>Vui lòng nhập thông tin để tạo tài khoản</p>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="email">Email address:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@gmail.com"
+              className={styles.input}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="fullName">Full Name:</label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Nguyen Van A"
+              className={styles.input}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="phone">Phone:</label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              placeholder="0123456789"
+              className={styles.input}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="cccd">CCCD/CMND:</label>
+            <input
+              type="text"
+              id="cccd"
+              name="cccd"
+              placeholder="123456789"
+              className={styles.input}
+              value={cccd}
+              onChange={(e) => setCccd(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="age">Age:</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              placeholder="18"
+              className={styles.input}
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="address">Address:</label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder="Hanoi, Vietnam"
+              className={styles.input}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              className={styles.input}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" className={styles.signInButton}>Register</button>
+        </form>
+        <p className={styles.createAccount}>
+          Already have an account? <a href="/login">Login here</a>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default Register;
