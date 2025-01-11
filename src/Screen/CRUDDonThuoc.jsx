@@ -99,6 +99,13 @@ const ThemSuaXoaXetNghiem = () => {
     }, []);
 
     useEffect(() => {
+        if (action === 'add' && item) {
+            setMaHoSo(item.ID);
+            setMaBenhNhan(item.MaBenhNhan);
+            setMaBacSi(item.HoVaTen);
+            setChanDoan(item.NgaySinh);
+            setNgayLap(item.SoCCCD_HoChieu);
+        }
         if (action === 'edit' && item) {
             setMaDonThuoc(item.MaDonThuoc);
             setMaThuoc(item.MaThuoc);

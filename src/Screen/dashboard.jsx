@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bell, Search, ChevronLeft, ChevronRight, Settings, LogOut } from 'lucide-react';
 import { ChevronUp, ChevronDown, Users, FileText } from 'lucide-react';
 import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+
 import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
@@ -91,6 +92,23 @@ export default function Dashboard() {
           console.error('Lỗi khi cập nhật tổng tiền');
           return; // Dừng lại nếu không cập nhật thành công
         }
+
+       const updateResponse2 = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac', {
+           method: 'PUT', // Sử dụng phương thức PUT để cập nhật dữ liệu
+           headers: {
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({ /* Tham số cần thiết cho API */ }),
+       });
+
+        const updateData2 = await updateResponse2.json();
+
+        if (!updateData2.success) {
+           console.error('Lỗi khi cập nhật thông tin khác');
+           return; // Dừng lại nếu không cập nhật thành công
+        }
+
+
         const response = await fetch('http://localhost:5000/api/tonghopthongtin');
         const data = await response.json();
 
@@ -194,6 +212,98 @@ export default function Dashboard() {
             isPositive: totalSoLuongDonThuoc >= 0
           }
         ]);
+
+        const otherStatsResponse = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
+        const otherStatsData = await otherStatsResponse.json();
+
+        // Lấy đối tượng đầu tiên trong mảng "data"
+        const stats = otherStatsData.data[0];
+
+        // Kiểm tra và xử lý dữ liệu
+        setStatsData((prevStatsData) => [
+          ...prevStatsData,
+          {
+            title: "Số lượng khám mới",
+            value: stats.KhamMoi != null ? stats.KhamMoi.toString() : "0",
+            change: previousStats.KhamMoi != null
+              ? `${calculateChangePercentage(stats.KhamMoi, previousStats.KhamMoi)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.KhamMoi >= 0
+          },
+          {
+            title: "Số lượng tái khám",
+            value: stats.TaiKham != null ? stats.TaiKham.toString() : "0",
+            change: previousStats.TaiKham != null
+              ? `${calculateChangePercentage(stats.TaiKham, previousStats.TaiKham)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.TaiKham >= 0
+          },
+          {
+            title: "Số lượng cấp cứu",
+            value: stats.CapCuu != null ? stats.CapCuu.toString() : "0",
+            change: previousStats.CapCuu != null
+              ? `${calculateChangePercentage(stats.CapCuu, previousStats.CapCuu)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.CapCuu >= 0
+          },
+          {
+            title: "Số lượng theo dõi",
+            value: stats.TheoDoi != null ? stats.TheoDoi.toString() : "0",
+            change: previousStats.TheoDoi != null
+              ? `${calculateChangePercentage(stats.TheoDoi, previousStats.TheoDoi)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.TheoDoi >= 0
+          },
+          {
+            title: "Số lượng chuyển viện",
+            value: stats.ChuyenVien != null ? stats.ChuyenVien.toString() : "0",
+            change: previousStats.ChuyenVien != null
+              ? `${calculateChangePercentage(stats.ChuyenVien, previousStats.ChuyenVien)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.ChuyenVien >= 0
+          },
+          {
+            title: "Số lượng điều trị ngoại trú",
+            value: stats.DieuTriNgoaiTru != null ? stats.DieuTriNgoaiTru.toString() : "0",
+            change: previousStats.DieuTriNgoaiTru != null
+              ? `${calculateChangePercentage(stats.DieuTriNgoaiTru, previousStats.DieuTriNgoaiTru)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.DieuTriNgoaiTru >= 0
+          },
+          {
+            title: "Số lượng xuất viện",
+            value: stats.XuatVien != null ? stats.XuatVien.toString() : "0",
+            change: previousStats.XuatVien != null
+              ? `${calculateChangePercentage(stats.XuatVien, previousStats.XuatVien)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.XuatVien >= 0
+          },
+          {
+            title: "Số lượng nhập viện",
+            value: stats.NhapVien != null ? stats.NhapVien.toString() : "0",
+            change: previousStats.NhapVien != null
+              ? `${calculateChangePercentage(stats.NhapVien, previousStats.NhapVien)}% Up from yesterday`
+              : "0% Up from yesterday",
+            icon: <FileText size={20} />,
+            iconColor: "#4f8c91",
+            isPositive: stats.NhapVien >= 0
+          }
+        ]);
+
 
         // Cập nhật secondaryStats
         setSecondaryStats([

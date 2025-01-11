@@ -61,8 +61,8 @@ const DieuTri = () => {
     }
   };
 
-  const handleAdd = () => {
-    navigate('/CRUDDieuTri', { state: { action: 'add' } });
+  const handleAdd = (item) => {
+    navigate('/CRUDDieuTri', { state: { action: 'add', item } });
   };
 
   const handleEdit = (item) => {
@@ -113,7 +113,7 @@ const DieuTri = () => {
         <div className="content">
           <div className="card-header">
             <h2>Điều trị {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}</h2>
-            <button className="add-btn" onClick={handleAdd}>Thêm điều trị</button>
+            <button className="add-btn" onClick={() => handleAdd(item?item:'')}>Thêm điều trị</button>
           </div>
 
           <div className="table-container">

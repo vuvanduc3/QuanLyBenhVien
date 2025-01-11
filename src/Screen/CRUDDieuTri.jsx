@@ -42,6 +42,10 @@ const ThemSuaXoaDieuTri = () => {
   });
 
   useEffect(() => {
+    if (action === 'add' && item) {
+      setSearchTermHoSo(item.ID);
+      setMaHoSo(item.ID);
+    }
     if (action === 'edit' && item) {
       setMaHoSo(item.MaHoSo);
       setMoTa(item.MoTa);
