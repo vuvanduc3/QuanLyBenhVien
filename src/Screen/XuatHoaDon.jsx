@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../Styles/QuanLyHoaDonChiTiet.css';
@@ -22,6 +23,9 @@ const HoaDonChiTiet = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const itemsPerPage = 10;
+    const [emailInput, setEmailInput] = useState(''); // Thêm state để lưu email người dùng nhập
+
+    const [AnEmailInput, setAnEmailInput] = useState(''); // Thêm state để lưu email người dùng nhập
 
     // Lấy dữ liệu chi tiết hóa đơn
     useEffect(() => {
@@ -150,60 +154,86 @@ const HoaDonChiTiet = () => {
     const YOUR_USER_ID = 'Z5ioka3xZwwjSWtkA';
 
     const handleSendInvoice = async () => {
-        try {
-            const recipientEmail = item?.Email || "tuanbmt753753@gmail.com"; // Đảm bảo recipientEmail không rỗng
+        if (emailInput.trim()) {
+            try {
+                const recipientEmail = item?.Email || "tuanbmt753753@gmail.com"; // Đảm bảo recipientEmail không rỗng
 
-            // Tạo nội dung bảng chi tiết hóa đơn dưới dạng HTML
-            const tableRows = displayedData.map(item => `
-                <tr>
-                    <td>${item.MaChiTiet}</td>
-                    <td>${item.MaHoaDon}</td>
-                    <td>${normalizeText(item.TenDichVu)}</td>
-                    <td>${item.SoLuong}</td>
-                    <td>${item.DonGia ? item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có'}</td>
-                    <td>${(item.SoLuong * item.DonGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                </tr>
-            `).join('');
+                // Tạo nội dung bảng chi tiết hóa đơn dưới dạng HTML
+                const tableRows = displayedData.map(item => `
+                    <tr>
+                        <td>${item.MaChiTiet}</td>
+                        <td>${item.MaHoaDon}</td>
+                        <td>${normalizeText(item.TenDichVu)}</td>
+                        <td>${item.SoLuong}</td>
+                        <td>${item.DonGia ? item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có'}</td>
+                        <td>${(item.SoLuong * item.DonGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                    </tr>
+                `).join('');
 
-            const htmlMessage = `
-                <h2>Hóa đơn chi tiết</h2>
-                <p>Mã bệnh nhân: ${normalizeText(item?.MaBenhNhan || 'Không có')}</p>
-                <p>Ngày tạo hóa đơn: ${normalizeText(formatNgaySinh(item?.NgayLapHoaDon) || 'Không có')}</p>
-                <p>Mã hóa đơn: ${normalizeText(item?.MaHoaDon || 'Không có')}</p>
-                <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
-                    <thead>
-                        <tr>
-                            <th>#ID</th>
-                            <th>Mã hóa đơn</th>
-                            <th>Tên dịch vụ/loại thuốc</th>
-                            <th>Số lượng</th>
-                            <th>Đơn giá</th>
-                            <th>Thành tiền</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${tableRows}
-                    </tbody>
-                </table>
-                <p><strong>Tổng tiền: ${formatNumberWithSplit(item.TongTien)} VND</strong></p>
-            `;
+                const htmlMessage = `
+                    <h2>Hóa đơn chi tiết</h2>
+                    <p>Mã bệnh nhân: ${normalizeText(item?.MaBenhNhan || 'Không có')}</p>
+                    <p>Ngày tạo hóa đơn: ${normalizeText(formatNgaySinh(item?.NgayLapHoaDon) || 'Không có')}</p>
+                    <p>Mã hóa đơn: ${normalizeText(item?.MaHoaDon || 'Không có')}</p>
+                    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Mã hóa đơn</th>
+                                <th>Tên dịch vụ/loại thuốc</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    <p><strong>Tổng tiền: ${formatNumberWithSplit(item.TongTien)} VND</strong></p>
+                `;
 
-            const emailData = {
-                from_name: item?.MaBenhNhan || 'Không có tên',
-                from_email: "tuanbmt753753@gmail.com",
-                to_email: recipientEmail,
-                subject: `Hóa đơn ${item?.MaHoaDon}`,
-                message_html: htmlMessage, // Gửi nội dung bảng chi tiết trong email
-            };
+                const emailData = {
+                    from_name: item?.MaBenhNhan || 'Không có tên',
+                    from_email: emailInput,
+                    to_email: recipientEmail,
+                    subject: `Hóa đơn ${item?.MaHoaDon}`,
+                    message_html: htmlMessage, // Gửi nội dung bảng chi tiết trong email
+                };
 
-            const result = await emailjs.send(YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, emailData, YOUR_USER_ID);
-            console.log('Email sent successfully', result.text);
-        } catch (error) {
-            console.error('Error sending email:', error);
+                const result = await emailjs.send(YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, emailData, YOUR_USER_ID);
+                alert('Email sent successfully', result.text);
+                console.log('Email sent successfully', result.text);
+                setEmailInput('');
+                setAnEmailInput('');
+
+            } catch (error) {
+                alert('Error sending email:', error);
+                console.error('Error sending email:', error);
+
+            }
+        }
+        else{
+             alert('E-mail không được để trống!');
         }
     };
 
+//     useEffect(() => {
+//         if (AnEmailInput) {
+//             const interval = setInterval(() => {
+//                 setAnEmailInput(false); // Dừng ẩn hiện
+//             }, 3000); // Lặp trong 3 giây
+//             return () => clearInterval(interval);
+//         }
+//     }, [AnEmailInput]);
 
+   const HienInPutNhanEmail = () => {
+       setAnEmailInput('Hiện'); // Đổi trạng thái ẩn/hiện
+   };
+
+    const DongInPutNhanEmail = async () => {
+        setAnEmailInput('');
+    }
 
 
     const generatePdfBase64 = async () => {
@@ -257,8 +287,6 @@ const HoaDonChiTiet = () => {
 
 
 
-
-
     if (loading) {
         return <div className="loading">Đang tải dữ liệu...</div>;
     }
@@ -268,7 +296,7 @@ const HoaDonChiTiet = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container" >
             <Menu1 />
             <main className="main-content">
                 <Search1 />
@@ -295,7 +323,7 @@ const HoaDonChiTiet = () => {
                                         <th>Tên dịch vụ/loại thuốc</th>
                                         <th>Số lượng</th>
                                         <th>Đơn giá</th>
-                                        <th>Thành tiền</th>
+                                        <th>Thành tiền {AnEmailInput}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -336,12 +364,35 @@ const HoaDonChiTiet = () => {
                     <div className="total-amount" style={{ textAlign: 'right' }}>
                         <h3>Tổng tiền: {item.TongTien.toLocaleString('vi-VN')} VND</h3>
                     </div>
+                    {AnEmailInput && (
+                        <div className={`email-input-hoadon ${AnEmailInput ? 'show' : ''}`}>
+                            <label htmlFor="email">Nhập email nhận hóa đơn:</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={emailInput}
+                                onChange={(e) => setEmailInput(e.target.value)}
+                                placeholder="Nhập email"
+                            />
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop:"10px", width:"100%" }}>
+                                <button style={{ width: "48%" }} onClick={() => setAnEmailInput('')}>Hủy hành động</button>
+                                <button style={{ width: "48%" }} onClick={handleSendInvoice}>Gửi hóa đơn</button>
+                            </div>
+                        </div>
+                    )}
+
+
+
                     <div className="action-buttons-hoadon">
                         <button className="action-btn-hoadon brown" disabled={displayedData.length === 0} onClick={handleExportPDF}>
                             <span className="icon"><Printer size={20} /></span> Xuất PDF
                         </button>
-                        <button className="action-btn-hoadon green" disabled={displayedData.length === 0} onClick={handleSendInvoice}>
-                            <span className="icon"><Send size={20} /></span> Gửi hóa đơn
+                        <button
+                            className="action-btn-hoadon green"
+                            disabled={displayedData.length === 0}
+                            onClick={() => setAnEmailInput('Hiện')}
+                        >
+                            <span className="icon" onClick={() => setAnEmailInput('Hiện')}><Send size={20} /></span> Gửi hóa đơn
                         </button>
 
                     </div>
