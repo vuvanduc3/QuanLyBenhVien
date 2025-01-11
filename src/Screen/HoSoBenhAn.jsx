@@ -27,15 +27,16 @@ const MedicalRecordList = () => {
     });
     const [showFilters, setShowFilters] = useState(false);
 
+    // Fetch records with pagination and filters
     const fetchRecords = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/medical-records');
+            const response = await fetch(`http://localhost:5000/api/medical-records?page=${currentPage}&limit=${recordsPerPage}&searchTerm=${filters.maBenhNhan || ''}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 setRecords(data.data);
-                setTotalPages(Math.ceil(data.data.length / recordsPerPage));
+                setTotalPages(data.pagination.totalPages); // Get total pages from API response
             } else {
                 setError(data.message);
             }
@@ -47,9 +48,10 @@ const MedicalRecordList = () => {
         }
     };
 
+    // Fetch records on page or filter change
     useEffect(() => {
         fetchRecords();
-    }, []);
+    }, [currentPage, filters]); // Re-fetch when page or filters change
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
@@ -57,7 +59,7 @@ const MedicalRecordList = () => {
             ...prev,
             [name]: value
         }));
-        setCurrentPage(1);
+        setCurrentPage(1); // Reset page to 1 when filters change
     };
 
     const clearFilters = () => {
@@ -77,7 +79,7 @@ const MedicalRecordList = () => {
                     method: 'DELETE'
                 });
                 const data = await response.json();
-                
+
                 if (data.success) {
                     fetchRecords();
                     alert('Xóa hồ sơ thành công');
@@ -91,48 +93,33 @@ const MedicalRecordList = () => {
         }
     };
 
-    // Handle button clicks without triggering row click
     const handleButtonClick = (e, action, maBenhNhan) => {
         e.stopPropagation();
         navigate(action + maBenhNhan);
     };
 
     const handleXemDonThuoc = (item) => {
-            navigate('/donthuoc', { state: { action: 'xem', item } });
+        navigate('/donthuoc', { state: { action: 'xem', item } });
     };
 
     const handleXemXetNghiem = (item) => {
-            navigate('/xet-nghiem', { state: { action: 'xem', item } });
+        navigate('/xet-nghiem', { state: { action: 'xem', item } });
     };
 
     const handleXemDieuTri = (item) => {
-            navigate('/lich-su-dieu-tri', { state: { action: 'xem', item } });
+        navigate('/lich-su-dieu-tri', { state: { action: 'xem', item } });
     };
-
-    // Filter records based on criteria
-    const filteredRecords = records.filter(record => {
-        const matchMaBenhNhan = record.MaBenhNhan.toLowerCase().includes(filters.maBenhNhan.toLowerCase());
-        const matchHoTen = record.HoVaTen.toLowerCase().includes(filters.hoTen.toLowerCase());
-        const matchMaLichHen = record.MaLichHen.toLowerCase().includes(filters.maLichHen.toLowerCase());
-        const matchHanhDong = filters.hanhDong === '' || record.HanhDong === filters.hanhDong;
-
-        return matchMaBenhNhan && matchHoTen && matchMaLichHen && matchHanhDong;
-    });
-
-    const indexOfLastRecord = currentPage * recordsPerPage;
-    const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-    const currentRecords = filteredRecords.slice(indexOfFirstRecord, indexOfLastRecord);
 
     return (
         <div className="container">
             <Menu1 />
             <main className="main-content">
                 <Search1 />
-                
+
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Hồ sơ bệnh án</h2>
-                        <button 
+                        <button
                             className="add-button"
                             onClick={() => navigate('/hosobenhan/add')}
                         >
@@ -142,7 +129,7 @@ const MedicalRecordList = () => {
 
                     <div className="filters-section">
                         <div className="filters-header">
-                            <button 
+                            <button
                                 className="filter-toggle-button"
                                 onClick={() => setShowFilters(!showFilters)}
                             >
@@ -150,7 +137,7 @@ const MedicalRecordList = () => {
                                 {showFilters ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
                             </button>
                             {showFilters && (
-                                <button 
+                                <button
                                     className="clear-filters-button"
                                     onClick={clearFilters}
                                 >
@@ -229,8 +216,8 @@ const MedicalRecordList = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {currentRecords.map(record => (
-                                            <tr 
+                                        {records.map(record => (
+                                            <tr
                                                 key={record.MaBenhNhan}
                                                 onClick={() => navigate(`/chitiethsba/${record.MaBenhNhan}`)}
                                                 className="clickable-row"
@@ -242,19 +229,19 @@ const MedicalRecordList = () => {
                                                 <td>
                                                     <div className="action-buttons-container" onClick={e => e.stopPropagation()}>
                                                         <div className="action-buttons-row">
-                                                            <button 
+                                                            <button
                                                                 className="action-btn green"
                                                                 onClick={() => handleXemDieuTri(record)}
                                                             >
                                                                 Lịch sử điều trị
                                                             </button>
-                                                            <button 
+                                                            <button
                                                                 className="action-btn green"
                                                                 onClick={(e) => handleButtonClick(e, '/chitiethsba/', record.MaBenhNhan)}
                                                             >
                                                                 Sửa dữ liệu
                                                             </button>
-                                                            <button 
+                                                            <button
                                                                 className="action-btn"
                                                                 onClick={() => handleXemDonThuoc(record)}
                                                             >
@@ -262,13 +249,13 @@ const MedicalRecordList = () => {
                                                             </button>
                                                         </div>
                                                         <div className="action-buttons-row">
-                                                            <button 
+                                                            <button
                                                                 className="action-btn red"
                                                                 onClick={(e) => handleDelete(e, record.MaBenhNhan)}
                                                             >
                                                                 Xóa dữ liệu
                                                             </button>
-                                                            <button 
+                                                            <button
                                                                 className="action-btn brown"
                                                                 onClick={() => handleXemXetNghiem(record)}
                                                             >
@@ -284,23 +271,21 @@ const MedicalRecordList = () => {
                             </div>
 
                             <div className="results-summary">
-                                Hiển thị {currentRecords.length} trên tổng số {filteredRecords.length} kết quả
+                                Hiển thị {records.length} trên tổng số {totalPages * recordsPerPage} kết quả
                             </div>
 
                             <div className="pagination">
-                                <span>Trang {currentPage} của {Math.ceil(filteredRecords.length / recordsPerPage)}</span>
+                                <span>Trang {currentPage} của {totalPages}</span>
                                 <div className="pagination-controls">
-                                    <button 
+                                    <button
                                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                         disabled={currentPage === 1}
                                     >
                                         <ChevronLeft size={20} />
                                     </button>
-                                    <button 
-                                        onClick={() => setCurrentPage(prev => 
-                                            Math.min(prev + 1, Math.ceil(filteredRecords.length / recordsPerPage))
-                                        )}
-                                        disabled={currentPage === Math.ceil(filteredRecords.length / recordsPerPage)}
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                        disabled={currentPage === totalPages}
                                     >
                                         <ChevronRight size={20} />
                                     </button>
