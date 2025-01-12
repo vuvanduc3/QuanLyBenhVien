@@ -419,9 +419,12 @@ body {
 }
 
 .chart-container {
-  flex: 1; /* Chiếm một phần không gian */
-  max-width: 50%; /* Giới hạn chiều rộng của biểu đồ */
+  width: 100%;
+  max-width: 100%; /* Đảm bảo chiều rộng không vượt quá container */
+  padding: 0 10px;
+  box-sizing: border-box;
 }
+
 
 .info-container {
   flex: 1; /* Chiếm một phần không gian */
@@ -445,7 +448,56 @@ body {
   font-size: 16px;
 }
 
-/* --  - -- - - -- - - - -- - - - -- - */
+/* --  - -- - - -- - Chỉnh scorll view biểu đồ cột- - -- - - - -- - */
+
+
+
+.chart-container {
+  overflow-x: auto;
+  width: 100%; /* Đặt chiều rộng là 100% */
+  flex-wrap: nowrap;
+  -ms-overflow-style: none;  /* Đối với IE */
+  scrollbar-width: none;  /* Đối với Firefox */
+}
+
+/* Ẩn thanh cuộn ngang trên các trình duyệt hỗ trợ webkit */
+.chart-container::-webkit-scrollbar {
+  display: none;
+}
+
+.chart-container > div {
+  min-width: 1000px; /* Chiều rộng tối thiểu của mỗi biểu đồ */
+}
+
+
+/* --  - -- - - -- Chỉnh scorll view biểu đồ  miền- - - -- - - - -- - */
+
+
+.chart-section {
+  overflow-x: auto;   /* Hiển thị thanh cuộn ngang khi cần */
+  overflow-y: hidden;  /* Ẩn thanh cuộn dọc */
+  width: 100%;         /* Đặt chiều rộng là 100% */
+  flex-wrap: nowrap;
+  -ms-overflow-style: none;  /* Đối với IE */
+  scrollbar-width: none;  /* Đối với Firefox */
+}
+
+/* Ẩn thanh cuộn ngang trên các trình duyệt hỗ trợ webkit */
+.chart-section::-webkit-scrollbar {
+  height: 8px; /* Chiều cao của thanh cuộn ngang */
+  background-color: #f1f1f1;  /* Màu nền cho thanh cuộn ngang */
+}
+
+/* Hiển thị thanh cuộn ngang */
+.chart-section::-webkit-scrollbar-thumb {
+  background-color: #888; /* Màu cho phần thanh cuộn */
+  border-radius: 4px; /* Bo góc thanh cuộn */
+}
+
+.chart-section > div {
+  min-width: 1000px; /* Chiều rộng tối thiểu của mỗi biểu đồ */
+}
+
 
 
 
