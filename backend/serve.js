@@ -3305,6 +3305,8 @@ app.put("/api/thongketonghop_vathuthapthongtin", async (req, res) => {
         const result = await pool
             .request()
             .query(`
+                    DELETE FROM TongHopThongTin;
+
                     DECLARE @NgayBHYTThanhToan DATE;
                     DECLARE @SoTienBHYTChiTra DECIMAL(18, 2);
                     DECLARE @NgayLapHoaDon DATE;
