@@ -523,7 +523,7 @@ export default function Dashboard() {
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <BarChart width={TongSoPhanTu * 150} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <BarChart width={TongSoPhanTu * 150} height={380} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
@@ -546,7 +546,7 @@ export default function Dashboard() {
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <AreaChart width={TongSoPhanTu * 150} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <AreaChart width={TongSoPhanTu * 150} height={380} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
