@@ -53,6 +53,8 @@ import Register from './Screen/Register';
 import ThongKeBieuDoTron from './Screen/ThongKeBieuDoTron';
 import Setting from './Screen/Setting';
 
+import QuenMatKhau from './Screen/QuenMatKhau';
+
 function App() {
   return (
     <Router>
@@ -112,6 +114,8 @@ function App() {
 
             <Route path="/ThongKeBieuDoTron" element={<ThongKeBieuDoTron/>} />
             <Route path="/CaiDat" element={<Setting/>} />
+
+            <Route path="/QuenMatKhau" element={<QuenMatKhau/>} />
 
 
           </Routes>
