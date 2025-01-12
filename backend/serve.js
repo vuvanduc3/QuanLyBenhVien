@@ -3949,3 +3949,31 @@ app.get('/api/ThongKe_TongHopThongTinKhac', async (req, res) => {
           });
       }
 });
+
+
+// API sửa mật khẩu
+app.put("/api/capnhatmatkhau", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const query = `
+      UPDATE
+      NguoiDung SET NguoiDung.MatKhau = @MatKhau
+      WHERE Email = @Email
+    `;
+    const result = await pool
+      .request()
+      .input("MatKhau", sql.NVarChar, newPassword)
+      .input("Email", sql.NVarChar, email)
+      .query(query);
+
+    if (result.rowsAffected[0] > 0) {
+      res.json({ success: true, message: "Cập nhật mật khẩu thành công!" });
+    } else {
+      res.status(404).json({ success: false, message: "Không tìm thấy thông tin để cập nhật" });
+    }
+  } catch (err) {
+    console.error("Lỗi cập nhật:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi cập nhật dữ liệu" });
+  }
+});

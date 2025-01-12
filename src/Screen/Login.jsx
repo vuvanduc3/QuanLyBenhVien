@@ -16,6 +16,10 @@ const Login = () => {
     navigate("/Register"); // Điều hướng đến trang đăng ký
   };
 
+  const handleNavigateToQuenMatKhau = () => {
+      navigate("/QuenMatKhau"); // Điều hướng đến trang đăng ký
+  };
+
   // Xử lý input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -131,7 +135,7 @@ const Login = () => {
               onChange={handleInputChange}
               required
             />
-            <a href="#" className="forgotPassword">
+            <a href="#" className="forgotPassword" onClick={handleNavigateToQuenMatKhau}>
               Forget Password?
             </a>
           </div>
