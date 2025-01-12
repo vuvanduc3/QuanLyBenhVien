@@ -51,6 +51,11 @@ const Register = () => {
       }
   };
 
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);  // State để quản lý ẩn/hiện mật khẩu
+  const togglePasswordVisibility = () => {
+          setIsPasswordVisible(!isPasswordVisible);
+  };
+
 
   return (
     <div className="loginContainer">
@@ -66,11 +71,12 @@ const Register = () => {
         <p className={styles.subtitle}>Vui lòng nhập thông tin để tạo tài khoản</p>
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            <label htmlFor="email">Email address:</label>
+            <label htmlFor="email">Email address *</label>
             <input
               type="email"
               id="email"
               name="email"
+              required
               placeholder="example@gmail.com"
               className={styles.input}
               value={email}
@@ -78,10 +84,11 @@ const Register = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="fullName">Full Name:</label>
+            <label htmlFor="fullName">Full Name *</label>
             <input
               type="text"
               id="fullName"
+              required
               name="fullName"
               placeholder="Nguyen Van A"
               className={styles.input}
@@ -90,11 +97,12 @@ const Register = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="phone">Phone:</label>
+            <label htmlFor="phone">Phone *</label>
             <input
               type="text"
               id="phone"
               name="phone"
+              required
               placeholder="0123456789"
               className={styles.input}
               value={phone}
@@ -102,11 +110,12 @@ const Register = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="cccd">CCCD/CMND:</label>
+            <label htmlFor="cccd">CCCD/CMND *</label>
             <input
               type="text"
               id="cccd"
               name="cccd"
+              required
               placeholder="123456789"
               className={styles.input}
               value={cccd}
@@ -114,11 +123,12 @@ const Register = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="age">Age:</label>
+            <label htmlFor="age">Age *</label>
             <input
               type="number"
               id="age"
               name="age"
+              required
               placeholder="18"
               className={styles.input}
               value={age}
@@ -126,11 +136,12 @@ const Register = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="address">Address:</label>
+            <label htmlFor="address">Address *</label>
             <input
               type="text"
               id="address"
               name="address"
+              required
               placeholder="Hanoi, Vietnam"
               className={styles.input}
               value={address}
@@ -138,15 +149,25 @@ const Register = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className={styles.input}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+
+            <label htmlFor="password">Password *</label>
+            <div className="inputGroup2">
+                <input
+                  type={isPasswordVisible ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="Nhập mật khẩu"
+                  className={styles.input}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                    <div className="inputGroup_togglePasswordBtn">
+                      <button type="button" onClick={togglePasswordVisibility} className="togglePasswordBtn">
+                        <i className={isPasswordVisible ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                      </button>
+                    </div>
+            </div>
           </div>
 
           <button type="submit" className={styles.signInButton}>Register</button>
