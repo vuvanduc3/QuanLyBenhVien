@@ -465,6 +465,24 @@ export default function Dashboard() {
      setDragging(false);
    };
 
+   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // Cập nhật chiều rộng khi cửa sổ thay đổi kích thước
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Tính chiều rộng của biểu đồ (gấp 1.5 lần chiều rộng của cửa sổ)
+  const chartWidth = windowWidth * 1.5;
+
+
    return (
      <div className="container">
        <Menu1 />
@@ -501,7 +519,7 @@ export default function Dashboard() {
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <BarChart width={1500} height={400} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <BarChart width={chartWidth} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
@@ -524,7 +542,7 @@ export default function Dashboard() {
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <AreaChart width={1500} height={400} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <AreaChart width={chartWidth} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
