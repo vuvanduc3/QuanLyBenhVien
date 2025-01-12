@@ -434,13 +434,13 @@ export default function Dashboard() {
     };
 
      // Lấy dữ liệu lần đầu khi component được mount
-    fetchData();
+
 
     // Thiết lập interval để lấy dữ liệu mỗi 40 giây
     const interval = setInterval(() => {
             fetchData();
-    }, 40000);
-
+    }, 30000);
+    fetchData();
     // Dọn dẹp interval khi component bị unmount
     return () => clearInterval(interval);
 
