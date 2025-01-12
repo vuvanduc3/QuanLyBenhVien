@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import { Bell, Search, ChevronLeft, ChevronRight, Settings, LogOut } from 'lucide-react';
 import { ChevronUp, ChevronDown, Users, FileText } from 'lucide-react';
 import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
@@ -9,6 +9,10 @@ import { Pie } from 'react-chartjs-2';
 import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 // Đảm bảo đường dẫn đúng
 ChartJS.register(ArcElement, CategoryScale, ChartTooltip, ChartLegend, Title);
@@ -73,6 +77,13 @@ export default function Dashboard() {
     totalMedicalSupplies: 0,
     totalInvoicesDetails: 0
   });
+  const settings = {
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,  // Hiển thị 1 item tại một thời điểm
+      slidesToScroll: 1, // Kéo từng item
+  };
 
   const [pieChartData, setPieChartData] = useState({
       labels: [],
@@ -421,76 +432,116 @@ export default function Dashboard() {
      // Lấy dữ liệu lần đầu khi component được mount
     fetchData();
 
-    // Thiết lập interval để lấy dữ liệu mỗi 10 giây
+    // Thiết lập interval để lấy dữ liệu mỗi 40 giây
     const interval = setInterval(() => {
             fetchData();
-    }, 30000);
+    }, 40000);
 
     // Dọn dẹp interval khi component bị unmount
     return () => clearInterval(interval);
 
   }, []);
 
+   // Trạng thái kéo cho mỗi biểu đồ
+   const [dragging, setDragging] = useState(false);
+   const [startX, setStartX] = useState(0); // Vị trí bắt đầu của chuột
+   const chartContainerRef1 = useRef(null); // Dùng ref để tham chiếu tới container BarChart
+   const chartContainerRef2 = useRef(null); // Dùng ref để tham chiếu tới container AreaChart
 
-  return (
-    <div className="container">
-      <Menu1 />
-      <div className="main-content">
-        <Search1 />
-        <h1 className="page-title">Dashboard {SoLuongBN}</h1>
+   const handleMouseDown = (e, setStart) => {
+     setDragging(true);
+     setStart(e.clientX);
+   };
 
-        <div className="stats-grid">
-          {statsData.map((stat, index) => (
-            <StatCard key={index} {...stat} />
-          ))}
-        </div>
+   const handleMouseMove = (e, setStart, ref) => {
+     if (dragging) {
+       const diffX = e.clientX - startX;
+       ref.current.scrollLeft -= diffX; // Di chuyển biểu đồ theo chiều ngang
+       setStart(e.clientX);
+     }
+   };
 
-        <div className="secondary-stats">
-          {secondaryStats.map((stat, index) => (
-            <SecondaryStatCard key={index} {...stat} />
-          ))}
-        </div>
+   const handleMouseUp = () => {
+     setDragging(false);
+   };
 
-        <div className="chart-section">
-          <div className="chart-header">
-            <h2 className="chart-title">Doanh thu và Chi phí BHYT</h2>
-            <select className="month-select">
-              <option>October</option>
-            </select>
-          </div>
-          <div className="chart-container">
-            <BarChart width={1000} height={400} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="revenue" name="Doanh thu" fill="#6366f1" />
-              <Bar dataKey="insurance" name="Chi phí BHYT" fill="#dc2626" />
-            </BarChart>
-          </div>
-        </div>
+   return (
+     <div className="container">
+       <Menu1 />
+       <div className="main-content">
+         <Search1 />
+         <h1 className="page-title">Dashboard {SoLuongBN}</h1>
 
-        <div className="chart-section">
-          <AreaChart width={1000} height={400} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Area type="monotone" dataKey="patients" name="Số lượng bệnh nhân" stroke="#6366f1" fill="#6366f1" />
-            <Area type="monotone" dataKey="doctors" name="Số lượng bác sĩ" stroke="#16a34a" fill="#16a34a" />
-            <Area type="monotone" dataKey="tests" name="Số lượng xét nghiệm" stroke="#ff5722" fill="#ff5722" />
-            <Area type="monotone" dataKey="invoices" name="Số lượng hóa đơn" stroke="#dc2626" fill="#dc2626" />
-            <Area type="monotone" dataKey="treatment" name="Số lượng điều trị" stroke="#fbbf24" fill="#fbbf24" />
-            <Area type="monotone" dataKey="medicalSupplies" name="Số lượng vật tư y tế" stroke="#ff9800" fill="#ff9800" />
-            <Area type="monotone" dataKey="invoicesDetails" name="Số lượng hóa đơn chi tiết" stroke="#4f8c91" fill="#4f8c91" />
-            <Area type="monotone" dataKey="SoLuongThuoc" name="Số lượng thuốc" stroke="#00bcd4" fill="#00bcd4" />
-            <Area type="monotone" dataKey="SoLuongDonThuoc" name="Số lượng đơn thuốc" stroke="#ff5722" fill="#ff5722" />
-          </AreaChart>
+         <div className="stats-grid">
+           {statsData.map((stat, index) => (
+             <StatCard key={index} {...stat} />
+           ))}
+         </div>
 
-        </div>
-        {/* Các thẻ thống kê */}
+         <div className="secondary-stats">
+           {secondaryStats.map((stat, index) => (
+             <SecondaryStatCard key={index} {...stat} />
+           ))}
+         </div>
+
+         {/* Biểu đồ BarChart */}
+         <div className="chart-section">
+           <div className="chart-header">
+             <h2 className="chart-title">Doanh thu và Chi phí BHYT</h2>
+             <select className="month-select">
+               <option>October</option>
+             </select>
+           </div>
+           <div
+             className="chart-container"
+             ref={chartContainerRef1}
+             onMouseDown={(e) => handleMouseDown(e, setStartX)}
+             onMouseMove={(e) => handleMouseMove(e, setStartX, chartContainerRef1)}
+             onMouseUp={handleMouseUp}
+             onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
+             style={{ overflowX: 'auto', cursor: 'pointer' }}
+           >
+             <BarChart width={1500} height={400} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+               <CartesianGrid strokeDasharray="3 3" />
+               <XAxis dataKey="date" />
+               <YAxis />
+               <Tooltip />
+               <Legend />
+               <Bar dataKey="revenue" name="Doanh thu" fill="#6366f1" />
+               <Bar dataKey="insurance" name="Chi phí BHYT" fill="#dc2626" />
+             </BarChart>
+           </div>
+         </div>
+
+         {/* Biểu đồ AreaChart */}
+         <div className="chart-section">
+           <div
+             className="chart-container"
+             ref={chartContainerRef2}
+             onMouseDown={(e) => handleMouseDown(e, setStartX)}
+             onMouseMove={(e) => handleMouseMove(e, setStartX, chartContainerRef2)}
+             onMouseUp={handleMouseUp}
+             onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
+             style={{ overflowX: 'auto', cursor: 'pointer' }}
+           >
+             <AreaChart width={1500} height={400} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+               <CartesianGrid strokeDasharray="3 3" />
+               <XAxis dataKey="date" />
+               <YAxis />
+               <Tooltip />
+               <Legend />
+               <Area type="monotone" dataKey="patients" name="Số lượng bệnh nhân" stroke="#6366f1" fill="#6366f1" />
+               <Area type="monotone" dataKey="doctors" name="Số lượng bác sĩ" stroke="#16a34a" fill="#16a34a" />
+               <Area type="monotone" dataKey="tests" name="Số lượng xét nghiệm" stroke="#ff5722" fill="#ff5722" />
+               <Area type="monotone" dataKey="invoices" name="Số lượng hóa đơn" stroke="#dc2626" fill="#dc2626" />
+               <Area type="monotone" dataKey="treatment" name="Số lượng điều trị" stroke="#fbbf24" fill="#fbbf24" />
+               <Area type="monotone" dataKey="medicalSupplies" name="Số lượng vật tư y tế" stroke="#ff9800" fill="#ff9800" />
+               <Area type="monotone" dataKey="invoicesDetails" name="Số lượng hóa đơn chi tiết" stroke="#4f8c91" fill="#4f8c91" />
+               <Area type="monotone" dataKey="SoLuongThuoc" name="Số lượng thuốc" stroke="#00bcd4" fill="#00bcd4" />
+               <Area type="monotone" dataKey="SoLuongDonThuoc" name="Số lượng đơn thuốc" stroke="#ff5722" fill="#ff5722" />
+             </AreaChart>
+           </div>
+         </div>
 
 
         {/* Biểu đồ tròn */}
