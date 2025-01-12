@@ -103,6 +103,8 @@ export default function Dashboard() {
   };
 
 
+
+   const [TongSoPhanTu, setTongSoPhanTu] = useState([]);
   // Fetch dữ liệu từ API
   useEffect(() => {
     const fetchData = async () => {
@@ -156,6 +158,8 @@ export default function Dashboard() {
         // Thêm các giá trị SoLuongThuoc và SoLuongDonThuoc
         const totalSoLuongThuoc = sortedData.reduce((acc, curr) => acc + curr.SoLuongThuoc, 0);
         const totalSoLuongDonThuoc = sortedData.reduce((acc, curr) => acc + curr.SoLuongDonThuoc, 0);
+
+        setTongSoPhanTu(sortedData.reduce((acc, curr) => acc + 1, 0));
 
         // Cập nhật statsData để chứa thêm các thông tin
         setStatsData([
@@ -505,7 +509,7 @@ export default function Dashboard() {
          {/* Biểu đồ BarChart */}
          <div className="chart-section">
            <div className="chart-header">
-             <h2 className="chart-title">Doanh thu và Chi phí BHYT</h2>
+             <h2 className="chart-title">Doanh thu và Chi phí BHYT </h2>
              <select className="month-select">
                <option>October</option>
              </select>
@@ -519,7 +523,7 @@ export default function Dashboard() {
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <BarChart width={chartWidth} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <BarChart width={TongSoPhanTu * 150} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
@@ -542,7 +546,7 @@ export default function Dashboard() {
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <AreaChart width={chartWidth} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <AreaChart width={TongSoPhanTu * 150} height={500} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
