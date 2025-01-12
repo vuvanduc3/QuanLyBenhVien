@@ -247,7 +247,7 @@ const ThemSuaXoaDieuTri = () => {
             </div>
 
             <div className="form-group">
-              <label>Ngày điều trị <span className="required"></span></label>
+              <label>Ngày điều trị <span className="required">*</span></label>
               <input
                 type="date"
                 value={ngayDieuTri}
@@ -257,7 +257,7 @@ const ThemSuaXoaDieuTri = () => {
             </div>
 
             <div className="form-group">
-              <label>Đã sử dụng: thiết bị / khác</label>
+              <label>Đã sử dụng: thiết bị / khác <span className="required">*</span></label>
               <textarea
                 type="text"
                 value={daSuDung}

@@ -165,7 +165,7 @@ const AddInvoice = () => {
           <h1 className="form-title">{action === 'edit' ? 'Sửa hóa đơn' : 'Thêm hóa đơn'}</h1>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Tìm kiếm bệnh nhân (Bệnh nhân đang chọn: {MaBenhNhans})</label>
+              <label>Tìm kiếm bệnh nhân * (Bệnh nhân đang chọn: {MaBenhNhans})</label>
               <input
                 type="text"
                 value={patientSearchTerm}
@@ -181,7 +181,7 @@ const AddInvoice = () => {
               </div>
             </div>
             <div className="form-group">
-              <label>Tìm kiếm bác sĩ (Bác sĩ đã chọn: {MaBacSis})</label>
+              <label>Tìm kiếm bác sĩ * (Bác sĩ đã chọn: {MaBacSis})</label>
               <input
                 type="text"
                 value={doctorSearchTerm}
@@ -197,7 +197,7 @@ const AddInvoice = () => {
               </div>
             </div>
             <div className="form-group">
-              <label>Ngày lập hóa đơn</label>
+              <label>Ngày lập hóa đơn * </label>
               <input type="text" value={formData.NgayLapHoaDon || new Date().toLocaleDateString()} disabled />
             </div>
             <div className="form-group">

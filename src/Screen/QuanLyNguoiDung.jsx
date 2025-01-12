@@ -348,7 +348,7 @@ const QuanLyNguoiDungScreen = () => {
                                         />
                                     </div>
                                     <div style={{ width: "50%" }}>
-                                        <label>Tên đầy đủ</label>
+                                        <label>Tên đầy đủ *</label>
                                         <input
                                             type="text"
                                             name="TenDayDu"
@@ -361,7 +361,7 @@ const QuanLyNguoiDungScreen = () => {
 
                                 <div style={{ display: "flex" }}>
                                     <div style={{ width: "50%", marginRight: "30px" }}>
-                                        <label>E-mail</label>
+                                        <label>E-mail *</label>
                                         <input
                                             type="email"
                                             name="Email"
@@ -370,7 +370,7 @@ const QuanLyNguoiDungScreen = () => {
                                         />
                                     </div>
                                     <div style={{ width: "50%" }}>
-                                        <label>Số điện thoại</label>
+                                        <label>Số điện thoại *</label>
                                         <input
                                             type="text"
                                             name="SDT"
@@ -381,7 +381,7 @@ const QuanLyNguoiDungScreen = () => {
                                 </div>
 
 
-                                <label>CCCD:</label>
+                                <label>CCCD *</label>
                                 <input
                                     type="text"
                                     name="CCCD"
@@ -391,7 +391,7 @@ const QuanLyNguoiDungScreen = () => {
 
                                 <div style={{ fontSize: "11px", paddingBottom: "15px", color: '#a6adba', fontWeight: 'bolder' }}>Thông tin Thêm</div>
 
-                                <label>Vai trò:</label>
+                                <label>Vai trò *</label>
                                 <select
                                     name="VaiTro"
                                     value={formData.VaiTro}
@@ -408,7 +408,7 @@ const QuanLyNguoiDungScreen = () => {
                                     <>
                                         <div style={{ display: "flex" }}>
                                             <div style={{ width: "50%", marginRight: "30px" }}>
-                                                <label>Giới tính:</label>
+                                                <label>Giới tính *</label>
                                                 <select
                                                     name="GioiTinh"
                                                     value={formData.GioiTinh} // Chọn giới tính hiện tại
@@ -421,7 +421,7 @@ const QuanLyNguoiDungScreen = () => {
                                                 </select>
                                             </div>
                                             <div style={{ width: "50%" }}>
-                                                <label>Tuổi:</label>
+                                                <label>Tuổi *</label>
                                                 <input
                                                     type="number"
                                                     name="Tuoi"
@@ -430,7 +430,7 @@ const QuanLyNguoiDungScreen = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <label>Địa chỉ:</label>
+                                        <label>Địa chỉ *</label>
                                         <input
                                             type="text"
                                             name="DiaChi"
@@ -445,14 +445,14 @@ const QuanLyNguoiDungScreen = () => {
 
                                 {formData.VaiTro === 'Bác sĩ' && (
                                     <>
-                                        <label>Chuyên môn:</label>
+                                        <label>Chuyên môn *</label>
                                         <input
                                             type="text"
                                             name="ChuyenMon"
                                             value={formData.ChuyenMon}
                                             onChange={handleInputChange}
                                         />
-                                        <label>Phòng khám:</label>
+                                        <label>Phòng khám *</label>
                                         <input
                                             type="text"
                                             name="PhongKham"

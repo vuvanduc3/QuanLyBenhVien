@@ -20,6 +20,9 @@ const Login = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("Vui lòng nhập e-mail để đặt lại mật khẩu");
   const [isEmailSent, setIsEmailSent] = useState(false);
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);  // State để quản lý ẩn/hiện mật khẩu
+
   const navigate = useNavigate();
 
   const handleNavigateToRegister = () => {
@@ -128,6 +131,11 @@ const Login = () => {
     }
   };
 
+  // Hàm toggle ẩn/hiện mật khẩu
+  const togglePasswordVisibility = () => {
+      setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <div className="loginContainer">
       <video className="backgroundVideo" src={videoSource} autoPlay loop muted></video>
@@ -186,17 +194,24 @@ const Login = () => {
         {isOTPVerified && (
           <form onSubmit={handlePasswordSubmit}>
             <div className="inputGroup">
-              <label htmlFor="newPassword">Mật khẩu mới</label>
-              <input
-                type="password"
-                id="newPassword"
-                name="MatKhau"
-                className="input"
-                placeholder="Nhập mật khẩu mới"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-              />
+                 <label htmlFor="newPassword">Mật khẩu mới</label>
+                 <div className="inputGroup2">
+                       <input
+                       type={isPasswordVisible ? "text" : "password"}
+                       className="input"
+                       placeholder="Nhập mật khẩu"
+                       value={newPassword}
+                       onChange={(e) => setNewPassword(e.target.value)}
+                       required
+                       />
+
+                       <div className="inputGroup_togglePasswordBtn">
+                         <button type="button" onClick={togglePasswordVisibility} className="togglePasswordBtn">
+                           <i className={isPasswordVisible ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                         </button>
+                       </div>
+                 </div>
+
             </div>
             <button type="submit" className="signInButton">
               Đặt lại mật khẩu

@@ -213,7 +213,7 @@ const CRUDLichKham = () => {
           <form onSubmit={handleSubmit}>
             {/* Tìm kiếm bệnh nhân */}
             <div className="form-group">
-              <label className="form-label">Tìm kiếm bệnh nhân</label>
+              <label className="form-label">Tìm kiếm bệnh nhân *</label>
               <input
                 type="text"
                 className="form-input"
@@ -251,7 +251,7 @@ const CRUDLichKham = () => {
 
             {/* Tìm kiếm bác sĩ */}
             <div className="form-group">
-              <label className="form-label">Tìm kiếm bác sĩ</label>
+              <label className="form-label">Tìm kiếm bác sĩ *</label>
               <input
                 type="text"
                 className="form-input"
@@ -291,7 +291,7 @@ const CRUDLichKham = () => {
             {/* Các trường còn lại */}
 
             <div className="form-group">
-              <label className="form-label">Ngày khám</label>
+              <label className="form-label">Ngày khám *</label>
               <input
                 type="date"
                 className="form-input"
@@ -301,7 +301,7 @@ const CRUDLichKham = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Giờ khám</label>
+              <label className="form-label">Giờ khám *</label>
               <input
                 type="time"
                 className="form-input"
@@ -311,7 +311,7 @@ const CRUDLichKham = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Tình trạng</label>
+              <label className="form-label">Tình trạng *</label>
               <select
                 className="form-input"
                 value={formData.TrangThai}
@@ -324,7 +324,7 @@ const CRUDLichKham = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Phòng khám</label>
+              <label className="form-label">Phòng khám *</label>
               <input
                 type="text"
                 className="form-input"

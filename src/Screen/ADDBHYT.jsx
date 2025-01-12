@@ -207,7 +207,7 @@ const CRUDBHYT = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Số hợp đồng bảo hiểm</label>
+                            <label>Số hợp đồng bảo hiểm * </label>
                             <input
                                 type="text"
                                 name="SoHopDongBaoHiem"
