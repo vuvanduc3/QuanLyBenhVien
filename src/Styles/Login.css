@@ -111,7 +111,7 @@
   color: #2575fc;
   text-decoration: none;
   float: right;
-  margin-top: 10px;
+  margin-top: 3px;
 }
 
 .forgotPassword:hover {
@@ -223,3 +223,38 @@
 }
 
 /* Các phần tử còn lại sử dụng quy tắc CSS hiện tại */
+
+/* Định dạng cho nút toggle mật khẩu */
+.inputGroup2 {
+  display: flex;
+  justify-content: space-between; /* Giữ khoảng cách giữa input và button */
+  align-items: center;
+  width: 100%; /* Đảm bảo chiều rộng đầy đủ */
+}
+
+.togglePasswordBtn {
+  background-color: transparent;
+  color: #007bff;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+  text-align: left;
+  padding: 0;
+  margin-left:5px;
+  display: inline-block;
+  /* width: 100%; /* Không cần thiết ở đây vì button sẽ chỉ chiếm cần thiết */
+}
+
+/* Thêm hiệu ứng khi hover */
+.togglePasswordBtn:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.inputGroup_togglePasswordBtn {
+  display: flex;
+  justify-content: flex-end; /* Căn phải nút */
+  align-items: center; /* Căn giữa nút theo chiều dọc */
+  width: auto; /* Không cần chiếm toàn bộ chiều rộng */
+}

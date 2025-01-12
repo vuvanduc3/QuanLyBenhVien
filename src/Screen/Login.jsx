@@ -11,6 +11,7 @@ const Login = () => {
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);  // State để quản lý ẩn/hiện mật khẩu
 
   const handleNavigateToRegister = () => {
     navigate("/Register"); // Điều hướng đến trang đăng ký
@@ -101,6 +102,10 @@ const Login = () => {
     return <div>Loading...</div>; // Hiển thị loading nếu dữ liệu chưa được tải xong
   }
 
+  const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <div className="loginContainer">
       {/* Video nền */}
@@ -125,19 +130,27 @@ const Login = () => {
             />
           </div>
           <div className="inputGroup">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="MatKhau"
-              className="input"
-              value={formData.MatKhau}
-              onChange={handleInputChange}
-              required
-            />
-            <a href="#" className="forgotPassword" onClick={handleNavigateToQuenMatKhau}>
-              Forget Password?
-            </a>
+
+                <label htmlFor="password">Password</label>
+                <div className="inputGroup2">
+                    <input
+                      type={isPasswordVisible ? "text" : "password"}
+                      id="password"
+                      name="MatKhau"
+                      className="input"
+                      value={formData.MatKhau}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <div className="inputGroup_togglePasswordBtn">
+                      <button type="button" onClick={togglePasswordVisibility} className="togglePasswordBtn">
+                        <i className={isPasswordVisible ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                      </button>
+                    </div>
+               </div>
+               <a href="#" className="forgotPassword" onClick={handleNavigateToQuenMatKhau}>
+                  Forget Password?
+               </a>
           </div>
           <div className="checkboxGroup">
             <input type="checkbox" id="remember" />
