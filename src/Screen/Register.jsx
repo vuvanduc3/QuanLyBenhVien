@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../Styles/Register.module.css"; // CSS Module
-import videoSource from './login_video.mp4';
+import videoSource from './login_video3.mp4';
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -59,13 +59,13 @@ const Register = () => {
 
   return (
     <div className="loginContainer">
-    <video
-        className="backgroundVideo"
-        src={videoSource}
-        autoPlay
-        loop
-        muted
-    ></video>
+        <video
+            className="backgroundVideo"
+            src={videoSource}
+            autoPlay
+            loop
+            muted
+        ></video>
       <div className={styles.loginBox}>
         <h2 className={styles.title}>Create Account</h2>
         <p className={styles.subtitle}>Vui lòng nhập thông tin để tạo tài khoản</p>
