@@ -49,14 +49,26 @@ const HoaDonChiTiet = () => {
     }, []);
 
      const formatNgaySinh = (ngaySinh) => {
-            if (!ngaySinh) return "Không xác định";
-            const date = new Date(ngaySinh);
-            return new Intl.DateTimeFormat('vi-VN', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-            }).format(date);
+       if (!ngaySinh) return "Không xác định";
+       const date = new Date(ngaySinh);
+
+       const day = date.getDate();
+       const month = date.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+       const year = date.getFullYear();
+
+       return `Ngay ${day} thang ${month} nam ${year}`;
      };
+    const formatNgaySinh2 = (ngaySinh) => {
+        if (!ngaySinh) return "Không xác định";
+        const date = new Date(ngaySinh);
+
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+        const year = date.getFullYear();
+
+        return `Ngày ${day} tháng ${month} năm ${year}`;
+      };
+
     // Hàm chuẩn hóa văn bản, loại bỏ dấu và chuyển chữ có dấu thành không dấu
     const removeDiacritics = (text) => {
         if (typeof text === 'string') {
@@ -173,7 +185,7 @@ const HoaDonChiTiet = () => {
                 const htmlMessage = `
                     <h2>Hóa đơn chi tiết</h2>
                     <p>Mã bệnh nhân: ${normalizeText(item?.MaBenhNhan || 'Không có')}</p>
-                    <p>Ngày tạo hóa đơn: ${normalizeText(formatNgaySinh(item?.NgayLapHoaDon) || 'Không có')}</p>
+                    <p>Ngày tạo hóa đơn: ${normalizeText(formatNgaySinh2(item?.NgayLapHoaDon) || 'Không có')}</p>
                     <p>Mã hóa đơn: ${normalizeText(item?.MaHoaDon || 'Không có')}</p>
                     <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
                         <thead>
