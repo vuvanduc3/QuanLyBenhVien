@@ -161,6 +161,9 @@ export default function Dashboard() {
 
         setTongSoPhanTu(sortedData.reduce((acc, curr) => acc + 1, 0));
 
+        const otherStatsResponse = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
+        const otherStatsData = await otherStatsResponse.json();
+
         // Cập nhật statsData để chứa thêm các thông tin
         setStatsData([
           {
@@ -246,8 +249,7 @@ export default function Dashboard() {
           }
         ]);
 
-        const otherStatsResponse = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
-        const otherStatsData = await otherStatsResponse.json();
+
 
         // Lấy đối tượng đầu tiên trong mảng "data"
         const stats = otherStatsData.data[0];
@@ -435,12 +437,12 @@ export default function Dashboard() {
 
      // Lấy dữ liệu lần đầu khi component được mount
 
-
+    fetchData();
     // Thiết lập interval để lấy dữ liệu mỗi 40 giây
     const interval = setInterval(() => {
             fetchData();
     }, 30000);
-    fetchData();
+
     // Dọn dẹp interval khi component bị unmount
     return () => clearInterval(interval);
 
