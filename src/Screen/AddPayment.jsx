@@ -3,6 +3,7 @@ import Search1 from "../components/seach_user";
 import React, { useState, useEffect } from "react";
 import "../Styles/EditPayment.css";
 import { useParams,useLocation } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const AddPayment = () => {
   const { paymentId } = useParams();
@@ -14,7 +15,7 @@ const AddPayment = () => {
   const today = new Date();
   const formattedDate = new Intl.DateTimeFormat('vi-VN').format(today);
 
-
+  const myCookieValue = Cookies.get('myCookie'); // Lấy giá trị cookie
 
   const location = useLocation();
   const { action, item } = location.state || {}; // Lấy action và item từ params
@@ -195,7 +196,7 @@ const AddPayment = () => {
             <div className="EditPayment_paymentInfo">
               <div className="EditPayment_paymentRowInput">
                 <div className="EditPayment_paymentColInput">
-                  <label>Phương thức thanh toán:</label>
+                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Phương thức thanh toán:</label>
                   <select
                     name="phuongThucThanhToan"
                     value={formData.phuongThucThanhToan}
@@ -208,7 +209,7 @@ const AddPayment = () => {
                   </select>
                 </div>
                 <div className="EditPayment_paymentColInput">
-                  <label>
+                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>
                     {paymentData.status === 1
                       ? "Số tiền đã thanh toán:"
                       : "Số tiền cần thanh toán:"}
@@ -245,7 +246,7 @@ const AddPayment = () => {
 
               <div className="EditPayment_paymentRowInput">
                 <div className="EditPayment_paymentColInput">
-                  <label>Mã giao dịch:</label>
+                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Mã giao dịch:</label>
                   <input
                     placeholder="Nhập mã giao dịch"
                     type="text"
@@ -256,7 +257,7 @@ const AddPayment = () => {
                   />
                 </div>
                 <div className="EditPayment_paymentColInput">
-                  <label>Ngày thanh toán:</label>
+                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Ngày thanh toán:</label>
                   <input
                     placeholder="Ngày thanh toán"
                     type="text"
@@ -269,7 +270,7 @@ const AddPayment = () => {
               </div>
               <div className="EditPayment_paymentRowInput">
                 <div className="EditPayment_paymentColInput">
-                  <label>Trạng thái thanh toán:</label>
+                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Trạng thái thanh toán:</label>
                   <select
                     name="trangThaiThanhToan"
                     value={formData.trangThaiThanhToan}
@@ -284,7 +285,7 @@ const AddPayment = () => {
                 </div>
 
                 <div className="EditPayment_paymentColInput">
-                  <label>CCCD/CMND:</label>
+                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>CCCD/CMND:</label>
                   <input
                     placeholder="Nhập CCCD/CMND"
                     type="text"
@@ -299,7 +300,7 @@ const AddPayment = () => {
             <h4>Thông tin thêm (chi phí bảo hiểm chi trả) {item.SoTheBHYT?'':'( Không có thông tin thẻ bảo hiểm )'}</h4>
             <div className="EditPayment_paymentRowInput">
               <div className="EditPayment_paymentColInput">
-                <label>Mã bảo hiểm:</label>
+                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Mã bảo hiểm:</label>
                 <input
                   type="text"
                   name="maBaoHiem"
@@ -308,7 +309,7 @@ const AddPayment = () => {
                 />
               </div>
               <div className="EditPayment_paymentColInput">
-                <label>Mã chi phí bảo hiểm chi trả:</label>
+                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Mã chi phí bảo hiểm chi trả:</label>
                 <input
                   type="text"
                   name="maBaoHiemChiTra"
@@ -319,7 +320,7 @@ const AddPayment = () => {
             </div>
             <div className="EditPayment_paymentRowInput">
               <div className="EditPayment_paymentColInput">
-                <label>Số tiền bảo hiểm chi trả:</label>
+                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Số tiền bảo hiểm chi trả:</label>
                 <input
                   type="number"
                   name="soTienBaoHiemChiTra"
@@ -328,7 +329,7 @@ const AddPayment = () => {
                 />
               </div>
               <div className="EditPayment_paymentColInput">
-                <label>Ngày thanh toán:</label>
+                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Ngày thanh toán:</label>
                 <input
                   placeholder="Ngày thanh toán"
                   type="text"

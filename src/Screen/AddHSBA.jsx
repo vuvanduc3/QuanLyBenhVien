@@ -275,7 +275,7 @@ const AddMedicalRecord = () => {
                 
                 <div className="add-record-content">
                     <div className="form-header">
-                        <h2>Thêm Hồ Sơ Bệnh Án</h2>
+                        <h2 style={{ color: '#000' }}>Thêm Hồ Sơ Bệnh Án</h2>
                         <button 
                             className="back-button"
                             onClick={() => navigate('/hosobenhan')}
@@ -290,7 +290,7 @@ const AddMedicalRecord = () => {
                         {/* Basic Information */}
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="maBenhNhan">Mã bệnh nhân </label>
+                                <label style={{ color: '#000' }} htmlFor="maBenhNhan">Mã bệnh nhân </label>
                                 <input
                                     type="text"
                                     id="maBenhNhan"
@@ -302,7 +302,7 @@ const AddMedicalRecord = () => {
                             </div>
                             
                             <div className="form-group">
-                                <label htmlFor="maLichHen">Mã lịch hẹn</label>
+                                <label style={{ color: '#000' }} htmlFor="maLichHen">Mã lịch hẹn</label>
                                 <input
                                     type="text"
                                     id="maLichHen"
@@ -317,7 +317,7 @@ const AddMedicalRecord = () => {
                         {/* Personal Information */}
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="hoVaTen">Họ và tên *</label>
+                                <label style={{ color: '#000' }} htmlFor="hoVaTen">Họ và tên *</label>
                                 <input
                                     type="text"
                                     id="hoVaTen"
@@ -330,7 +330,7 @@ const AddMedicalRecord = () => {
                             </div>
                             
                             <div className="form-group">
-                                <label htmlFor="ngaySinh">Ngày sinh *</label>
+                                <label style={{ color: '#000' }} htmlFor="ngaySinh">Ngày sinh *</label>
                                 <input
                                     type="date"
                                     id="ngaySinh"
@@ -344,7 +344,7 @@ const AddMedicalRecord = () => {
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="tuoi">Tuổi *</label>
+                                <label style={{ color: '#000' }} htmlFor="tuoi">Tuổi *</label>
                                 <input
                                     type="number"
                                     id="tuoi"
@@ -358,7 +358,7 @@ const AddMedicalRecord = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="gioiTinh">Giới tính *</label>
+                                <label style={{ color: '#000' }} htmlFor="gioiTinh">Giới tính *</label>
                                 <select
                                     id="gioiTinh"
                                     name="gioiTinh"
@@ -376,7 +376,7 @@ const AddMedicalRecord = () => {
                         {/* Location Information */}
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="tinhThanhPho">Tỉnh/Thành phố</label>
+                                <label style={{ color: '#000' }} htmlFor="tinhThanhPho">Tỉnh/Thành phố</label>
                                 <select
                                     id="tinhThanhPho"
                                     name="tinhThanhPho"
@@ -394,7 +394,7 @@ const AddMedicalRecord = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="huyen">Quận/Huyện</label>
+                                <label  style={{ color: '#000' }} htmlFor="huyen">Quận/Huyện</label>
                                 <select
                                     id="huyen"
                                     name="huyen"
@@ -414,7 +414,7 @@ const AddMedicalRecord = () => {
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="xaPhuong">Phường/Xã</label>
+                                <label style={{ color: '#000' }} htmlFor="xaPhuong">Phường/Xã</label>
                                 <select
                                     id="xaPhuong"
                                     name="xaPhuong"
@@ -432,7 +432,7 @@ const AddMedicalRecord = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="thonPho">Thôn/Phố</label>
+                                <label style={{ color: '#000' }} htmlFor="thonPho">Thôn/Phố</label>
                                 <input
                                     type="text"
                                     id="thonPho"
@@ -445,7 +445,7 @@ const AddMedicalRecord = () => {
                         </div>
 
                         <div className="form-group full-width">
-                            <label htmlFor="diaChiCuTru">Địa chỉ cụ thể</label>
+                            <label style={{ color: '#000' }} htmlFor="diaChiCuTru">Địa chỉ cụ thể</label>
                             <input
                                 type="text"
                                 id="diaChiCuTru"
@@ -459,7 +459,7 @@ const AddMedicalRecord = () => {
                         {/* Additional Information */}
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="danToc">Dân tộc</label>
+                                <label style={{ color: '#000' }} htmlFor="danToc">Dân tộc</label>
                                 <input
                                     type="text"
                                     id="danToc"
@@ -471,7 +471,7 @@ const AddMedicalRecord = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="soTheBHYT">Số thẻ BHYT</label>
+                                <label style={{ color: '#000' }} htmlFor="soTheBHYT">Số thẻ BHYT</label>
                                 <input
                                     type="text"
                                     id="soTheBHYT"
@@ -485,7 +485,7 @@ const AddMedicalRecord = () => {
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="soCCCD_HoChieu">Số CCCD/Hộ chiếu</label>
+                                <label style={{ color: '#000' }} htmlFor="soCCCD_HoChieu">Số CCCD/Hộ chiếu</label>
                                 <input
                                     type="text"
                                     id="soCCCD_HoChieu"
@@ -497,7 +497,7 @@ const AddMedicalRecord = () => {
                             </div>
 
                             <div className="form-group">
-                            <label htmlFor="vaoVien">Ngày vào viện *</label>
+                            <label style={{ color: '#000' }} htmlFor="vaoVien">Ngày vào viện *</label>
                                 <input
                                     type="date"
                                     id="vaoVien"
@@ -511,7 +511,7 @@ const AddMedicalRecord = () => {
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="raVien">Ngày ra viện</label>
+                                <label style={{ color: '#000' }} htmlFor="raVien">Ngày ra viện</label>
                                 <input
                                     type="date"
                                     id="raVien"
@@ -523,7 +523,7 @@ const AddMedicalRecord = () => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="hanhDong">Hành động *</label>
+                                <label style={{ color: '#000' }} htmlFor="hanhDong">Hành động *</label>
                                 <select
                                     id="hanhDong"
                                     name="hanhDong"
@@ -542,7 +542,7 @@ const AddMedicalRecord = () => {
 
                         {/* Medical Information */}
                         <div className="form-group full-width">
-                            <label htmlFor="lyDoVaoVien">Lý do vào viện</label>
+                            <label  style={{ color: '#000' }} htmlFor="lyDoVaoVien">Lý do vào viện</label>
                             <textarea
                                 id="lyDoVaoVien"
                                 name="lyDoVaoVien"
@@ -554,7 +554,7 @@ const AddMedicalRecord = () => {
                         </div>
 
                         <div className="form-group full-width">
-                            <label htmlFor="chanDoanVaoVien">Chẩn đoán vào viện</label>
+                            <label style={{ color: '#000' }} htmlFor="chanDoanVaoVien">Chẩn đoán vào viện</label>
                             <textarea
                                 id="chanDoanVaoVien"
                                 name="chanDoanVaoVien"
@@ -566,7 +566,7 @@ const AddMedicalRecord = () => {
                         </div>
 
                         <div className="form-group full-width">
-                            <label htmlFor="chanDoanRaVien">Chẩn đoán ra viện</label>
+                            <label style={{ color: '#000' }} htmlFor="chanDoanRaVien">Chẩn đoán ra viện</label>
                             <textarea
                                 id="chanDoanRaVien"
                                 name="chanDoanRaVien"
@@ -578,7 +578,7 @@ const AddMedicalRecord = () => {
                         </div>
 
                         <div className="form-group full-width">
-                            <label htmlFor="tomTatBenhLy">Tóm tắt bệnh lý</label>
+                            <label style={{ color: '#000' }} htmlFor="tomTatBenhLy">Tóm tắt bệnh lý</label>
                             <textarea
                                 id="tomTatBenhLy"
                                 name="tomTatBenhLy"

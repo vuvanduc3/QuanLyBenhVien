@@ -207,13 +207,13 @@ const CRUDLichKham = () => {
         <Search1 />
         <div className="form-container">
           <div className="form-header">
-            <h1 className="form-title">{action === 'edit' ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'} {formData.GioKham}</h1>
+            <h1 style={{ color: '#000' }}>{action === 'edit' ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'} {formData.NgayKham} {formData.GioKham}</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
             {/* Tìm kiếm bệnh nhân */}
             <div className="form-group">
-              <label className="form-label">Tìm kiếm bệnh nhân *</label>
+              <label style={{ color: '#000' }}>Tìm kiếm bệnh nhân *</label>
               <input
                 type="text"
                 className="form-input"
@@ -251,7 +251,7 @@ const CRUDLichKham = () => {
 
             {/* Tìm kiếm bác sĩ */}
             <div className="form-group">
-              <label className="form-label">Tìm kiếm bác sĩ *</label>
+              <label style={{ color: '#000' }}>Tìm kiếm bác sĩ *</label>
               <input
                 type="text"
                 className="form-input"
@@ -291,7 +291,7 @@ const CRUDLichKham = () => {
             {/* Các trường còn lại */}
 
             <div className="form-group">
-              <label className="form-label">Ngày khám *</label>
+              <label style={{ color: '#000' }}>Ngày khám *</label>
               <input
                 type="date"
                 className="form-input"
@@ -301,7 +301,7 @@ const CRUDLichKham = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Giờ khám *</label>
+              <label style={{ color: '#000' }}>Giờ khám *</label>
               <input
                 type="time"
                 className="form-input"
@@ -311,7 +311,7 @@ const CRUDLichKham = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Tình trạng *</label>
+              <label style={{ color: '#000' }}>Tình trạng *</label>
               <select
                 className="form-input"
                 value={formData.TrangThai}
@@ -324,7 +324,7 @@ const CRUDLichKham = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Phòng khám *</label>
+              <label style={{ color: '#000' }}>Phòng khám *</label>
               <input
                 type="text"
                 className="form-input"

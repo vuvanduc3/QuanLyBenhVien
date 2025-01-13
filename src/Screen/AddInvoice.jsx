@@ -162,10 +162,10 @@ const AddInvoice = () => {
       <div className="main-content">
         <Search1 />
         <div className="form-container">
-          <h1 className="form-title">{action === 'edit' ? 'Sửa hóa đơn' : 'Thêm hóa đơn'}</h1>
+          <h1 style={{ color: '#000' }}>{action === 'edit' ? 'Sửa hóa đơn' : 'Thêm hóa đơn'}</h1>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Tìm kiếm bệnh nhân * (Bệnh nhân đang chọn: {MaBenhNhans})</label>
+              <label style={{ color: '#000' }} >Tìm kiếm bệnh nhân * (Bệnh nhân đang chọn: {MaBenhNhans})</label>
               <input
                 type="text"
                 value={patientSearchTerm}
@@ -175,13 +175,13 @@ const AddInvoice = () => {
               <div className="search-results">
                 {filteredPatients.map((patient) => (
                   <div key={patient.MaBenhNhan} onClick={() => handleSelectPatient(patient)}>
-                    <span>Mã hồ sơ: {patient.ID} - Mã bệnh nhân: {patient.MaBenhNhan} - Họ và tên: {patient.HoVaTen}</span>
+                    <span style={{ color: '#000' }} >Mã hồ sơ: {patient.ID} - Mã bệnh nhân: {patient.MaBenhNhan} - Họ và tên: {patient.HoVaTen}</span>
                   </div>
                 ))}
               </div>
             </div>
             <div className="form-group">
-              <label>Tìm kiếm bác sĩ * (Bác sĩ đã chọn: {MaBacSis})</label>
+              <label style={{ color: '#000' }} >Tìm kiếm bác sĩ * (Bác sĩ đã chọn: {MaBacSis})</label>
               <input
                 type="text"
                 value={doctorSearchTerm}
@@ -191,17 +191,17 @@ const AddInvoice = () => {
               <div className="search-results">
                 {filteredDoctors.map((doctor) => (
                   <div key={doctor.ID} onClick={() => handleSelectDoctor(doctor)}>
-                    <span>Mã bác sĩ: {doctor.ID} - Tên đầy đủ: {doctor.TenDayDu} - Chuyên khoa: {doctor.ChuyenMon} - Phòng khám {doctor.PhongKham}</span>
+                    <span style={{ color: '#000' }} >Mã bác sĩ: {doctor.ID} - Tên đầy đủ: {doctor.TenDayDu} - Chuyên khoa: {doctor.ChuyenMon} - Phòng khám {doctor.PhongKham}</span>
                   </div>
                 ))}
               </div>
             </div>
             <div className="form-group">
-              <label>Ngày lập hóa đơn * </label>
+              <label style={{ color: '#000' }} >Ngày lập hóa đơn * </label>
               <input type="text" value={formData.NgayLapHoaDon || new Date().toLocaleDateString()} disabled />
             </div>
             <div className="form-group">
-              <label>Tổng tiền</label>
+              <label style={{ color: '#000' }} >Tổng tiền</label>
               <input
                 type="text"
                 value={formData.TongTien}

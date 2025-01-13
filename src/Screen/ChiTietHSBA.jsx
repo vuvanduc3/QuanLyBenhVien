@@ -240,7 +240,7 @@ const MedicalRecordDetail = () => {
                 <div className="detail-content">
                     <div className="detail-header">
                         <div className="header-left">
-                            <h2>Chi tiết hồ sơ bệnh án</h2>
+                            <h2 style={{ color: '#000' }} >Chi tiết hồ sơ bệnh án</h2>
                             <span className="record-id">#{record.MaBenhNhan}</span>
                         </div>
                         <div className="header-actions">
@@ -271,7 +271,7 @@ const MedicalRecordDetail = () => {
                             <form className="edit-form" onSubmit={handleSubmit}>
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>Họ và tên</label>
+                                        <label style={{ color: '#000' }} >Họ và tên</label>
                                         <input
                                             name="hoVaTen"
                                             value={editedData.hoVaTen}
@@ -280,7 +280,7 @@ const MedicalRecordDetail = () => {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label>Ngày sinh</label>
+                                        <label style={{ color: '#000' }} >Ngày sinh</label>
                                         <input
                                             type="date"
                                             name="ngaySinh"
@@ -293,7 +293,7 @@ const MedicalRecordDetail = () => {
 
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>Tuổi</label>
+                                        <label style={{ color: '#000' }} >Tuổi</label>
                                         <input
                                             type="number"
                                             name="tuoi"
@@ -303,7 +303,7 @@ const MedicalRecordDetail = () => {
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <label>Giới tính</label>
+                                        <label style={{ color: '#000' }} >Giới tính</label>
                                         <select
                                             name="gioiTinh"
                                             value={editedData.gioiTinh}
@@ -318,7 +318,7 @@ const MedicalRecordDetail = () => {
 
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>Dân tộc</label>
+                                        <label style={{ color: '#000' }} >Dân tộc</label>
                                         <select
                                             name="danToc"
                                             value={editedData.danToc}
@@ -334,7 +334,7 @@ const MedicalRecordDetail = () => {
                                         </select>
                                     </div>
                                     <div className="form-group">
-                                        <label>Địa chỉ cư trú</label>
+                                        <label style={{ color: '#000' }} >Địa chỉ cư trú</label>
                                         <input
                                             name="diaChiCuTru"
                                             value={editedData.diaChiCuTru}
@@ -345,7 +345,7 @@ const MedicalRecordDetail = () => {
 
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>Thôn/Phố</label>
+                                        <label style={{ color: '#000' }} >Thôn/Phố</label>
                                         <input
                                             name="thonPho"
                                             value={editedData.thonPho}
@@ -357,7 +357,7 @@ const MedicalRecordDetail = () => {
 
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>Tỉnh/Thành phố</label>
+                                        <label style={{ color: '#000' }} >Tỉnh/Thành phố</label>
                                         <select
                                             name="tinhThanhPho"
                                             value={editedData.tinhThanhPho}
@@ -381,7 +381,7 @@ const MedicalRecordDetail = () => {
                                         </select>
                                     </div>
                                     <div className="form-group">
-                                        <label>Quận/Huyện</label>
+                                        <label style={{ color: '#000' }} >Quận/Huyện</label>
                                         <select
                                             name="huyen"
                                             value={editedData.huyen}
@@ -408,7 +408,7 @@ const MedicalRecordDetail = () => {
                                 </div>
                                 
                                     <div className="form-group">
-                                        <label htmlFor="xaPhuong">Phường/Xã</label>
+                                        <label style={{ color: '#000' }} htmlFor="xaPhuong">Phường/Xã</label>
                                         <select
                                             id="xaPhuong"
                                             name="xaPhuong"
@@ -427,7 +427,7 @@ const MedicalRecordDetail = () => {
                                    
                                     <div className="form-row">
                                         <div className="form-group">
-                                            <label>Số thẻ BHYT</label>
+                                            <label style={{ color: '#000' }}>Số thẻ BHYT</label>
                                             <input
                                                 name="soTheBHYT"
                                                 value={editedData.soTheBHYT}
@@ -435,7 +435,7 @@ const MedicalRecordDetail = () => {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Số CCCD/Hộ chiếu</label>
+                                            <label style={{ color: '#000' }} >Số CCCD/Hộ chiếu</label>
                                             <input
                                                 name="soCCCD_HoChieu"
                                                 value={editedData.soCCCD_HoChieu}
@@ -446,7 +446,7 @@ const MedicalRecordDetail = () => {
 
                                     <div className="form-row">
                                         <div className="form-group">
-                                            <label>Ngày vào viện</label>
+                                            <label style={{ color: '#000' }} >Ngày vào viện</label>
                                             <input
                                                 type="date"
                                                 name="vaoVien"
@@ -456,7 +456,7 @@ const MedicalRecordDetail = () => {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Ngày ra viện</label>
+                                            <label style={{ color: '#000' }} >Ngày ra viện</label>
                                             <input
                                                 type="date"
                                                 name="raVien"
@@ -467,7 +467,7 @@ const MedicalRecordDetail = () => {
                                     </div>
 
                                     <div className="form-group full-width">
-                                        <label>Chẩn đoán vào viện</label>
+                                        <label style={{ color: '#000' }} >Chẩn đoán vào viện</label>
                                         <textarea
                                             name="chanDoanVaoVien"
                                             value={editedData.chanDoanVaoVien}
@@ -477,7 +477,7 @@ const MedicalRecordDetail = () => {
                                     </div>
 
                                     <div className="form-group full-width">
-                                        <label>Chẩn đoán ra viện</label>
+                                        <label style={{ color: '#000' }} >Chẩn đoán ra viện</label>
                                         <textarea
                                             name="chanDoanRaVien"
                                             value={editedData.chanDoanRaVien}
@@ -488,7 +488,7 @@ const MedicalRecordDetail = () => {
 
                                     <div className="form-row">
                                         <div className="form-group">
-                                            <label>Trạng thái</label>
+                                            <label style={{ color: '#000' }} >Trạng thái</label>
                                             <select
                                                 name="trangThai"
                                                 value={editedData.trangThai}
@@ -517,7 +517,7 @@ const MedicalRecordDetail = () => {
                                         </div>
                                     </div>
                                     <div className="form-group full-width">
-                                        <label>Lý do vào viện</label>
+                                        <label style={{ color: '#000' }} >Lý do vào viện</label>
                                         <textarea
                                             name="lyDoVaoVien"
                                             value={editedData.lyDoVaoVien}
@@ -527,7 +527,7 @@ const MedicalRecordDetail = () => {
                                     </div>
 
                                     <div className="form-group full-width">
-                                        <label>Tóm tắt bệnh lý</label>
+                                        <label style={{ color: '#000' }} >Tóm tắt bệnh lý</label>
                                         <textarea
                                             name="tomTatBenhLy"
                                             value={editedData.tomTatBenhLy}
@@ -538,7 +538,7 @@ const MedicalRecordDetail = () => {
 
                                     <div className="form-row">
                                         <div className="form-group">
-                                            <label>Mã lịch hẹn</label>
+                                            <label style={{ color: '#000' }} >Mã lịch hẹn</label>
                                             <input
                                                 disabled
                                                 name="maLichHen"
@@ -547,7 +547,7 @@ const MedicalRecordDetail = () => {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Hành động</label>
+                                            <label style={{ color: '#000' }} >Hành động</label>
                                             <select
                                                 name="hanhDong"
                                                 value={editedData.hanhDong}
@@ -583,108 +583,108 @@ const MedicalRecordDetail = () => {
                                 <div className="info-section">
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Họ và tên</label>
+                                            <label style={{ color: '#000' }} >Họ và tên</label>
                                             <p>{record.HoVaTen}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Ngày sinh</label>
+                                            <label style={{ color: '#000' }} >Ngày sinh</label>
                                             <p>{formatDate(record.NgaySinh)}</p>
                                         </div>
                                     </div>
 
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Tuổi</label>
+                                            <label style={{ color: '#000' }} >Tuổi</label>
                                             <p>{record.Tuoi}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Giới tính</label>
+                                            <label style={{ color: '#000' }} >Giới tính</label>
                                             <p>{record.GioiTinh}</p>
                                         </div>
                                     </div>
 
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Dân tộc</label>
+                                            <label style={{ color: '#000' }} >Dân tộc</label>
                                             <p>{record.DanToc || '---'}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Địa chỉ cư trú</label>
+                                            <label style={{ color: '#000' }} >Địa chỉ cư trú</label>
                                             <p>{record.DiaChiCuTru || '---'}</p>
                                         </div>
                                     </div>
 
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Thôn/Phố</label>
+                                            <label style={{ color: '#000' }} >Thôn/Phố</label>
                                             <p>{record.ThonPho || '---'}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Xã/Phường</label>
+                                            <label style={{ color: '#000' }} >Xã/Phường</label>
                                             <p>{record.XaPhuong || '---'}</p>
                                         </div>
                                     </div>
 
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Huyện</label>
+                                            <label style={{ color: '#000' }} >Huyện</label>
                                             <p>{record.Huyen || '---'}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Tỉnh/Thành phố</label>
+                                            <label style={{ color: '#000' }} >Tỉnh/Thành phố</label>
                                             <p>{record.TinhThanhPho || '---'}</p>
                                         </div>
                                     </div>
 
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Số thẻ BHYT</label>
+                                            <label style={{ color: '#000' }} >Số thẻ BHYT</label>
                                             <p>{record.SoTheBHYT || '---'}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Số CCCD/Hộ chiếu</label>
+                                            <label style={{ color: '#000' }} >Số CCCD/Hộ chiếu</label>
                                             <p>{record.SoCCCD_HoChieu || '---'}</p>
                                         </div>
                                     </div>
 
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Ngày vào viện</label>
+                                            <label style={{ color: '#000' }} >Ngày vào viện</label>
                                             <p>{formatDate(record.VaoVien)}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Ngày ra viện</label>
+                                            <label style={{ color: '#000' }} >Ngày ra viện</label>
                                             <p>{record.RaVien ? formatDate(record.RaVien) : '---'}</p>
                                         </div>
                                     </div>
 
                                     <div className="info-group full-width">
-                                        <label>Chẩn đoán vào viện</label>
+                                        <label style={{ color: '#000' }} >Chẩn đoán vào viện</label>
                                         <p className="diagnosis">{record.ChanDoanVaoVien || '---'}</p>
                                     </div>
 
                                     <div className="info-group full-width">
-                                        <label>Chẩn đoán ra viện</label>
+                                        <label style={{ color: '#000' }} >Chẩn đoán ra viện</label>
                                         <p className="diagnosis">{record.ChanDoanRaVien || '---'}</p>
                                     </div>
 
                                     <div className="info-group full-width">
-                                        <label>Lý do vào viện</label>
+                                        <label style={{ color: '#000' }} >Lý do vào viện</label>
                                         <p className="reason">{record.LyDoVaoVien || '---'}</p>
                                     </div>
 
                                     <div className="info-group full-width">
-                                        <label>Tóm tắt bệnh lý</label>
+                                        <label  style={{ color: '#000' }} >Tóm tắt bệnh lý</label>
                                         <p className="summary">{record.TomTatBenhLy || '---'}</p>
                                     </div>
 
                                     <div className="info-row">
                                         <div className="info-group">
-                                            <label>Mã lịch hẹn</label>
+                                            <label style={{ color: '#000' }} >Mã lịch hẹn</label>
                                             <p>{record.MaLichHen || '---'}</p>
                                         </div>
                                         <div className="info-group">
-                                            <label>Hành động</label>
+                                            <label style={{ color: '#000' }} >Hành động</label>
                                             <p className="action-tag">{record.HanhDong || '---'}</p>
                                         </div>
                                     </div>

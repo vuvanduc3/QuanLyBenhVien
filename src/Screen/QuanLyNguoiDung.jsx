@@ -28,7 +28,7 @@ const QuanLyNguoiDungScreen = () => {
     const [viewRole, setViewRole] = useState('Bệnh nhân'); // Default view is "Bệnh nhân"
     const [searchTerm, setSearchTerm] = useState(""); // State để lưu từ khóa tìm kiếm
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const itemsPerPage = 2; // Số lượng người dùng trên mỗi trang
+    const itemsPerPage = 5; // Số lượng người dùng trên mỗi trang
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -540,8 +540,8 @@ const QuanLyNguoiDungScreen = () => {
                                             )}
                                             <td>
                                                 <div className="actions">
-                                                    <button className="btn-edit" onClick={() => openModal('edit', user)}><Edit /></button>
-                                                    <button className="btn-delete" onClick={() => deleteUser(user.ID)}><Trash2 /></button>
+                                                    <button className="action-btn edit" onClick={() => openModal('edit', user)}><Edit /></button>
+                                                    <button className="action-btn remove" onClick={() => deleteUser(user.ID)}><Trash2 /></button>
                                                 </div>
                                             </td>
                                         </tr>

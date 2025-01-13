@@ -156,7 +156,7 @@ const InsuranceList = () => {
                     </td>
                     <td>
                       <button
-                        className="action-button delete"
+                        className="action-btn delete"
                         onClick={async () => {
                           if (window.confirm('Bạn có chắc muốn xóa?')) {
                             await fetch(`http://localhost:5000/api/BaoHiemYTe/${item.ID}`, { method: 'DELETE' });

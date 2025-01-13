@@ -9,7 +9,7 @@ body.light-theme .container {
   width: 100%; /* Đảm bảo container chiếm toàn bộ chiều rộng */
 }
 
-body.light-theme .main-content-chuyendoi {
+body.light-theme .main-content {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -33,7 +33,7 @@ body.light-theme button {
   color: white;
   border: none;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -53,7 +53,7 @@ body.dark-theme .container {
   width: 100%; /* Đảm bảo container chiếm toàn bộ chiều rộng */
 }
 
-body.dark-theme .main-content-chuyendoi {
+body.dark-theme .main-content {
   background-color: #444;
   padding: 20px;
   border-radius: 8px;
@@ -77,11 +77,112 @@ body.dark-theme button {
   color: white;
   border: none;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   border-radius: 5px;
 }
 
 body.dark-theme button:hover {
   background-color: #218838;
+}
+
+
+/*  HSBA  nền đen*/
+body.dark-theme table td {
+    color: #000;
+}
+
+body.dark-theme h2 {
+    color: #fff;
+}
+
+/* Tai khoan */
+
+body.dark-theme user-name {
+    color: #000;
+}
+body.dark-theme user-role {
+    color: #000;
+}
+
+body.dark-theme li {
+    color: #000;
+}
+
+body.dark-theme h3 {
+    color: #000;
+}
+
+.user-profile {
+
+}
+.notification{
+    background:#fff;
+}
+
+/* Định nghĩa các biến CSS cho theme sáng và tối */
+:root {
+  --icon-light: #000;
+  --icon-dark: #fff;
+  --background-light: #fff;
+  --background-dark: #333;
+  --text-light: #000;
+  --text-dark: #fff;
+}
+
+/* Áp dụng cho theme sáng */
+.light-theme {
+  background-color: var(--background-light);
+  color: var(--text-light);
+}
+
+.light-theme .notification i {
+  color: var(--icon-light);
+}
+
+/* Áp dụng cho theme tối */
+.dark-theme {
+  background-color: var(--background-dark);
+  color: var(--text-dark);
+}
+
+.dark-theme .notification i {
+  color: var(--icon-dark);
+}
+
+/* Định nghĩa cho các lớp khác */
+.user-image {
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  width: 50px;
+  height: 50px;
+}
+
+.user-info {
+  font-size: 14px;
+
+}
+
+
+/* Định nghĩa lớp cho theme tối */
+/* Theme tối */
+.user-name-dark {
+  color: #000;
+  font-weight: bold;
+}
+
+/* Theme sáng */
+.user-name-light {
+  background: #fff;
+  color: #fff;
+
+}
+
+.user-profile{
+background: #fff;
+}
+
+/*  Lịch hẹn   */
+body.dark-theme form-label2{
+  background-color: #000;
 }
