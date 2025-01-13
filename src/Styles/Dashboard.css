@@ -517,11 +517,9 @@ body {
 
 
 .chart-container {
-  overflow-x: auto;
+  overflow: auto; /* Cho phép cuộn khi cần thiết */
   cursor: pointer;
-  user-select: none; /* Ngăn người dùng tô đen hoặc sao chép */
+  user-select: none; /* Đảm bảo người dùng có thể tương tác */
 }
-
-
 
 
