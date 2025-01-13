@@ -160,6 +160,7 @@ export default function Dashboard() {
         const totalSoLuongDonThuoc = sortedData.reduce((acc, curr) => acc + curr.SoLuongDonThuoc, 0);
 
         setTongSoPhanTu(sortedData.reduce((acc, curr) => acc + 1, 0));
+        setCurrentChartWidth((sortedData.reduce((acc, curr) => acc + 1, 0)) * 150);
 
         const otherStatsResponse = await fetch('http://localhost:5000/api/ThongKe_TongHopThongTinKhac');
         const otherStatsData = await otherStatsResponse.json();
@@ -448,45 +449,117 @@ export default function Dashboard() {
 
   }, []);
 
-   // Trạng thái kéo cho mỗi biểu đồ
-   const [dragging, setDragging] = useState(false);
-   const [startX, setStartX] = useState(0); // Vị trí bắt đầu của chuột
-   const chartContainerRef1 = useRef(null); // Dùng ref để tham chiếu tới container BarChart
-   const chartContainerRef2 = useRef(null); // Dùng ref để tham chiếu tới container AreaChart
 
-   const handleMouseDown = (e, setStart) => {
-     setDragging(true);
-     setStart(e.clientX);
-   };
-
-   const handleMouseMove = (e, setStart, ref) => {
-     if (dragging) {
-       const diffX = e.clientX - startX;
-       ref.current.scrollLeft -= diffX; // Di chuyển biểu đồ theo chiều ngang
-       setStart(e.clientX);
-     }
-   };
-
-   const handleMouseUp = () => {
-     setDragging(false);
-   };
-
-   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  // Cập nhật chiều rộng khi cửa sổ thay đổi kích thước
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+    // Tùy chỉnh Tooltip
+    const CustomTooltip = ({ active, payload, label }) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="custom-tooltip" style={{ backgroundColor: "#fff", border: "1px solid #ccc", padding: "10px" }}>
+            <p>{label}</p>
+            {payload.map((item, index) => (
+              <p key={index} style={{ color: item.fill }}>
+                {item.name}: {formatNumberWithSplit(item.value)} VND
+              </p>
+            ))}
+          </div>
+        );
+      }
+      return null;
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+      const [dragging, setDragging] = useState(false);
+      const [startX, setStartX] = useState(0); // Vị trí bắt đầu của chuột
+      const chartContainerRef1 = useRef(null); // Dùng ref để tham chiếu tới container BarChart
+      const chartContainerRef2 = useRef(null); // Dùng ref để tham chiếu tới container AreaChart
 
-  // Tính chiều rộng của biểu đồ (gấp 1.5 lần chiều rộng của cửa sổ)
-  const chartWidth = windowWidth * 1.5;
+      const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+      const [currentChartWidth, setCurrentChartWidth] = useState(TongSoPhanTu * 150);
+      const [currentChartHeight, setCurrentChartHeight] = useState(380);
+
+      const [scale, setScale] = useState(1); // Tỷ lệ phóng to ban đầu là 1
+
+      const formatNumberWithSplit = (number) => {
+        if (!number) return "0";
+        return number.toLocaleString("vi-VN"); // Format theo chuẩn Việt Nam
+      };
+
+      const handleMouseDown = (e, setStart) => {
+        setDragging(true);
+        setStart(e.clientX);
+      };
+
+      const handleMouseMove = (e, setStart, ref) => {
+        if (dragging) {
+          const diffX = e.clientX - startX;
+          ref.current.scrollLeft -= diffX; // Di chuyển biểu đồ theo chiều ngang
+          setStart(e.clientX);
+        }
+      };
+
+      const handleMouseUp = () => {
+        setDragging(false);
+      };
+
+      // Cập nhật chiều rộng khi cửa sổ thay đổi kích thước
+      useEffect(() => {
+        const handleResize = () => {
+          setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
+
+      const handleWheel = (e) => {
+        if (e.ctrlKey) {
+          e.preventDefault(); // Ngăn cuộn trang khi Ctrl+Wheel
+          const newScale = Math.max(0.5, Math.min(3, scale + (e.deltaY > 0 ? -0.1 : 0.1))); // Giới hạn scale từ 0.5 đến 3
+          setScale(newScale);
+        }
+      };
+
+      // Gắn sự kiện wheel vào cả hai container chart
+      useEffect(() => {
+        const handleWheelEvent = (e) => handleWheel(e);
+
+        if (chartContainerRef1.current) {
+          chartContainerRef1.current.addEventListener("wheel", handleWheelEvent, { passive: false });
+        }
+
+        if (chartContainerRef2.current) {
+          chartContainerRef2.current.addEventListener("wheel", handleWheelEvent, { passive: false });
+        }
+
+        return () => {
+          if (chartContainerRef1.current) {
+            chartContainerRef1.current.removeEventListener("wheel", handleWheelEvent);
+          }
+          if (chartContainerRef2.current) {
+            chartContainerRef2.current.removeEventListener("wheel", handleWheelEvent);
+          }
+        };
+      }, [scale]);
+
+      const handleKeyDown = (e) => {
+        if (e.key === "+") {
+          // Tăng kích thước biểu đồ
+          setCurrentChartWidth((prev) => prev + 50); // Tăng chiều rộng
+          setCurrentChartHeight((prev) => prev + 20); // Tăng chiều cao
+        } else if (e.key === "-") {
+          // Giảm kích thước biểu đồ
+          setCurrentChartWidth((prev) => Math.max(300, prev - 50)); // Giảm chiều rộng, tối thiểu là 300
+          setCurrentChartHeight((prev) => Math.max(200, prev - 20)); // Giảm chiều cao, tối thiểu là 200
+        }
+      };
+
+      useEffect(() => {
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+          window.removeEventListener("keydown", handleKeyDown);
+        };
+      }, []);
 
 
    return (
@@ -512,9 +585,7 @@ export default function Dashboard() {
          <div className="chart-section">
            <div className="chart-header">
              <h2 className="chart-title">Doanh thu và Chi phí BHYT </h2>
-             <select className="month-select">
-               <option>October</option>
-             </select>
+
            </div>
            <div
              className="chart-container"
@@ -523,13 +594,19 @@ export default function Dashboard() {
              onMouseMove={(e) => handleMouseMove(e, setStartX, chartContainerRef1)}
              onMouseUp={handleMouseUp}
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
+
+
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <BarChart width={TongSoPhanTu * 150} height={380} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <BarChart
+                width={currentChartWidth} // Sử dụng currentChartWidth
+                height={currentChartHeight} // Sử dụng currentChartHeight
+                data={chartData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
-               <Tooltip />
+               <Tooltip content={<CustomTooltip />} />
                <Legend />
                <Bar dataKey="revenue" name="Doanh thu" fill="#6366f1" />
                <Bar dataKey="insurance" name="Chi phí BHYT" fill="#dc2626" />
@@ -548,7 +625,11 @@ export default function Dashboard() {
              onMouseLeave={handleMouseUp} // Kết thúc kéo khi chuột rời khỏi phần tử
              style={{ overflowX: 'auto', cursor: 'pointer' }}
            >
-             <AreaChart width={TongSoPhanTu * 150} height={380} data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+             <AreaChart
+             width={currentChartWidth}
+             height={currentChartHeight}
+             data={chartData}
+             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />

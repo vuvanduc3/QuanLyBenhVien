@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../Styles/Register.module.css"; // CSS Module
-import videoSource from './login_video3.mp4';
+import videoSource from './login_video2.mp4';
 
 const Register = () => {
   const [email, setEmail] = useState("");

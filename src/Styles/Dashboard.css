@@ -516,5 +516,10 @@ body {
 }
 
 
+.chart-container {
+  overflow: auto; /* Cho phép cuộn khi cần thiết */
+  cursor: pointer;
+  user-select: none; /* Đảm bảo người dùng có thể tương tác */
+}
 
 
