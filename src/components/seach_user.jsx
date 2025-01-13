@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
     Clock, PackageSearch, Heart, ClipboardList, Shield, Users,
-    Wallet, FileText, LogOut, Menu, Search 
+    Wallet, FileText, LogOut, Menu, Search
   } from 'lucide-react';
 
+import "../Styles/Setting.css";
+import Cookies from 'js-cookie';
 
 export default function Search1() {
     const [loading, setLoading] = useState(true);
@@ -17,6 +19,8 @@ export default function Search1() {
     const handleNavigateToCaiDatThongTinCaNhan = () => {
         navigate("/quan-ly-tai-khoan"); // Điều hướng đến trang đăng ký
     };
+
+
 
     useEffect(() => {
         const fetchLoginInfo = async () => {
@@ -74,23 +78,58 @@ export default function Search1() {
         fetchData(); // Gọi hàm chính
     }, []);
 
+    const [theme, setTheme] = useState('light'); // Trạng thái theme: sáng hoặc tối
+
+      // Dùng useEffect để áp dụng theme khi component load
+      useEffect(() => {
+        const cookie = Cookies.get('Theme');
+        if (cookie === 'dark') {
+          document.body.classList.add('dark-theme');
+          document.body.classList.remove('light-theme');
+        } else {
+          document.body.classList.add('light-theme');
+          document.body.classList.remove('dark-theme');
+        }
+      }, [theme]);
+
+      // Hàm chuyển đổi giữa các theme
+      const toggleTheme = () => {
+        setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+        // Lưu cookie
+        Cookies.set('Theme', theme, { expires: 1, path: '' });
+      };
+      const iconColor = theme === 'light' ? '#000' : '#000'; // Đảm bảo khai báo iconColor
+
     return (
+
     <div className="top-header">
+
+
         <div className="search-container">
 
         </div>
         <div className="user-profile">
             <div className="notification">
-                <FileText size={20} />
-                <span className="notification-badge">0</span>
-            </div>
-            <img src={ Hinh || 'default_image_url'} alt="Hình" className="user-image" onClick={handleNavigateToCaiDatThongTinCaNhan} />
+                 <i class="fa-solid fa-phone-volume" style={{
+                       fontSize: '20px',
+                        color: iconColor,
+                       padding: '0px 0px',
 
-            <div className="user-info" onClick={handleNavigateToCaiDatThongTinCaNhan}>
-                <span className="user-name">{HoVaTen}</span>
-                <span className="user-role" >{VaiTro}</span>
+
+                       }}></i>
+                    <span className="notification-badge">0</span>
+                </div>
+                <img src={ Hinh || 'default_image_url'} alt="Hình" className="user-image" onClick={handleNavigateToCaiDatThongTinCaNhan} />
+
+                <div className="user-info" onClick={handleNavigateToCaiDatThongTinCaNhan}>
+                    <span className="user-name-dark">{HoVaTen}</span>
+                    <span className="user-role" >{VaiTro}</span>
             </div>
         </div>
+
+
     </div>
+
+
   );
 }

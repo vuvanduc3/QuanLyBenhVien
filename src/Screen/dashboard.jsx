@@ -3,7 +3,7 @@ import { Bell, Search, ChevronLeft, ChevronRight, Settings, LogOut } from 'lucid
 import { ChevronUp, ChevronDown, Users, FileText } from 'lucide-react';
 import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Chart as ChartJS, Title, Tooltip as ChartTooltip, Legend as ChartLegend, ArcElement, CategoryScale } from 'chart.js';
-
+import Cookies from 'js-cookie';
 import { Pie } from 'react-chartjs-2';
 
 import '../Styles/Dashboard.css';
@@ -77,6 +77,7 @@ export default function Dashboard() {
     totalMedicalSupplies: 0,
     totalInvoicesDetails: 0
   });
+  const myCookieValue = Cookies.get('myCookie'); // Lấy giá trị cookie
   const settings = {
       dots: true,
       infinite: true,
@@ -575,7 +576,20 @@ export default function Dashboard() {
            ))}
          </div>
 
-         <div className="secondary-stats">
+         <div style={{
+                color: myCookieValue ? '#000' : '#fff',
+                backgroundColor: myCookieValue ? '#fff' : '#fff',
+                padding: '10px',
+                // Đổ bóng
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+                // Đường viền nhẹ
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+                width: '100%',
+                maxWidth: '100%', // Đảm bảo chiều rộng không vượt quá container
+                boxSizing: 'border-box',
+                borderRadius: '10px',
+              }}
+            >
            {secondaryStats.map((stat, index) => (
              <SecondaryStatCard key={index} {...stat} />
            ))}

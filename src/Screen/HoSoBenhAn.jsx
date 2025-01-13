@@ -122,11 +122,13 @@ const MedicalRecordList = () => {
         navigate('/lich-su-dieu-tri', { state: { action: 'xem', item } });
     };
 
+
     return (
         <div className="container">
             <Menu1 />
             <main className="main-content">
                 <Search1 />
+
 
                 <div className="content">
                     <div className="card-header">

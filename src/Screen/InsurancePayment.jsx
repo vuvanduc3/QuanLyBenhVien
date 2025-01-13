@@ -108,6 +108,7 @@ const InsurancePayment = () => {
     <div className="container">
       <Menu1 />
       <div className="main-content">
+        <Search1 />
         {/* Tìm kiếm */}
         <div className="search-container">
           <input
@@ -125,8 +126,8 @@ const InsurancePayment = () => {
 
         {editingData && (
           <div className="edit-form">
-            <h2>Chỉnh sửa thông tin</h2>
-            <label>
+            <h2 style={{ color: '#000' }}>Chỉnh sửa thông tin</h2>
+            <label style={{ color: '#000' }}>
               Mã số thẻ BHYT:
               <input
                 type="text"
@@ -136,7 +137,7 @@ const InsurancePayment = () => {
                 }
               />
             </label>
-            <label>
+            <label style={{ color: '#000' }}>
               Số tiền BHYT chi trả:
               <input
                 type="number"
@@ -146,7 +147,7 @@ const InsurancePayment = () => {
                 }
               />
             </label>
-            <label>
+            <label style={{ color: '#000' }}>
               Ngày thanh toán:
               <input
                 type="date"
@@ -189,13 +190,13 @@ const InsurancePayment = () => {
                   <td>
                     <div className="action-buttons">
                       <button
-                        className="action-button"
+                        className="action-btn"
                         onClick={() => setEditingData(item)}
                       >
                         <Edit size={16} /> Sửa
                       </button>
                       <button
-                        className="action-button delete"
+                        className="action-btn delete"
                         onClick={() => handleDelete(item.MaChiPhiBHYT)}
                       >
                         <Trash size={16} /> Xóa

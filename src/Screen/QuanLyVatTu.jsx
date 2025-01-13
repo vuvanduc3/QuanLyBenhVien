@@ -313,23 +313,27 @@ const QuanLyVatTu = () => {
                                         <td>
                                             <div className="actions">
                                                 <button
-                                                    className="btn-edit"
+                                                    className="action-btn"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         navigate(`/chi-tiet-vat-tu/${vattu.MaVatTu}`);
                                                     }}
                                                 >
+
                                                     <Edit />
+                                                     Sửa dữ liệu
                                                 </button>
                                                 <button
-                                                    className="btn-delete"
+                                                    className="action-btn red"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleDelete(vattu.MaVatTu);
                                                     }}
                                                     disabled={isDeleting}
                                                 >
+
                                                     <Trash2 />
+                                                    Xóa dữ liệu
                                                 </button>
                                             </div>
                                         </td>
