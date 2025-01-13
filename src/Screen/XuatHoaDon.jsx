@@ -139,8 +139,11 @@ const HoaDonChiTiet = () => {
         doc.text(`Ngay tao hoa don: ${removeDiacritics(formatNgaySinh(item?.NgayLapHoaDon) || 'Không có')}`, 15, 40);
         doc.text(`Ma hoa don: ${removeDiacritics(item?.MaHoaDon || 'Không có')}`, 15, 50);
 
+        const MaHoaDonS = item?.MaHoaDon;
+        const filteredData = hoaDonChiTiet.filter(item => item.MaHoaDon === MaHoaDonS);
+
         // Dùng toàn bộ dữ liệu từ hoaDonChiTiet thay vì dữ liệu phân trang
-        const tableData = hoaDonChiTiet.map(item => [
+        const tableData = filteredData.map(item => [
             item.MaChiTiet,
             item.MaHoaDon,
             normalizeText(removeDiacritics(item.TenDichVu)), // Áp dụng chuẩn hóa cho tên dịch vụ

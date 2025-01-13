@@ -187,7 +187,7 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Thành tiền: <span className="required">{thanhTien} VND</span></label>
+                            <label>Thành tiền: <span className="required">{thanhTien.toLocaleString('vi-VN')} VND</span></label>
                         </div>
 
                         <div className="form-actions">

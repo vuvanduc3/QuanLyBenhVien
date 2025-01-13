@@ -488,6 +488,28 @@ export default function Dashboard() {
   // Tính chiều rộng của biểu đồ (gấp 1.5 lần chiều rộng của cửa sổ)
   const chartWidth = windowWidth * 1.5;
 
+  const formatNumberWithSplit = (number) => {
+    if (!number) return "0";
+    return number.toLocaleString("vi-VN"); // Format theo chuẩn Việt Nam
+  };
+
+  // Tùy chỉnh Tooltip
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip" style={{ backgroundColor: "#fff", border: "1px solid #ccc", padding: "10px" }}>
+          <p>{label}</p>
+          {payload.map((item, index) => (
+            <p key={index} style={{ color: item.fill }}>
+              {item.name}: {formatNumberWithSplit(item.value)} VND
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
 
    return (
      <div className="container">
@@ -529,7 +551,7 @@ export default function Dashboard() {
                <CartesianGrid strokeDasharray="3 3" />
                <XAxis dataKey="date" />
                <YAxis />
-               <Tooltip />
+               <Tooltip content={<CustomTooltip />} />
                <Legend />
                <Bar dataKey="revenue" name="Doanh thu" fill="#6366f1" />
                <Bar dataKey="insurance" name="Chi phí BHYT" fill="#dc2626" />

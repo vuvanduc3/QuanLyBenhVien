@@ -516,5 +516,12 @@ body {
 }
 
 
+.chart-container {
+  overflow-x: auto;
+  cursor: pointer;
+  user-select: none; /* Ngăn người dùng tô đen hoặc sao chép */
+}
+
+
 
 
