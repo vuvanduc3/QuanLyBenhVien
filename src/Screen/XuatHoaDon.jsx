@@ -164,64 +164,19 @@ const HoaDonChiTiet = () => {
     const recipientEmail = item?.Email || "tuanbmt753753@gmail.com"; // Nếu có email trong item thì sử dụng, nếu không thì lấy mặc định
 
 
-    const YOUR_SERVICE_ID = 'service_mbd8hfn';
-    const YOUR_TEMPLATE_ID = 'template_cia43od';
-    const YOUR_USER_ID = 'Z5ioka3xZwwjSWtkA';
+    const YOUR_SERVICE_ID2 = 'service_mbd8hfn';
+    const YOUR_TEMPLATE_ID2 = 'template_cia43od';
+    const YOUR_USER_ID2 = 'Z5ioka3xZwwjSWtkA';
+
+    const YOUR_SERVICE_ID = 'service_0bg8uts';
+    const YOUR_TEMPLATE_ID = 'template_536oeqm';
+    const YOUR_USER_ID = 'ZlYajkYUVCOi2u_wL';
 
     const handleSendInvoice = async () => {
         if (emailInput.trim()) {
+
             try {
-                const recipientEmail = item?.Email || "tuanbmt753753@gmail.com"; // Đảm bảo recipientEmail không rỗng
-
-                // Tạo nội dung bảng chi tiết hóa đơn dưới dạng HTML
-                const tableRows = displayedData.map(item => `
-                    <tr>
-                        <td>${item.MaChiTiet}</td>
-                        <td>${item.MaHoaDon}</td>
-                        <td>${normalizeText(item.TenDichVu)}</td>
-                        <td>${item.SoLuong}</td>
-                        <td>${item.DonGia ? item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có'}</td>
-                        <td>${(item.SoLuong * item.DonGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                    </tr>
-                `).join('');
-
-                const htmlMessage = `
-                    <h2>Hóa đơn chi tiết</h2>
-                    <p>Mã bệnh nhân: ${normalizeText(item?.MaBenhNhan || 'Không có')}</p>
-                    <p>Ngày tạo hóa đơn: ${normalizeText(formatNgaySinh2(item?.NgayLapHoaDon) || 'Không có')}</p>
-                    <p>Mã hóa đơn: ${normalizeText(item?.MaHoaDon || 'Không có')}</p>
-                    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
-                        <thead>
-                            <tr>
-                                <th>#ID</th>
-                                <th>Mã hóa đơn</th>
-                                <th>Tên dịch vụ/loại thuốc</th>
-                                <th>Số lượng</th>
-                                <th>Đơn giá</th>
-                                <th>Thành tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${tableRows}
-                        </tbody>
-                    </table>
-                    <p><strong>Tổng tiền: ${formatNumberWithSplit(item.TongTien)} VND</strong></p>
-                `;
-
-                const emailData = {
-                    from_name: item?.MaBenhNhan || 'Không có tên',
-                    from_email: emailInput,
-                    to_email: recipientEmail,
-                    subject: `Hóa đơn ${item?.MaHoaDon}`,
-                    message_html: htmlMessage, // Gửi nội dung bảng chi tiết trong email
-                };
-
-                const result = await emailjs.send(YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, emailData, YOUR_USER_ID);
-                alert('Email sent successfully', result.text);
-                console.log('Email sent successfully', result.text);
-                setEmailInput('');
-                setAnEmailInput('');
-
+                handleSendInvoiceEmail(YOUR_SERVICE_ID,YOUR_TEMPLATE_ID,YOUR_USER_ID);
             } catch (error) {
                 alert('Error sending email:', error);
                 console.error('Error sending email:', error);
@@ -232,6 +187,234 @@ const HoaDonChiTiet = () => {
              alert('E-mail không được để trống!');
         }
     };
+
+    const handleSendInvoiceEmail = async (SERVICE_ID,TEMPLATE_ID,USER_ID) => {
+
+            const recipientEmail = item?.Email || "tuanbmt753753@gmail.com"; // Đảm bảo recipientEmail không rỗng
+
+                 // Tạo nội dung bảng chi tiết hóa đơn dưới dạng HTML
+                 const tableRows = displayedData.map(item => `
+                     <tr>
+                         <td>${item.MaChiTiet}</td>
+                         <td>${item.MaHoaDon}</td>
+                         <td>${normalizeText(item.TenDichVu)}</td>
+                         <td>${item.SoLuong}</td>
+                         <td>${item.DonGia ? item.DonGia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 'Chưa có'}</td>
+                         <td>${(item.SoLuong * item.DonGia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                     </tr>
+                 `).join('');
+
+                 const htmlMessage = `
+                                     <!DOCTYPE html>
+                                     <html lang="vi">
+                                     <head>
+                                       <meta charset="UTF-8">
+                                       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                       <title>Quản lý bệnh viện</title>
+                                       <style>
+                                         body {
+                                           font-family: 'Arial', sans-serif;
+                                           background-color: #e9f7fb;
+                                           margin: 0;
+                                           padding: 0;
+                                           box-sizing: border-box;
+                                         }
+
+                                         h1 {
+                                           font-size: 64px;
+                                           font-weight: bold;
+                                           text-align: center;
+                                           margin-top: 50px;
+                                           color: #3498db;
+                                           text-transform: uppercase;
+                                           letter-spacing: 5px;
+                                           animation: slideIn 3s ease-in-out;
+                                         }
+
+                                         @keyframes slideIn {
+                                           0% {
+                                             transform: translateY(-100%);
+                                             opacity: 0;
+                                           }
+                                           100% {
+                                             transform: translateY(0);
+                                             opacity: 1;
+                                           }
+                                         }
+
+                                         h2 {
+                                           font-size: 32px;
+                                           font-weight: bold;
+                                           text-align: center;
+                                           color: #555;
+                                           margin-top: 30px;
+                                           animation: fadeIn 2s ease-in;
+                                         }
+
+                                         @keyframes fadeIn {
+                                           0% {
+                                             opacity: 0;
+                                           }
+                                           100% {
+                                             opacity: 1;
+                                           }
+                                         }
+
+                                         p {
+                                           font-size: 18px;
+                                           line-height: 1.6;
+                                           margin: 15px 0;
+                                           color: #333;
+                                           text-align: left;
+                                         }
+
+                                         table {
+                                           width: 85%;
+                                           margin: 40px auto;
+                                           border-collapse: collapse;
+                                           background-color: #fff;
+                                           box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+                                           transform: scale(1);
+                                           transition: transform 0.3s ease-in-out;
+                                         }
+
+                                         table:hover {
+                                           transform: scale(1.05);
+                                         }
+
+                                         table th, table td {
+                                           padding: 12px;
+                                           text-align: center;
+                                           border: 1px solid #ddd;
+                                           font-size: 16px;
+                                         }
+
+                                         table th {
+                                           background-color: #3498db;
+                                           color: white;
+                                         }
+
+                                         table td {
+                                           color: #555;
+                                         }
+
+                                         table tbody tr:nth-child(odd) {
+                                           background-color: #f9f9f9;
+                                         }
+
+                                         table tbody tr:hover {
+                                           background-color: #f1f1f1;
+                                           cursor: pointer;
+                                           transform: translateY(-5px);
+                                           transition: transform 0.2s;
+                                         }
+
+                                         .total-price {
+                                           font-size: 22px;
+                                           font-weight: bold;
+                                           color: #27ae60;
+                                           text-align: center;
+                                           margin-top: 30px;
+                                           padding: 10px;
+                                           background-color: #fff;
+                                           border-radius: 10px;
+                                           box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+                                         }
+
+                                         /* Button Styling */
+                                         button {
+                                           padding: 12px 24px;
+                                           font-size: 18px;
+                                           background-color: #3498db;
+                                           color: white;
+                                           border: none;
+                                           border-radius: 5px;
+                                           cursor: pointer;
+                                           transition: background-color 0.3s ease;
+                                           margin-top: 20px;
+                                         }
+
+                                         button:hover {
+                                           background-color: #2980b9;
+                                         }
+
+                                         /* Responsive Design */
+                                         @media (max-width: 768px) {
+                                           h1 {
+                                             font-size: 48px;
+                                           }
+                                           h2 {
+                                             font-size: 28px;
+                                           }
+                                           table {
+                                             width: 95%;
+                                           }
+                                           .total-price {
+                                             font-size: 18px;
+                                           }
+                                         }
+                                       </style>
+                                     </head>
+                                     <body>
+
+                                       <h1>Quản lý bệnh viện</h1>
+                                       <h2>Hóa đơn chi tiết</h2>
+                                       <p>Mã bệnh nhân: ${normalizeText(item?.MaBenhNhan || 'Không có')}</p>
+                                       <p>Ngày tạo hóa đơn: ${normalizeText(formatNgaySinh2(item?.NgayLapHoaDon) || 'Không có')}</p>
+                                       <p>Mã hóa đơn: ${normalizeText(item?.MaHoaDon || 'Không có')}</p>
+
+                                       <table>
+                                         <thead>
+                                           <tr>
+                                             <th>#ID</th>
+                                             <th>Mã hóa đơn</th>
+                                             <th>Tên dịch vụ/loại thuốc</th>
+                                             <th>Số lượng</th>
+                                             <th>Đơn giá</th>
+                                             <th>Thành tiền</th>
+                                           </tr>
+                                         </thead>
+                                         <tbody>
+                                           ${tableRows}
+                                         </tbody>
+                                       </table>
+
+                                       <p class="total-price">Tổng tiền: ${formatNumberWithSplit(item.TongTien)} VND</p>
+
+                                     </body>
+                                     </html>
+
+
+
+                 `;
+
+                  const emailData = {
+                     from_name: item?.MaBenhNhan || 'Không có tên',
+                     from_email: emailInput,
+                     to_email: recipientEmail,
+                     subject: `Hóa đơn ${item?.MaHoaDon}`,
+                     message_html: htmlMessage, // Gửi nội dung bảng chi tiết trong email
+                 };
+
+                 const result = await emailjs.send(SERVICE_ID, TEMPLATE_ID, emailData, USER_ID);
+
+                   // Kiểm tra kết quả trả về từ EmailJS
+                   if (result.status === 200) {
+                     // Gửi thành công
+                     alert('Email sent successfully');
+                     console.log('Email sent successfully:', result.text);
+                 } else {
+                     // Nếu không phải status 200, có thể xảy ra lỗi
+                     alert('Email gửi bị lỗi. Tôi đang dùng thêm tài khoản khác để gửi !.');
+                     console.log('Email send failed:', result);
+                     handleSendInvoiceEmail(YOUR_SERVICE_ID2,YOUR_TEMPLATE_ID2,YOUR_USER_ID2);
+
+
+
+                 }
+                 setEmailInput('');
+                 setAnEmailInput('');
+    }
 
 //     useEffect(() => {
 //         if (AnEmailInput) {
