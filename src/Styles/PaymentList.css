@@ -254,4 +254,65 @@
     border: 1px solid #ccc;
     border-radius: 4px;
   }
-  
+
+  /* Chia sẻ kiểu cho các phần tử trong filter */
+
+
+  /* Style cho select */
+  .status-filter {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px; /* Chiều rộng cố định, có thể thay đổi */
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  .status-filter:focus {
+    border-color: #4CAF50; /* Màu khi chọn */
+    outline: none;
+  }
+
+  /* Style cho input tìm kiếm */
+  .payment_search-input {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 250px; /* Chiều rộng cố định, có thể thay đổi */
+  }
+
+  .payment_search-input:focus {
+    border-color: #4CAF50;
+    outline: none;
+  }
+
+  /* Phần tử cha */
+  .filter-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Responsive: Điều chỉnh cho màn hình nhỏ */
+  @media (max-width: 768px) {
+    .filter-section {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .filter-container {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .status-filter,
+    .payment_search-input {
+      width: 100%;
+    }
+  }

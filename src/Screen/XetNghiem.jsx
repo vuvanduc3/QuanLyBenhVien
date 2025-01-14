@@ -154,21 +154,24 @@ const XetNghiem = () => {
                         Xét Nghiệm {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}
                     </h2>
                     <div className="filters">
-                        <button className="add-button" onClick={() => handleAdd(item?item:'')}>
-                            Thêm xét nghiệm
-                        </button>
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <select onChange={(e) => setFilterByInvoice(e.target.value)} value={filterByInvoice}>
-                            <option value="all">Tất cả</option>
-                            <option value="daNhap">Đã nhập hóa đơn</option>
-                            <option value="chuaNhap">Chưa nhập hóa đơn</option>
-                        </select>
-                        <button onClick={resetFilters} className="reset-button">Reset bộ lọc</button>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                            <button className="action-button" onClick={() => handleAdd(item?item:'')}>
+                                Thêm xét nghiệm
+                            </button>
+                            <input
+                                style= {{width: "30%"}}
+                                type="text"
+                                placeholder="Tìm kiếm..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <select  style= {{width: "30%"}} onChange={(e) => setFilterByInvoice(e.target.value)} value={filterByInvoice}>
+                                <option value="all">Tất cả</option>
+                                <option value="daNhap">Đã nhập hóa đơn</option>
+                                <option value="chuaNhap">Chưa nhập hóa đơn</option>
+                            </select>
+                            <button onClick={resetFilters} className="reset-button">Reset bộ lọc</button>
+                        </div>
                     </div>
                     <div className="table-container">
                         <table>

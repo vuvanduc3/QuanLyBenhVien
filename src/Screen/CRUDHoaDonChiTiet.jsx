@@ -112,6 +112,7 @@ const ThemSuaXoaHoaDonChiTiet = () => {
                                 type="number"
                                 id="MaHoaDon"
                                 name="MaHoaDon"
+                                placeholder="Nhập mã hóa đơn"
                                 value={formData.MaHoaDon}
                                 onChange={handleChange}
                                 className={`form-control ${errors.MaHoaDon ? 'input-error' : ''}`}
@@ -124,6 +125,7 @@ const ThemSuaXoaHoaDonChiTiet = () => {
                             <input
                                 type="text"
                                 id="TenDichVu"
+                                 placeholder="Nhập tên dịch vụ"
                                 name="TenDichVu"
                                 value={formData.TenDichVu}
                                 onChange={handleChange}
@@ -138,6 +140,7 @@ const ThemSuaXoaHoaDonChiTiet = () => {
                                 type="number"
                                 id="SoLuong"
                                 name="SoLuong"
+                                placeholder="Nhập số lượng"
                                 value={formData.SoLuong}
                                 onChange={handleChange}
                                 className={`form-control ${errors.SoLuong ? 'input-error' : ''}`}
@@ -152,6 +155,7 @@ const ThemSuaXoaHoaDonChiTiet = () => {
                                 type="number"
                                 id="DonGia"
                                 name="DonGia"
+                                placeholder="Nhập đơn giá"
                                 value={formData.DonGia}
                                 onChange={handleChange}
                                 className={`form-control ${errors.DonGia ? 'input-error' : ''}`}

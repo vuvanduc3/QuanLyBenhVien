@@ -180,10 +180,10 @@ const InsuranceList = () => {
             </div>
             <div className="page-controls">
               <button className="page-button" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                <ChevronLeft size={16} />
+                 <i className="fas fa-chevron-left" style={{ fontSize: '20px' }}></i>
               </button>
               <button className="page-button" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                <ChevronRight size={16} />
+                <i className="fas fa-chevron-right" style={{ fontSize: '20px' }}></i>
               </button>
             </div>
           </div>

@@ -120,20 +120,24 @@
 
 /* Checkbox */
 .checkboxGroup {
-  display: flex;
-  align-items: center;
-  margin-bottom: 25px;
+  width: 100%;
+  display: flex; /* Căn chỉnh hàng ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: flex-start; /* Đẩy tất cả các thành phần sang bên trái */
+  margin-bottom: 10px; /* Khoảng cách dưới */
+  font-size: 14px; /* Kích thước chữ nhỏ gọn */
+  color: #555; /* Màu chữ tinh tế */
 }
 
-.checkboxGroup input {
-  margin-right: 12px;
-  accent-color: #2575fc; /* Thay đổi màu checkbox */
+.checkboxGroup input[type="checkbox"] {
+  width: 5%;
+  margin-right: 8px; /* Khoảng cách giữa ô checkbox và nhãn */
 }
 
 .checkboxGroup label {
-  font-size: 14px;
-  color: #555;
+  cursor: pointer; /* Biến nhãn thành clickable */
 }
+
 
 /* Nút đăng nhập */
 .signInButton {

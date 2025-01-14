@@ -3,6 +3,7 @@ import { Edit, Trash2 } from 'lucide-react';
 import '../Styles/QuanLyNguoiDung.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+import Cookies from 'js-cookie';
 
 const QuanLyNguoiDungScreen = () => {
     const [users, setUsers] = useState([]);
@@ -90,7 +91,19 @@ const QuanLyNguoiDungScreen = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+        setImageURL(e.target.value || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-h1vrv3P4-_aHOIkmZjhtiIfxWKD6n4f3ig&s');
+
     };
+
+    const handlePaste = (event) => {
+        // Lấy nội dung dán vào
+        const pastedText = event.clipboardData.getData('text');
+        // Cập nhật giá trị input
+        setImageURL(pastedText || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-h1vrv3P4-_aHOIkmZjhtiIfxWKD6n4f3ig&s');
+    };
+
+
+
 
     const validateInput = () => {
         const { Email, SDT, Tuoi, VaiTro, TenDayDu } = formData;
@@ -204,6 +217,7 @@ const QuanLyNguoiDungScreen = () => {
             if (data.success) {
                 setUsers(users.map(user => (user.ID === currentUserId ? data.data : user)));
                 alert("Sửa dữ liệu thành công");
+                window.location.reload(true);
             } else alert(data.message);
         } catch (error) {
             console.error('Lỗi khi chỉnh sửa người dùng:', error);
@@ -231,6 +245,7 @@ const QuanLyNguoiDungScreen = () => {
                 ChuyenMon: user.ChuyenMon || '',
                 PhongKham: user.PhongKham || ''
             });
+            setImageURL(user.Hinh || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-h1vrv3P4-_aHOIkmZjhtiIfxWKD6n4f3ig&s');
         } else {
             setFormData({
                 ID:'',
@@ -284,14 +299,18 @@ const QuanLyNguoiDungScreen = () => {
             <Menu1 />
             <main className="main-content">
                 <Search1 />
-                <div className="content2">
+                <div className="form-container">
                     <div className="card-header">
-                        <h2 className="card-title">Cài đặt người dùng</h2>
+                        <h2 style={{ color: '#000' }}>Cài đặt người dùng</h2>
                     </div>
                     {showModal && (
                         <div className="modal2">
                             <div className="modal-content2">
-                                <h3>{modalType === 'add' ? 'Thêm người dùng' : 'Chỉnh sửa người dùng'}</h3>
+{/*                                 <h3 */}
+{/*                                      style={{ */}
+{/*                                       color: Cookies.get('Theme') === 'dark' ? '#000' : '#000' */}
+{/*                                       }} */}
+{/*                                 >{modalType === 'add' ? 'Thêm người dùng' : 'Chỉnh sửa người dùng'}</h3> */}
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                         <img
@@ -306,13 +325,14 @@ const QuanLyNguoiDungScreen = () => {
                                             <input
                                                 type="text"
                                                 name="Hinh"
+                                                onPaste={handlePaste}
                                                 value={formData.Hinh}
                                                 onChange={handleInputChange}
                                             />
                                         </div>
                                         <button
                                             style={{
-                                                width: '10%',
+                                                width: '15%',
                                                 marginTop: '24px',
                                                 padding: "10px 20px",
                                                 border: "none",
@@ -486,7 +506,7 @@ const QuanLyNguoiDungScreen = () => {
                                     <button onClick={modalType === 'add' ? addUser : editUser}>
                                         {modalType === 'add' ? 'Thêm' : 'Lưu'}
                                     </button>
-                                    <button onClick={() => setShowModal(false)}>Hủy</button>
+{/*                                     <button onClick={() => setShowModal(false)}>Hủy</button> */}
                                 </div>
                             </div>
                         </div>

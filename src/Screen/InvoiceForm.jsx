@@ -10,6 +10,10 @@ const InvoiceForm = () => {
   const [invoices, setInvoices] = useState([]); // State để lưu trữ danh sách hóa đơn
   const [loading, setLoading] = useState(true); // Trạng thái tải dữ liệu
 
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const [itemsPerPage] = useState(5); // Số lượng hóa đơn mỗi trang
+  const [paginatedInvoices, setPaginatedInvoices] = useState([]); // Hóa đơn của trang hiện tại
+
   // Hàm gọi API để lấy dữ liệu
   const fetchInvoices = async () => {
     setLoading(true); // Bắt đầu quá trình tải
@@ -62,6 +66,24 @@ const InvoiceForm = () => {
     }
   };
 
+  // Tính toán hóa đơn cho trang hiện tại và cập nhật paginatedInvoices
+  useEffect(() => {
+      const lastIndex = currentPage * itemsPerPage;
+      const firstIndex = lastIndex - itemsPerPage;
+      setPaginatedInvoices(invoices.slice(firstIndex, lastIndex)); // Lấy phần dữ liệu cho trang hiện tại
+  }, [invoices, currentPage, itemsPerPage]);
+
+  // Hàm điều hướng giữa các trang
+  const goToPage = (page) => {
+    if (page > 0 && page <= totalPages()) {
+      setCurrentPage(page);
+    }
+  };
+
+  // Tính tổng số trang
+  const totalPages = () => {
+    return Math.ceil(invoices.length / itemsPerPage);
+  };
 
   // Gọi API khi component được render lần đầu
   useEffect(() => {
@@ -126,8 +148,8 @@ const InvoiceForm = () => {
                 {loading ? (
                   <tr><td colSpan="7">Đang tải dữ liệu...</td></tr>
                 ) : (
-                  invoices.map((invoice) => (
-                    <tr key={invoice.MaHoaDon}>
+                  paginatedInvoices.map((invoice) => (
+                      <tr key={invoice.MaHoaDon}>
                       <td>{invoice.MaHoaDon}</td>
                       <td className="patient-id">{invoice.MaBenhNhan}</td>
                       <td>{invoice.MaBacSi}</td>
@@ -178,13 +200,13 @@ const InvoiceForm = () => {
           </div>
 
           <div className="pagination">
-            <span>Trang 1 của 84</span>
+            <span>Trang {currentPage} của {totalPages()}</span>
             <div className="pagination-buttons">
-              <button className="page-btn">
-                <ChevronLeft size={20} />
+              <button className="page-btn" onClick={() => goToPage(currentPage - 1)}>
+                 <i className="fas fa-chevron-left" style={{ fontSize: '20px' }}></i>
               </button>
-              <button className="page-btn">
-                <ChevronRight size={20} />
+              <button className="page-btn" onClick={() => goToPage(currentPage + 1)}>
+                 <i className="fas fa-chevron-right" style={{ fontSize: '20px' }}></i>
               </button>
             </div>
           </div>

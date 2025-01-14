@@ -201,3 +201,41 @@
     font-size: 10px; /* Giảm font size của button */
   }
 }
+
+.loginBox {
+  max-width: 380px;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+.title {
+  font-size: 16px;
+}
+
+.subtitle {
+  font-size: 10px;
+  margin-bottom: 10px;
+}
+
+.inputGroup {
+  margin-bottom: 10px;
+}
+
+.inputGroup label {
+  font-size: 10px;
+}
+
+.input {
+  font-size: 12px;
+  padding: 8px;
+}
+
+.signInButton {
+  font-size: 12px;
+  padding: 8px 0;
+}
+
+.createAccount {
+  margin-top: 8px;
+  font-size: 10px;
+}

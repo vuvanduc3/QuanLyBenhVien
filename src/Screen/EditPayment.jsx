@@ -175,31 +175,31 @@ const EditPayment = () => {
       <Menu1 />
       <div className="main-content">
         <Search1 />
-        <div>
-          <h2>Thanh toán</h2>
+         <div className="form-container">
+          <h2 style={{ color: '#000' }}>Thanh toán</h2>
           <div>
             <div style={{ flexDirection: "row" }}>
-              <label>Mã bệnh nhân:</label>
-              <span style={{ marginLeft: "10px" }}>
+              <label style={{ color: '#000' }}>Mã bệnh nhân:</label>
+              <span style={{ marginLeft: "10px",color: '#000' }}>
                 {paymentData.patientId}
               </span>
             </div>
             <div>
-              <label>Mã hóa đơn:</label>
-              <span style={{ marginLeft: "10px" }}>
+              <label style={{ color: '#000' }}>Mã hóa đơn:</label>
+              <span style={{ marginLeft: "10px",color: '#000' }}>
                 {paymentData.invoiceId}
               </span>
             </div>
             <div>
-              <label>Ngày tạo:</label>
-              <span style={{ marginLeft: "10px" }}>
+              <label style={{ color: '#000' }}>Ngày tạo:</label>
+              <span style={{ marginLeft: "10px",color: '#000' }}>
                 {paymentData.paymentCreateDate}
               </span>
             </div>
             <div className="EditPayment_paymentInfo">
               <div className="EditPayment_paymentRowInput">
                 <div className="EditPayment_paymentColInput">
-                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Phương thức thanh toán:</label>
+                  <label style={{ color: '#000' }}>Phương thức thanh toán:</label>
                   <select
                     name="phuongThucThanhToan"
                     value={formData.phuongThucThanhToan}
@@ -212,7 +212,7 @@ const EditPayment = () => {
                   </select>
                 </div>
                 <div className="EditPayment_paymentColInput">
-                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>
+                  <label style={{ color: '#000' }}>
                     {paymentData.status === 1
                       ? "Số tiền đã thanh toán:"
                       : "Số tiền cần thanh toán:"}
@@ -249,7 +249,7 @@ const EditPayment = () => {
 
               <div className="EditPayment_paymentRowInput">
                 <div className="EditPayment_paymentColInput">
-                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Mã giao dịch:</label>
+                  <label style={{ color: '#000' }}>Mã giao dịch:</label>
                   <input
                     placeholder="Nhập mã giao dịch"
                     type="text"
@@ -260,7 +260,7 @@ const EditPayment = () => {
                   />
                 </div>
                 <div className="EditPayment_paymentColInput">
-                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Ngày thanh toán:</label>
+                  <label style={{ color: '#000' }}>Ngày thanh toán:</label>
                   <input
                     placeholder="Ngày thanh toán"
                     type="text"
@@ -273,7 +273,7 @@ const EditPayment = () => {
               </div>
               <div className="EditPayment_paymentRowInput">
                 <div className="EditPayment_paymentColInput">
-                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Trạng thái thanh toán:</label>
+                  <label style={{ color: '#000' }}>Trạng thái thanh toán:</label>
                   <select
                     name="trangThaiThanhToan"
                     value={formData.trangThaiThanhToan}
@@ -288,7 +288,7 @@ const EditPayment = () => {
                 </div>
 
                 <div className="EditPayment_paymentColInput">
-                  <label style={{ color: myCookieValue ? '#fff' : '#000' }}>CCCD/CMND:</label>
+                  <label style={{ color: '#000' }}>CCCD/CMND:</label>
                   <input
                     placeholder="Nhập CCCD/CMND"
                     type="text"
@@ -303,7 +303,7 @@ const EditPayment = () => {
             <h4>Thông tin thêm (chi phí bảo hiểm chi trả)</h4>
             <div className="EditPayment_paymentRowInput">
               <div className="EditPayment_paymentColInput">
-                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Mã bảo hiểm:</label>
+                <label style={{ color: '#000' }}>Mã bảo hiểm:</label>
                 <input
                   type="text"
                   disabled
@@ -313,7 +313,7 @@ const EditPayment = () => {
                 />
               </div>
               <div className="EditPayment_paymentColInput">
-                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Mã chi phí bảo hiểm chi trả:</label>
+                <label style={{ color: '#000' }}>Mã chi phí bảo hiểm chi trả:</label>
                 <input
                   type="text"
                   disabled
@@ -325,7 +325,7 @@ const EditPayment = () => {
             </div>
             <div className="EditPayment_paymentRowInput">
               <div className="EditPayment_paymentColInput">
-                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Số tiền bảo hiểm chi trả:</label>
+                <label style={{ color: '#000' }}>Số tiền bảo hiểm chi trả:</label>
                 <input
                   type="number"
 
@@ -335,7 +335,7 @@ const EditPayment = () => {
                 />
               </div>
               <div className="EditPayment_paymentColInput">
-                <label style={{ color: myCookieValue ? '#fff' : '#000' }}>Ngày thanh toán:</label>
+                <label style={{ color: '#000' }}>Ngày thanh toán:</label>
                 <input
                   placeholder="Ngày thanh toán"
                   type="text"

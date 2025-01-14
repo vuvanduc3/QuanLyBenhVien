@@ -304,4 +304,72 @@ td {
   color: red; /* Màu đỏ cho trạng thái Đã hủy */
   background: white;
 }
+/* Container của bộ lọc */
+.filter-container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Các input trong bộ lọc */
+.filter-container input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  box-sizing: border-box;
+}
+
+/* Đặc biệt cho input kiểu date */
+.filter-container input[type="date"] {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 220px;
+  box-sizing: border-box;
+}
+
+/* Khi người dùng hover vào input */
+.filter-container input:hover {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Tạo một kiểu đẹp mắt cho mỗi ô input khi focus */
+.filter-container input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Đảm bảo các ô input không bị tràn khi màn hình nhỏ */
+@media (max-width: 768px) {
+  .filter-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .filter-container input {
+    width: 100%;
+  }
+}
+
+/* Nút reset */
+.reset-btn {
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px; /* Khoảng cách với các input */
+}
+
+.reset-btn:hover {
+  background-color: #e9ecef;
+}
 

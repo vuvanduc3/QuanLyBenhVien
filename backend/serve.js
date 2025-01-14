@@ -3977,3 +3977,128 @@ app.put("/api/capnhatmatkhau", async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi cập nhật dữ liệu" });
   }
 });
+
+
+//Lấy dữ liệu thông báo
+app.get('/api/ThongBao', async (req, res) => {
+   try {
+          const result = await pool.request().query(`
+             SELECT * FROM ThongBao ORDER BY ThongBao.ID desc
+          `);
+
+          res.status(200).json({
+              success: true,
+              data: result.recordset,
+          });
+      } catch (err) {
+          console.error("❌ Lỗi lấy dữ liệu ThongBao:", err.message);
+          res.status(500).json({
+              success: false,
+              message: "Lỗi khi lấy dữ liệu từ database: " + err.message,
+          });
+      }
+});
+
+
+// API đánh dấu là đã đọc
+app.put("/api/thongbao/:notificationID", async (req, res) => {
+  const notificationID = req.params.notificationID;
+
+  try {
+    // Kiểm tra nếu notificationID là số hợp lệ
+    if (isNaN(notificationID)) {
+      return res.status(400).json({ success: false, message: "ID thông báo không hợp lệ" });
+    }
+
+    const query = `
+      UPDATE ThongBao
+      SET DaDoc = 1
+      WHERE ID = @notificationID
+    `;
+
+    const result = await pool
+      .request()
+      .input("notificationID", sql.INT, notificationID) // Đảm bảo sử dụng kiểu dữ liệu INT
+      .query(query);
+
+    if (result.rowsAffected[0] > 0) {
+      // Cập nhật thành công
+      res.json({ success: true, message: "Cập nhật thông báo thành công!" });
+    } else {
+      // Không tìm thấy thông báo
+      res.status(404).json({ success: false, message: "Không tìm thấy thông báo với ID này" });
+    }
+  } catch (err) {
+    console.error("Lỗi cập nhật:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi cập nhật dữ liệu" });
+  }
+});
+
+
+
+// API thêm thông báo
+app.post("/api/thongbao", async (req, res) => {
+  const { Name, Loai, ChucNang } = req.body;
+
+  // Kiểm tra các trường dữ liệu đầu vào
+  if (!Name || !Loai || !ChucNang) {
+    return res.status(400).json({ success: false, message: "Vui lòng cung cấp đầy đủ thông tin!" });
+  }
+
+  try {
+    // Truy vấn SQL để thêm thông báo vào bảng
+    const query = `
+      INSERT INTO ThongBao (Name, Loai, ChucNang)
+      VALUES (@Name, @Loai, @ChucNang)
+    `;
+
+    // Thực hiện truy vấn SQL
+    const result = await pool
+      .request()
+      .input("Name", sql.NVarChar, Name)
+      .input("Loai", sql.NVarChar, Loai)
+      .input("ChucNang", sql.NVarChar, ChucNang)
+      .query(query);
+
+    // Nếu thành công, trả về thông báo đã được thêm
+    res.status(201).json({ success: true, message: "Thông báo đã được thêm thành công!" });
+  } catch (err) {
+    console.error("Lỗi khi thêm thông báo:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi khi thêm thông báo" });
+  }
+});
+
+// API đánh dấu là đã đọc
+app.delete("/api/thongbao/:notificationID", async (req, res) => {
+  const notificationID = req.params.notificationID;
+
+  try {
+    // Kiểm tra nếu notificationID là số hợp lệ
+    if (isNaN(notificationID)) {
+      return res.status(400).json({ success: false, message: "ID thông báo không hợp lệ" });
+    }
+
+    const query = `
+     DELETE FROM ThongBao WHERE ThongBao.ID = @notificationID
+    `;
+
+    const result = await pool
+      .request()
+      .input("notificationID", sql.INT, notificationID) // Đảm bảo sử dụng kiểu dữ liệu INT
+      .query(query);
+
+    if (result.rowsAffected[0] > 0) {
+      // Xóa thành công
+      res.json({ success: true, message: "Xóa thông báo thành công!" });
+    } else {
+      // Không tìm thấy thông báo
+      res.status(404).json({ success: false, message: "Không tìm thấy thông báo với ID này" });
+    }
+  } catch (err) {
+    console.error("Lỗi xóa thông báo:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi xóa dữ liệu" });
+  }
+});
+
+
+

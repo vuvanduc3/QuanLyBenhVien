@@ -41,7 +41,7 @@ const pageItems = [
 
   { text: "Quản lý người dùng", icon: <UserCircle size={20} />, path: "/quanlynguoidung" },
 
-  { text: "Table", icon: <Table2 size={20} />, path: "/table" }
+  { text: "Thông báo", icon: <i class="fa-regular fa-paper-plane"></i>, path: "/ThongBao" }
 ];
 
 const bottomItems = [

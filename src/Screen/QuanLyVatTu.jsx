@@ -204,26 +204,27 @@ const QuanLyVatTu = () => {
             <main className="main-content">
                 <Search1 />
 
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm theo tên, ID ..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
-                />
+
 
 
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Quản lý vật tư</h2>
                         <button className="add-button" onClick={handleChangevattu}>
-                            Thêm vật tư 
+                            Thêm vật tư
                         </button>
                     </div>
 
                     <div className="filters">
                         <div className="filter-group">
                             <Filter />
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm theo tên, ID ..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="search-input"
+                            />
                             <select
                                 value={filters.sortBy}
                                 onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}

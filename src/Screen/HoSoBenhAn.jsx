@@ -133,12 +133,7 @@ const MedicalRecordList = () => {
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Hồ sơ bệnh án</h2>
-                        <button
-                            className="add-button"
-                            onClick={() => navigate('/hosobenhan/add')}
-                        >
-                            Thêm hồ sơ
-                        </button>
+
                     </div>
 
                     <div className="filters-section">
@@ -150,14 +145,14 @@ const MedicalRecordList = () => {
                                 <Filter size={20} />
                                 {showFilters ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
                             </button>
-                            {showFilters && (
-                                <button
-                                    className="clear-filters-button"
-                                    onClick={clearFilters}
-                                >
-                                    Xóa bộ lọc
-                                </button>
-                            )}
+                            <button
+                               className="add-button"
+                               onClick={() => navigate('/hosobenhan/add')}
+                           >
+                               Thêm hồ sơ
+                           </button>
+
+
                         </div>
 
                         {showFilters && (
@@ -211,6 +206,13 @@ const MedicalRecordList = () => {
                                             <option value="NhapVien">Nhập viện</option>
                                         </select>
                                     </div>
+                                    <button
+                                        className="clear-filters-button"
+                                        onClick={clearFilters}
+
+                                    >
+                                        Xóa bộ lọc
+                                    </button>
 
                                 </div>
                             </div>
