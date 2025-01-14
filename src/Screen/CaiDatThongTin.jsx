@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, ChevronLeft, X } from 'lucide-react';
 import '../Styles/QuanLyNguoiDung.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 import Cookies from 'js-cookie';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
 const QuanLyNguoiDungScreen = () => {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -298,7 +301,35 @@ const QuanLyNguoiDungScreen = () => {
         <div className="container">
             <Menu1 />
             <main className="main-content">
-                <Search1 />
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
                 <div className="form-container">
                     <div className="card-header">
                         <h2 style={{ color: '#000' }}>Cài đặt người dùng</h2>

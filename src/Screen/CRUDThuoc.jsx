@@ -4,8 +4,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../Styles/CRUDThuoc.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const ThemSuaXoaThuoc = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         code: '',
         name: '',
@@ -158,6 +161,13 @@ const ThemSuaXoaThuoc = () => {
                     maDanhMuc: '' // Reset maDanhMuc
                 });
                 toast.success('🎉 Thêm thuốc thành công!');
+
+                const tenThongBao = "Thông báo: Thêm thuốc có 'Mã : "+ formData.code +" - Tên thuốc: "+formData.name+"' thành công!";
+                const loaiThongBao = "Thuốc";
+                const chucNang = "Thêm dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang);
+
             } else {
                 throw new Error('Không thể lấy mã thuốc mới');
             }
@@ -169,6 +179,36 @@ const ThemSuaXoaThuoc = () => {
             setLoading(false);
         }
     };
+
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     return (
         <div className="container">
@@ -187,17 +227,47 @@ const ThemSuaXoaThuoc = () => {
 
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+                <div className="form-container">
                     <div className="card-header">
-                        <h2 className="card-title">Thêm sửa xóa thuốc</h2>
+                        <h2 style={{color : "#000"}} className="card-title">Thêm thuốc</h2>
                     </div>
 
                     {error && <div className="error-message">{error}</div>}
 
                     <form onSubmit={handleSubmit} className="medicine-form">
                         <div className="form-group">
-                            <label>Mã thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Mã thuốc <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="code"
@@ -209,7 +279,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Tên thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Tên thuốc <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="name"
@@ -222,7 +292,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Danh mục thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Danh mục thuốc <span className="required">*</span></label>
                             <select
                                 name="maDanhMuc"
                                 value={formData.maDanhMuc}
@@ -240,7 +310,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Mô tả</label>
+                            <label style={{color : "#000"}}>Mô tả</label>
                             <textarea
                                 name="description"
                                 placeholder="Mô tả"
@@ -252,7 +322,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Số lượng <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Số lượng <span className="required">*</span></label>
                             <input
                                 type="number"
                                 name="quantity"
@@ -266,7 +336,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Giá thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Giá thuốc <span className="required">*</span></label>
                             <input
                                 type="number"
                                 name="price"
@@ -280,7 +350,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Phone</label>
+                            <label style={{color : "#000"}}>Phone</label>
                             <input
                                 type="tel"
                                 name="phone"

@@ -550,17 +550,17 @@ const HoaDonChiTiet = () => {
                             <span>Trang {currentPage} của {totalPages}</span>
                             <div className="pagination-controls">
                                 <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-                                    <ChevronLeft size={20} />
+                                    <i className="fas fa-chevron-left" style={{ fontSize: '15px' }}></i>
                                 </button>
                                 <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                                    <ChevronRight size={20} />
+                                    <i className="fas fa-chevron-right" style={{ fontSize: '15px' }}></i>
                                 </button>
                             </div>
                         </div>
                     )}
                     {/* Hiển thị tổng tiền cho các mục trên trang hiện tại */}
                     <div className="total-amount" style={{ textAlign: 'right' }}>
-                        <h3>Tổng tiền: {item.TongTien.toLocaleString('vi-VN')} VND</h3>
+                        <h4>Tổng tiền: {item.TongTien.toLocaleString('vi-VN')} VND</h4>
                     </div>
                     {AnEmailInput && (
                         <div className={`email-input-hoadon ${AnEmailInput ? 'show' : ''}`}>

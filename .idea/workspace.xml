@@ -6,7 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="0006d95e-39ec-46cc-b70a-4dec8b8d531b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/ADDBHYT.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ADDBHYT.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/AddInvoice.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/AddInvoice.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/AddPayment.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/AddPayment.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDDieuTri.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDDieuTri.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDDonThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDDonThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDHoaDonChiTiet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDHoaDonChiTiet.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDVatTu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDVatTu.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDXetNghiem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDXetNghiem.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CaiDatThongTin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CaiDatThongTin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/EditPayment.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/EditPayment.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyHoaDonChiTiet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyHoaDonChiTiet.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/XuatHoaDon.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/XuatHoaDon.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Styles/Setting.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Setting.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Menu.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Menu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,19 +43,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "TranTuan__Ver2",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/DoAn_reactnative/quanlybenhvien/src/Screen",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;TranTuan__Ver2&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/DoAn_reactnative/quanlybenhvien/src/Screen&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\DoAn_reactnative\quanlybenhvien\src\Screen" />

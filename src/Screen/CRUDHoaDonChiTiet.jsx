@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../Styles/CRUDHoaDonChiTiet.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
 
 const ThemSuaXoaHoaDonChiTiet = () => {
     const { state } = useLocation(); // Lấy dữ liệu state từ navigate
@@ -96,18 +97,49 @@ const ThemSuaXoaHoaDonChiTiet = () => {
             <ToastContainer position="top-right" autoClose={3000} />
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+                <div className="form-container">
                     <div className="card-header">
-                        <h2 className="card-title">{state?.action === 'edit' ? 'Sửa hóa đơn chi tiết' : 'Thêm hóa đơn chi tiết'}</h2>
+                        <h2 style={{color: "#000"}} className="card-title">{state?.action === 'edit' ? 'Sửa hóa đơn chi tiết' : 'Thêm hóa đơn chi tiết'}</h2>
                     </div>
 
                     <form onSubmit={handleSubmit} className="form">
                         <div className="form-group">
-                            <label htmlFor="MaHoaDon">Mã hóa đơn chi tiết: <span className="required">{formData.MaChiTiet}</span></label>
+                            <label style={{color: "#000"}} htmlFor="MaHoaDon">Mã hóa đơn chi tiết: <span className="required">{formData.MaChiTiet}</span></label>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="MaHoaDon">Mã hóa đơn <span className="required">*</span></label>
+                            <label style={{color: "#000"}} htmlFor="MaHoaDon">Mã hóa đơn <span className="required">*</span></label>
                             <input
                                 type="number"
                                 id="MaHoaDon"
@@ -121,7 +153,7 @@ const ThemSuaXoaHoaDonChiTiet = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="TenDichVu">Tên dịch vụ <span className="required">*</span></label>
+                            <label style={{color: "#000"}}  htmlFor="TenDichVu">Tên dịch vụ <span className="required">*</span></label>
                             <input
                                 type="text"
                                 id="TenDichVu"
@@ -135,7 +167,7 @@ const ThemSuaXoaHoaDonChiTiet = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="SoLuong">Số lượng <span className="required">*</span></label>
+                            <label style={{color: "#000"}}  htmlFor="SoLuong">Số lượng <span className="required">*</span></label>
                             <input
                                 type="number"
                                 id="SoLuong"
@@ -150,7 +182,7 @@ const ThemSuaXoaHoaDonChiTiet = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="DonGia">Đơn giá <span className="required">*</span></label>
+                            <label style={{color: "#000"}}  htmlFor="DonGia">Đơn giá <span className="required">*</span></label>
                             <input
                                 type="number"
                                 id="DonGia"

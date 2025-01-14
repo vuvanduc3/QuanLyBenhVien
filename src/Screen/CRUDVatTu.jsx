@@ -4,8 +4,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../Styles/CRUDVatTu.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 
 const CRUDVatTu = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         MaVatTu: '',
         TenVatTu: '',
@@ -171,17 +175,46 @@ const CRUDVatTu = () => {
 
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+                <div className="form-container">
                     <div className="card-header">
-                        <h2 className="card-title">Thêm vật tư y tế</h2>
+                        <h2  style={{color: "#000"}} className="card-title">Thêm vật tư y tế</h2>
                     </div>
 
                     {error && <div className="error-message">{error}</div>}
 
                     <form onSubmit={handleSubmit} className="medicine-form">
                         <div className="form-group">
-                            <label>Mã vật tư <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Mã vật tư <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="MaVatTu"  // This should match formData.MaVatTu
@@ -193,7 +226,7 @@ const CRUDVatTu = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Tên vật tư <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Tên vật tư <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="TenVatTu"  // This should match formData.TenVatTu
@@ -206,7 +239,7 @@ const CRUDVatTu = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Loại vật tư</label>
+                            <label style={{color: "#000"}} >Loại vật tư</label>
                             <select
                                 name="LoaiVatTu"
                                 value={formData.LoaiVatTu}
@@ -222,7 +255,7 @@ const CRUDVatTu = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Đơn vị tính</label>
+                            <label style={{color: "#000"}} >Đơn vị tính</label>
                             <select
                                 name="DonViTinh"
                                 value={formData.DonViTinh}
@@ -239,7 +272,7 @@ const CRUDVatTu = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Số lượng <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Số lượng <span className="required">*</span></label>
                             <input
                                 type="number"
                                 name="SoLuong"  // This should match formData.SoLuong
@@ -253,7 +286,7 @@ const CRUDVatTu = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Giá tiền <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Giá tiền <span className="required">*</span></label>
                             <input
                                 type="number"
                                 name="GiaTien"  // This should match formData.GiaTien

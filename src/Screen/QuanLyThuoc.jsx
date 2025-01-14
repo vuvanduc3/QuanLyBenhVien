@@ -128,14 +128,14 @@ const QuanLyThuoc = () => {
         setCurrentPage(1);
     }, [searchTerm, filters, thuocs]);
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (item) => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa thuốc này không?')) {
             return;
         }
 
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/thuoc/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/thuoc/${item.ID}`, {
                 method: 'DELETE',
             });
 
@@ -143,6 +143,13 @@ const QuanLyThuoc = () => {
 
             if (data.success) {
                 toast.success('Xóa thuốc thành công!');
+                const tenThongBao = "Thông báo: Xóa thuốc có 'Mã : "+ item.ID +" - Tên thuốc: "+item.TenThuoc+"' thành công!";
+                const loaiThongBao = "Thuốc";
+                const chucNang = "Xóa dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang);
+
+
                 fetchThuocs();
             } else {
                 throw new Error(data.message || 'Có lỗi xảy ra khi xóa thuốc');
@@ -192,6 +199,35 @@ const QuanLyThuoc = () => {
             category: ''
         });
     };
+
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     if (loading) {
         return <div className="loading">Đang tải dữ liệu...</div>;
@@ -358,7 +394,7 @@ const QuanLyThuoc = () => {
                                                     className="btn-delete"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handleDelete(thuoc.ID);
+                                                        handleDelete(thuoc);
                                                     }}
                                                     disabled={isDeleting}
                                                 >

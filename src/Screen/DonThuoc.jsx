@@ -123,6 +123,34 @@ const DonThuoc = () => {
     const handleAdd = (item) => {
         navigate('/cruddonthuoc', { state: { action: 'add', item } });
     };
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     return (
         <div className="container">
@@ -245,7 +273,12 @@ const DonThuoc = () => {
                                                             `http://localhost:5000/api/donthuoc/${prescription.MaDonThuoc}`,
                                                             { method: 'DELETE' }
                                                         );
-                                                        fetchData();
+
+                                                        const tenThongBao = "Thông báo: Xóa đơn thuốc có 'Mã đơn thuốc: "+prescription.MaDonThuoc +" - Mã hồ sơ : "+ prescription.MaHoSo +" - Tên thuốc: "+ prescription.TenThuoc +"' thành công!";
+                                                        const loaiThongBao = "Đơn thuốc";
+                                                        const chucNang = "Xóa dữ liệu";
+
+                                                        themThongBao(tenThongBao, loaiThongBao, chucNang);
                                                     }
                                                 }}
                                             >

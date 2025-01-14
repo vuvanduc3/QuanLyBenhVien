@@ -100,19 +100,54 @@ const XetNghiem = () => {
     const handleAdd = (item) => {
         navigate('/crud-xet-nghiem', { state: { action: 'add', item } });
     };
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     // Hàm xóa dữ liệu
-    const handleDelete = async (maXetNghiem) => {
+    const handleDelete = async (item) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa xét nghiệm này?')) {
             try {
-                const response = await fetch(`http://localhost:5000/api/xetnghiem/${maXetNghiem}`, {
+                const response = await fetch(`http://localhost:5000/api/xetnghiem/${item.MaXetNghiem}`, {
                     method: 'DELETE',
                 });
 
                 const data = await response.json();
                 if (data.success) {
-                    setXetNghiems(xetNghiems.filter((xetNghiem) => xetNghiem.MaXetNghiem !== maXetNghiem)); // Xóa xét nghiệm khỏi danh sách
+                    setXetNghiems(xetNghiems.filter((xetNghiem) => xetNghiem.MaXetNghiem !== item.MaXetNghiem)); // Xóa xét nghiệm khỏi danh sách
                     alert('Xóa xét nghiệm thành công');
+
+                    const tenThongBao = "Thông báo: Xóa xét nghiệm có 'Mã xét nghiệm: "+item.MaXetNghiem +" - Mã hồ sơ : "+ item.MaHoSo +" - Tên xét nghiệm: "+ item.TenXetNghiem +"' thành công!";
+                    const loaiThongBao = "Xét nghiệm";
+                    const chucNang = "Xóa dữ liệu";
+
+                    themThongBao(tenThongBao, loaiThongBao, chucNang);
+
                 } else {
                     alert('Xóa xét nghiệm thất bại');
                 }
@@ -235,7 +270,7 @@ const XetNghiem = () => {
                                         <td>
                                             <div className="action-buttons-row">
                                                 <button className="edit-button" onClick={() => handleEdit(xetNghiem)}>Sửa</button>
-                                                <button className="delete-button" onClick={() => handleDelete(xetNghiem.MaXetNghiem)}>Xóa</button>
+                                                <button className="delete-button" onClick={() => handleDelete(xetNghiem)}>Xóa</button>
                                             </div>
                                         </td>
                                     </tr>

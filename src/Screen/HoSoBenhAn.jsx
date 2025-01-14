@@ -89,12 +89,17 @@ const MedicalRecordList = () => {
         });
     };
 
-    const handleDelete = (e, maBenhNhan) => {
+    const handleDelete = (e, item) => {
         e.stopPropagation(); // Prevent row click event
         if (window.confirm('Bạn có chắc chắn muốn xóa hồ sơ này?')) {
             try {
                 // Handle delete logic
                 alert('Xóa hồ sơ thành công');
+                const tenThongBao = "Thông báo: Xóa hồ sơ bệnh án có 'Mã lịch khám : "+ item.MaLichHen +" - Mã bệnh nhân: "+item.MaBenhNhan+"' thành công!";
+                const loaiThongBao = "Hồ sơ bệnh án";
+                const chucNang = "Xóa dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang);
             } catch (err) {
                 console.error('Error deleting record:', err);
                 alert('Lỗi khi xóa hồ sơ');
@@ -121,6 +126,35 @@ const MedicalRecordList = () => {
         e.stopPropagation(); // Ngừng sự kiện click dòng bảng
         navigate('/lich-su-dieu-tri', { state: { action: 'xem', item } });
     };
+
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
 
     return (
@@ -262,7 +296,7 @@ const MedicalRecordList = () => {
                                             </button>
                                             <button
                                                 className="action-btn red"
-                                                onClick={(e) => handleDelete(e, record.MaBenhNhan)}
+                                                onClick={(e) => handleDelete(e, record)}
                                             >
                                                 Xóa
                                             </button>

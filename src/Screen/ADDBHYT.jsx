@@ -5,6 +5,8 @@ import '../Styles/CRUDBHYT.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
+
 
 const CRUDBHYT = () => {
     const [formData, setFormData] = useState({
@@ -170,17 +172,46 @@ const CRUDBHYT = () => {
 
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+                <div className="form-container">
                     <div className="card-header">
-                        <h2 className="card-title">Thêm Bảo Hiểm Y Tế</h2>
+                        <h2  style={{color: "#000"}}  className="card-title">Thêm Bảo Hiểm Y Tế</h2>
                     </div>
 
                     {error && <div className="error-message">{error}</div>}
 
                     <form onSubmit={handleSubmit} className="insurance-form">
                         <div className="form-group">
-                            <label>Mã bệnh nhân <span className="required">*</span></label>
+                            <label style={{color: "#000"}}  >Mã bệnh nhân <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="MaBenhNhan"
@@ -194,7 +225,7 @@ const CRUDBHYT = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Đơn vị cung cấp <span className="required">*</span></label>
+                            <label style={{color: "#000"}}  >Đơn vị cung cấp <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="DonViCungCap"
@@ -207,7 +238,7 @@ const CRUDBHYT = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Số hợp đồng bảo hiểm * </label>
+                            <label style={{color: "#000"}}  >Số hợp đồng bảo hiểm * </label>
                             <input
                                 type="text"
                                 name="SoHopDongBaoHiem"
@@ -219,7 +250,7 @@ const CRUDBHYT = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Số tiền bảo hiểm <span className="required">*</span></label>
+                            <label style={{color: "#000"}}  >Số tiền bảo hiểm <span className="required">*</span></label>
                             <input
                                 type="number"
                                 name="SoTienBaoHiem"
@@ -233,7 +264,7 @@ const CRUDBHYT = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Ngày hết hạn bảo hiểm</label>
+                            <label style={{color: "#000"}}  >Ngày hết hạn bảo hiểm</label>
                             <input
                                 type="date"
                                 name="NgayHetHanBaoHiem"
@@ -244,7 +275,7 @@ const CRUDBHYT = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Trạng thái bảo hiểm</label>
+                            <label style={{color: "#000"}}  >Trạng thái bảo hiểm</label>
                             <select
                                 name="TrangThaiBaoHiem"
                                 value={formData.TrangThaiBaoHiem}

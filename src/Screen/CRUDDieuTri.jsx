@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../Styles/CRUDDieuTri.css';
 import Menu1 from '../components/Menu';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
+import Search1 from '../components/seach_user';
 
 const ThemSuaXoaDieuTri = () => {
   const [searchTermHoSo, setSearchTermHoSo] = useState('');
@@ -22,7 +24,34 @@ const ThemSuaXoaDieuTri = () => {
   const { state } = useLocation();
   const { action, item } = state || {};
   const navigate = useNavigate();
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
   useEffect(() => {
     const fetchHoSos = async () => {
       try {
@@ -120,7 +149,22 @@ const ThemSuaXoaDieuTri = () => {
       });
 
       if (response.ok) {
-        toast.success(action === 'edit' ? 'Sửa điều trị thành công!' : 'Thêm điều trị thành công!');
+        alert(action === 'edit' ? 'Sửa điều trị thành công!' : 'Thêm điều trị thành công!');
+        if(action === 'edit'){
+            const tenThongBao = "Thông báo: Sửa điều trị có 'Mã điều trị: "+item.MaDieuTri +" - Mã hồ sơ : "+ dieuTriData.MaHoSo +" - Mô tả: "+ dieuTriData.MoTa +"' thành công!";
+            const loaiThongBao = "Điều trị";
+            const chucNang = "Sửa dữ liệu";
+
+            themThongBao(tenThongBao, loaiThongBao, chucNang);
+
+        }
+        else{
+            const tenThongBao = "Thông báo: Thêm điều trị có 'Mã hồ sơ : "+ dieuTriData.MaHoSo +" - Mô tả: "+ dieuTriData.MoTa +"' thành công!";
+            const loaiThongBao = "Điều trị";
+            const chucNang = "Thêm dữ liệu";
+
+            themThongBao(tenThongBao, loaiThongBao, chucNang);
+        }
 
       } else {
         throw new Error('Lỗi khi thêm/sửa điều trị');
@@ -159,13 +203,42 @@ const ThemSuaXoaDieuTri = () => {
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} theme="light" />
       <Menu1 />
       <main className="main-content">
-        <div className="content">
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+        <div className="form-container">
           <div className="card-header">
-            <h2 className="card-title">{action === 'edit' ? 'Sửa điều trị' : 'Thêm điều trị'}</h2>
+            <h2 style={{color: "#000"}}   className="card-title">{action === 'edit' ? 'Sửa điều trị' : 'Thêm điều trị'}</h2>
           </div>
           <form className="medicine-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Mã hồ sơ <span className="required">*</span></label>
+              <label  style={{color: "#000"}}  >Mã hồ sơ <span className="required">*</span></label>
               <input
                 type="text"
                 value={searchTermHoSo}
@@ -177,16 +250,16 @@ const ThemSuaXoaDieuTri = () => {
               {selectedHoSo && (
                 <div className="selected-hososo" onClick={() => setIsSearchVisibleHoSo(!isSearchVisibleHoSo)}>
                   <div className="selected-hososo-row">
-                    <label><strong>Mã hồ sơ đã chọn:</strong> {selectedHoSo.ID}</label>
+                    <label  style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Mã hồ sơ đã chọn:</strong> {selectedHoSo.ID}</label>
                   </div>
                   {!isSearchVisibleHoSo && (
                     <>
-                      <label><strong>Mã bệnh nhân:</strong> {selectedHoSo.MaBenhNhan}</label>
-                      <label><strong>Họ và tên:</strong> {selectedHoSo.HoVaTen}</label>
-                      <label>
-                          <strong>Ngày sinh:</strong> {formatNgaySinh(selectedHoSo.NgaySinh)}
+                      <label style={{color: "#000"}}  ><strong  style={{color: "#000"}}  >Mã bệnh nhân:</strong> {selectedHoSo.MaBenhNhan}</label>
+                      <label style={{color: "#000"}}  ><strong  style={{color: "#000"}}  >Họ và tên:</strong> {selectedHoSo.HoVaTen}</label>
+                      <label style={{color: "#000"}}  >
+                          <strong  style={{color: "#000"}}  >Ngày sinh:</strong> {formatNgaySinh(selectedHoSo.NgaySinh)}
                       </label>
-                      <label><strong>CCCD/HC:</strong> {selectedHoSo.SoCCCD_HoChieu}</label>
+                      <label style={{color: "#000"}}  ><strong style={{color: "#000"}}  >CCCD/HC:</strong> {selectedHoSo.SoCCCD_HoChieu}</label>
                     </>
                   )}
                 </div>
@@ -196,11 +269,11 @@ const ThemSuaXoaDieuTri = () => {
                 <div className="search-results">
                   {filteredHoSos.map((hoSo) => (
                     <div key={hoSo.ID} onClick={() => handleHoSoSelect(hoSo)} className="search-item">
-                      <div><strong>{hoSo.ID}</strong></div>
-                      <div><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</div>
-                      <div><strong>Họ và tên:</strong> {hoSo.HoVaTen}</div>
-                      <div><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</div>
-                      <div><strong>Số CCCD_HoChieu:</strong> {hoSo.SoCCCD_HoChieu}</div>
+                      <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >{hoSo.ID}</strong></div>
+                      <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</div>
+                      <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Họ và tên:</strong> {hoSo.HoVaTen}</div>
+                      <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</div>
+                      <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Số CCCD_HoChieu:</strong> {hoSo.SoCCCD_HoChieu}</div>
                     </div>
                   ))}
                 </div>
@@ -208,7 +281,7 @@ const ThemSuaXoaDieuTri = () => {
             </div>
 
            <div className="form-group">
-             <label>Mô tả <span className="required">*</span></label>
+             <label style={{color: "#000"}}  >Mô tả <span className="required">*</span></label>
              <textarea
                value={moTa}
                onChange={(e) => setMoTa(e.target.value)}
@@ -220,7 +293,7 @@ const ThemSuaXoaDieuTri = () => {
 
 
             <div className="form-group">
-              <label>Phương pháp <span className="required">*</span></label>
+              <label style={{color: "#000"}}  >Phương pháp <span className="required">*</span></label>
               <textarea
                 type="text"
                 value={phuongPhap}
@@ -232,7 +305,7 @@ const ThemSuaXoaDieuTri = () => {
             </div>
 
             <div className="form-group">
-              <label>Kết quả:  {ketQua}<span className="required">*</span></label>
+              <label style={{color: "#000"}}  >Kết quả:  {ketQua}<span className="required">*</span></label>
               <select
                  value={ketQua}
                  onChange={handleKetQuaChange}
@@ -247,7 +320,7 @@ const ThemSuaXoaDieuTri = () => {
             </div>
 
             <div className="form-group">
-              <label>Ngày điều trị <span className="required">*</span></label>
+              <label style={{color: "#000"}}  >Ngày điều trị <span className="required">*</span></label>
               <input
                 type="date"
                 value={ngayDieuTri}
@@ -257,7 +330,7 @@ const ThemSuaXoaDieuTri = () => {
             </div>
 
             <div className="form-group">
-              <label>Đã sử dụng: thiết bị / khác <span className="required">*</span></label>
+              <label style={{color: "#000"}}  >Đã sử dụng: thiết bị / khác <span className="required">*</span></label>
               <textarea
                 type="text"
                 value={daSuDung}

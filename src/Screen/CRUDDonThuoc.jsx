@@ -5,6 +5,7 @@ import '../Styles/CRUDDonThuoc.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
 
 const ThemSuaXoaXetNghiem = () => {
     const navigate = useNavigate();
@@ -76,7 +77,34 @@ const ThemSuaXoaXetNghiem = () => {
         fetchThuocs();
     }, []);
 
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     // Lấy danh sách mã hồ sơ từ API
     useEffect(() => {
@@ -217,7 +245,21 @@ const ThemSuaXoaXetNghiem = () => {
             const result = await response.json();
 
             if (result.success) {
-                toast.success(action === 'edit' ? 'Sửa đơn thuốc thành công!' : 'Thêm đơn thuốc thành công!');
+                alert(action === 'edit' ? 'Sửa đơn thuốc thành công!' : 'Thêm đơn thuốc thành công!');
+                if(action === 'edit'){
+                     const tenThongBao = "Thông báo: Sửa đơn thuốc có 'Mã hồ sơ : "+ MaHoSo +" - Mã bệnh nhân: "+ MaBenhNhan +" - Tên thuốc "+ TenThuoc +" ' thành công!";
+                     const loaiThongBao = "Đơn thuốc";
+                     const chucNang = "Sửa dữ liệu";
+
+                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+                }
+                else{
+                     const tenThongBao = "Thông báo: Thêm đơn thuốc có 'Mã hồ sơ : "+ MaHoSo +" - Mã bệnh nhân: "+ MaBenhNhan +" - Tên thuốc "+ TenThuoc +" ' thành công!";
+                     const loaiThongBao = "Đơn thuốc";
+                     const chucNang = "Thêm dữ liệu";
+
+                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+                }
 
             } else {
                 setError(result.message);
@@ -259,16 +301,45 @@ const ThemSuaXoaXetNghiem = () => {
 
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+                <div className="form-container">
                     <div className="card-header">
-                        <h2 className="card-title">{action === 'edit' ? 'Sửa đơn thuốc' : 'Thêm đơn thuốc'}</h2>
+                        <h2 style={{color: "#000"}}  className="card-title">{action === 'edit' ? 'Sửa đơn thuốc' : 'Thêm đơn thuốc'}</h2>
                     </div>
                     <form className="medicine-form" onSubmit={handleSubmit}>
                         {error && <p className="error-message">{error}</p>}
 
                         <div className="form-group">
-                            <label>Mã đơn thuốc <span className="required"></span></label>
+                            <label style={{color: "#000"}} >Mã đơn thuốc <span className="required"></span></label>
                             <input
                                 type="text"
                                 value={MaDonThuoc}
@@ -283,7 +354,7 @@ const ThemSuaXoaXetNghiem = () => {
 
                         {/* Tìm kiếm và chọn thuốc */}
                         <div className="form-group">
-                            <label>Mã thuốc <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Mã thuốc <span className="required">*</span></label>
                             <input
                                 type="text"
                                 value={searchTerm}
@@ -295,15 +366,15 @@ const ThemSuaXoaXetNghiem = () => {
                             {MaThuoc && (
                                 <div className="selected-medicine" onClick={toggleCollapseThuoc}>
                                     <div className="selected-medicine-row">
-                                        <label><strong>Mã thuốc đã chọn:</strong> {MaThuoc} </label>
-                                        <label><strong>{isCollapsedThuoc?'Mở rộng':''}</strong></label>
+                                        <label style={{color: "#000"}} ><strong>Mã thuốc đã chọn:</strong> {MaThuoc} </label>
+                                        <label style={{color: "#000"}} ><strong>{isCollapsedThuoc?'Mở rộng':''}</strong></label>
                                     </div>
                                     {!isCollapsedThuoc && (
                                      <>
-                                        <label><strong>Tên thuốc:</strong> {TenThuoc}</label>
-                                        <label><strong>Mô tả:</strong> {MoTa}</label>
-                                        <label><strong>Số lượng:</strong> {SoLuong}</label>
-                                        <label><strong>Gía thuốc:</strong> {GiaThuoc?GiaThuoc:0} đ</label>
+                                        <label style={{color: "#000"}} ><strong>Tên thuốc:</strong> {TenThuoc}</label>
+                                        <label style={{color: "#000"}} ><strong>Mô tả:</strong> {MoTa}</label>
+                                        <label style={{color: "#000"}} ><strong>Số lượng:</strong> {SoLuong}</label>
+                                        <label style={{color: "#000"}} ><strong>Gía thuốc:</strong> {GiaThuoc?GiaThuoc:0} đ</label>
                                     </>
                                     )}
                                 </div>
@@ -317,16 +388,16 @@ const ThemSuaXoaXetNghiem = () => {
                                             className="search-item"
                                         >
                                             <div>
-                                                <strong>{thuoc.TenThuoc}</strong>
+                                                <strong style={{color: "#000"}} >{thuoc.TenThuoc}</strong>
                                             </div>
                                             <div>
-                                                <span><strong>Mô tả:</strong> {thuoc.MoTa}</span>
+                                                <span style={{color: "#000"}} ><strong>Mô tả:</strong> {thuoc.MoTa}</span>
                                             </div>
                                             <div>
-                                                <span><strong>Số lượng:</strong> {thuoc.SoLuong}</span>
+                                                <span style={{color: "#000"}} ><strong>Số lượng:</strong> {thuoc.SoLuong}</span>
                                             </div>
-                                            <div>
-                                                <span><strong>Giá:</strong> {thuoc.GiaThuoc} </span>đ
+                                            <div style={{color: "#000"}} >
+                                                <span style={{color: "#000"}} ><strong>Giá:</strong> {thuoc.GiaThuoc} </span>đ
                                             </div>
                                         </div>
                                     ))}
@@ -336,7 +407,7 @@ const ThemSuaXoaXetNghiem = () => {
 
                         {/* Tìm kiếm và chọn mã hồ sơ */}
                         <div className="form-group">
-                            <label>Mã hồ sơ <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Mã hồ sơ <span className="required">*</span></label>
                             <input
                                 type="text"
                                 value={searchTermHoSo}
@@ -348,15 +419,15 @@ const ThemSuaXoaXetNghiem = () => {
                             {MaHoSo && (
                              <div className="selected-hososo" onClick={toggleCollapseHoSo}>
                                  <div className="selected-hososo-row">
-                                      <label><strong>Mã hồ sơ đã chọn:</strong> {MaHoSo}</label>
-                                      <label><strong>{isCollapsedHoSo?'Mở rộng':''}</strong></label>
+                                      <label style={{color: "#000"}} ><strong>Mã hồ sơ đã chọn:</strong> {MaHoSo}</label>
+                                      <label style={{color: "#000"}} ><strong>{isCollapsedHoSo?'Mở rộng':''}</strong></label>
                                  </div>
                                   {!isCollapsedHoSo && (
                                     <>
-                                      <label><strong>Mã bệnh nhân:</strong> {MaBenhNhan} </label>
-                                      <label><strong>Họ và tên:</strong> {MaBacSi}</label>
-                                      <label><strong>Ngày sinh:</strong> {formatNgaySinh(ChanDoan)}</label>
-                                      <label><strong>Số CCCD_HoChieu:</strong> {NgayLap}</label>
+                                      <label style={{color: "#000"}} ><strong>Mã bệnh nhân:</strong> {MaBenhNhan} </label>
+                                      <label style={{color: "#000"}} ><strong>Họ và tên:</strong> {MaBacSi}</label>
+                                      <label style={{color: "#000"}} ><strong>Ngày sinh:</strong> {formatNgaySinh(ChanDoan)}</label>
+                                      <label style={{color: "#000"}} ><strong>Số CCCD_HoChieu:</strong> {NgayLap}</label>
                                     </>
                                   )}
                              </div>
@@ -371,20 +442,20 @@ const ThemSuaXoaXetNghiem = () => {
                                             className="search-item"
                                         >
                                             <div>
-                                                <strong>Mã hồ sơ: {hoSo.ID}</strong>
+                                                <strong style={{color: "#000"}} >Mã hồ sơ: {hoSo.ID}</strong>
                                             </div>
                                             <div>
-                                                <span><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</span>
+                                                <span style={{color: "#000"}} ><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</span>
                                             </div>
                                             <div>
-                                                <span><strong>Họ và tên:</strong> {hoSo.HoVaTen}</span>
+                                                <span style={{color: "#000"}} ><strong>Họ và tên:</strong> {hoSo.HoVaTen}</span>
                                             </div>
                                             <div>
-                                                <span><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</span>
+                                                <span style={{color: "#000"}} ><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</span>
                                             </div>
 
                                             <div>
-                                                <span><strong>CCCD/HC:</strong> {hoSo.SoCCCD_HoChieu}</span>
+                                                <span style={{color: "#000"}} ><strong>CCCD/HC:</strong> {hoSo.SoCCCD_HoChieu}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -393,7 +464,7 @@ const ThemSuaXoaXetNghiem = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Số lượng đơn thuốc <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Số lượng đơn thuốc <span className="required">*</span></label>
                             <input
                                 type="number"
                                 value={SoLuongDonThuoc}
@@ -405,7 +476,7 @@ const ThemSuaXoaXetNghiem = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Hướng dẫn sử dụng <span className="required">*</span></label>
+                            <label style={{color: "#000"}} >Hướng dẫn sử dụng <span className="required">*</span></label>
                             <textarea
                                 value={HuongDanSuDung}
                                 onChange={(e) => setHuongDanSuDung(e.target.value)}
