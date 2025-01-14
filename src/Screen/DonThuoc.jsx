@@ -134,17 +134,21 @@ const DonThuoc = () => {
                         <h2 className="card-title">Đơn thuốc {MaBenhNhans?'(Mã bệnh nhân: '+MaBenhNhans+')':''}</h2>
                     </div>
                     <div className="filter-container">
-                        <button className="add-button"
-                        onClick={() => handleAdd(item?item:'')}
-                        >
-                            Thêm đơn thuốc
-                        </button>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: '100%' }}>
+
+
                         <button
                             className="filter-button"
                             onClick={() => setShowFilters(!showFilters)}
                         >
                             <Filter size={20} /> {showFilters ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
                         </button>
+                        <button className="add-button"
+                        onClick={() => handleAdd(item?item:'')}
+                        >
+                            Thêm đơn thuốc
+                        </button>
+                        </div>
                     </div>
 
                     {/* Bộ lọc */}

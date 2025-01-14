@@ -10,9 +10,11 @@ const App = () => {
   useEffect(() => {
     const cookie = Cookies.get('Theme');
     if (cookie === 'dark') {
+      Cookies.set('Theme', 'dark', { expires: 1, path: '' });
       document.body.classList.add('dark-theme');
       document.body.classList.remove('light-theme');
     } else {
+      Cookies.set('Theme', 'light', { expires: 1, path: '' });
       document.body.classList.add('light-theme');
       document.body.classList.remove('dark-theme');
     }

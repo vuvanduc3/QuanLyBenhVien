@@ -91,18 +91,33 @@ const HoaDonChiTiet = () => {
             <Menu1 />
             <main className="main-content">
                 <Search1 />
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm theo tên dịch vụ, số lượng và đơn giá..."
-                    className="search-input"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button className="filter-toggle-button" onClick={() => setFilterVisible(!filterVisible)}>
-                    {filterVisible ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
-                </button>
+
+
+                <div className="content">
+                    <div className="card-header">
+                        <h2 className="page-title">Danh sách hóa đơn chi tiết</h2>
+
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+
+                        <button className="filter-toggle-button" onClick={() => setFilterVisible(!filterVisible)}>
+                            {filterVisible ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
+                        </button>
+
+                        <button className="add-button" onClick={() => navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'add' } })}>
+                            Thêm hóa đơn chi tiết
+                        </button>
+                    </div>
+
                 {filterVisible && (
                     <div className="filters">
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm theo tên dịch vụ, số lượng và đơn giá..."
+                            className="search-input"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                         <input
                             type="text"
                             placeholder="Lọc theo mã bệnh nhân"
@@ -136,19 +151,14 @@ const HoaDonChiTiet = () => {
                         </button>
                     </div>
                 )}
-                <div className="content">
-                    <div className="card-header">
-                        <h2 className="page-title">Danh sách hóa đơn chi tiết</h2>
-                        <button className="add-button" onClick={() => navigate('/themSuaXoaHoaDonChiTiet', { state: { action: 'add' } })}>
-                            Thêm hóa đơn chi tiết
-                        </button>
-                    </div>
+
                     <div className="table-container">
                         <table>
                             <thead>
                                 <tr>
                                     <th>#ID</th>
                                     <th>Mã hóa đơn</th>
+                                    <th>Mã bệnh nhân</th>
                                     <th>Tên dịch vụ/loại thuốc</th>
                                     <th>Số lượng</th>
                                     <th>Đơn giá</th>
@@ -160,6 +170,7 @@ const HoaDonChiTiet = () => {
                                 {paginatedData.map((item) => (
                                     <tr key={item.MaChiTiet}>
                                         <td>{item.MaChiTiet}</td>
+                                        <td>{item.MaBenhNhan}</td>
                                         <td>{item.MaHoaDon}</td>
                                         <td>{item.TenDichVu}</td>
                                         <td>{item.SoLuong}</td>
@@ -198,12 +209,12 @@ const HoaDonChiTiet = () => {
                     </div>
                     <div className="pagination">
                         <span>Trang {currentPage} của {totalPages}</span>
-                        <div className="pagination-controls">
+                        <div className="page-controls">
                             <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-                                <ChevronLeft size={20} />
+                                <i className="fas fa-chevron-left" style={{ fontSize: '20px' }}></i>
                             </button>
                             <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                                <ChevronRight size={20} />
+                               <i className="fas fa-chevron-right" style={{ fontSize: '20px' }}></i>
                             </button>
                         </div>
                     </div>

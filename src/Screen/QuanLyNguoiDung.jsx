@@ -3,6 +3,7 @@ import { Edit, Trash2 } from 'lucide-react';
 import '../Styles/QuanLyNguoiDung.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+import Cookies from 'js-cookie';
 
 const QuanLyNguoiDungScreen = () => {
     const [users, setUsers] = useState([]);
@@ -275,48 +276,44 @@ const QuanLyNguoiDungScreen = () => {
             <main className="main-content">
                 <Search1 />
                 <div className="content">
+                    <div class={Cookies.get('Theme') === 'dark'? "dark-theme" : "light-theme"}>
                     <div className="card-header">
                         <h2 className="card-title">Quản lý người dùng</h2>
-                        <div className="role-switcher">
-                            <button
-                                className={`role-btn ${viewRole === 'Bệnh nhân' ? 'active' : ''}`}
-                                onClick={() => setViewRole('Bệnh nhân')}>
-                                Danh sách bệnh nhân
-                            </button>
-                            <button
-                                className={`role-btn ${viewRole === 'Bác sĩ' ? 'active' : ''}`}
-                                onClick={() => setViewRole('Bác sĩ')}>
-                                Danh sách bác sĩ
-                            </button>
-                        </div>
-                        <button className="add-button" onClick={() => openModal('add')}>Thêm người dùng</button>
+
                     </div>
                     {showModal && (
-                        <div className="modal">
+                        <div className="modal3">
                             <div className="modal-content">
                                 <h3>{modalType === 'add' ? 'Thêm người dùng' : 'Chỉnh sửa người dùng'}</h3>
                                 <div>
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: "100%" }}>
                                         <img
                                             src={imageURL} // Hiển thị hình ảnh từ state imageURL
                                             alt="Hình"
                                             className="user-image-demo"
                                         />
                                     </div>
-                                    <div style={{ display: "flex", alignItems: 'center' }}>
-                                        <div style={{ width: "90%", marginRight: "10px" }}>
-                                            <label>Hình URL</label>
+                                    <div style={{ display: "flex", alignItems: 'center', justifyContent: "space-between", width: "100%" }}>
+                                        <div style={{ width: "70%", marginRight: "10px" }}>
+                                            <label
+                                             style={{
+                                                 color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                                 fontWeight: 'normal'
+                                             }}
+
+                                            >Hình URL</label>
                                             <input
                                                 type="text"
                                                 name="Hinh"
+                                                placeholder="Nhập địa chỉ hình ảnh https://..."
                                                 value={formData.Hinh}
                                                 onChange={handleInputChange}
                                             />
                                         </div>
                                         <button
                                             style={{
-                                                width: '10%',
-                                                marginTop: '15px',
+                                                width: '30%',
+                                                marginTop: '17px',
                                                 padding: "10px 20px",
                                                 border: "none",
                                                 height: "40px",
@@ -337,61 +334,100 @@ const QuanLyNguoiDungScreen = () => {
                                 </div>
 
                                 <div style={{ fontSize: "11px", paddingBottom: "15px", color: '#a6adba', fontWeight: 'bolder' }}>Thông tin chính</div>
-                                <div style={{ display: "flex" }}>
-                                    <div style={{ width: "50%", marginRight: "30px" }} >
-                                        <label>Mã người dùng</label>
+
+                                    <div style={{ width: "100%" }} >
+                                        <label
+                                               style={{
+                                                  color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                                  fontWeight: 'normal'
+                                               }}
+                                        >Mã người dùng</label>
                                         <input
                                             type="text"
+                                            placeholder="Tự động tăng"
                                             name="MaNguoiDung"
                                             value={formData.ID}
                                             readOnly
                                         />
                                     </div>
-                                    <div style={{ width: "50%" }}>
-                                        <label>Tên đầy đủ *</label>
+                                    <div style={{ width: "100%" }}>
+                                        <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+                                        >Tên đầy đủ *</label>
                                         <input
                                             type="text"
                                             name="TenDayDu"
+                                            placeholder="Nhập tên đầy đủ"
                                             value={formData.TenDayDu}
                                             onChange={handleInputChange}
                                         />
                                     </div>
-                                </div>
 
 
-                                <div style={{ display: "flex" }}>
-                                    <div style={{ width: "50%", marginRight: "30px" }}>
-                                        <label>E-mail *</label>
+
+
+                                    <div style={{ width: "100%" }}>
+                                        <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+                                        >E-mail *</label>
                                         <input
                                             type="email"
                                             name="Email"
+                                            placeholder="example@gmail.com"
                                             value={formData.Email}
                                             onChange={handleInputChange}
                                         />
                                     </div>
-                                    <div style={{ width: "50%" }}>
-                                        <label>Số điện thoại *</label>
+                                    <div style={{ width: "100%" }}>
+                                        <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+                                        >Số điện thoại *</label>
                                         <input
                                             type="text"
                                             name="SDT"
+                                            placeholder="Nhập số điện thoại"
                                             value={formData.SDT}
                                             onChange={handleInputChange}
                                         />
                                     </div>
-                                </div>
 
 
-                                <label>CCCD *</label>
+
+                                <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+
+                                >CCCD *</label>
                                 <input
                                     type="text"
                                     name="CCCD"
+                                    placeholder="Nhập CCCD/CMND"
                                     value={formData.CCCD}
                                     onChange={handleInputChange}
                                 />
 
                                 <div style={{ fontSize: "11px", paddingBottom: "15px", color: '#a6adba', fontWeight: 'bolder' }}>Thông tin Thêm</div>
 
-                                <label>Vai trò *</label>
+                                <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+                                >Vai trò *</label>
                                 <select
                                     name="VaiTro"
                                     value={formData.VaiTro}
@@ -406,11 +442,20 @@ const QuanLyNguoiDungScreen = () => {
 
                                 {formData.VaiTro === 'Bệnh nhân' && (
                                     <>
-                                        <div style={{ display: "flex" }}>
-                                            <div style={{ width: "50%", marginRight: "30px" }}>
-                                                <label>Giới tính *</label>
+
+                                            <div style={{ width: "100%" }}>
+                                                <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+
+
+                                                >Giới tính *</label>
                                                 <select
                                                     name="GioiTinh"
+
                                                     value={formData.GioiTinh} // Chọn giới tính hiện tại
                                                     onChange={handleInputChange}
                                                 >
@@ -420,20 +465,34 @@ const QuanLyNguoiDungScreen = () => {
                                                     <option value="Khác">Khác</option>
                                                 </select>
                                             </div>
-                                            <div style={{ width: "50%" }}>
-                                                <label>Tuổi *</label>
+                                            <div style={{ width: "100%" }}>
+                                                <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+                                                >Tuổi *</label>
                                                 <input
                                                     type="number"
                                                     name="Tuoi"
+                                                    placeholder="Nhập tuổi"
                                                     value={formData.Tuoi}
                                                     onChange={handleInputChange}
                                                 />
                                             </div>
-                                        </div>
-                                        <label>Địa chỉ *</label>
+
+                                        <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+                                        >Địa chỉ *</label>
                                         <input
                                             type="text"
                                             name="DiaChi"
+                                            placeholder="Nhập địa chỉ"
                                             value={formData.DiaChi}
                                             onChange={handleInputChange}
                                         />
@@ -445,17 +504,32 @@ const QuanLyNguoiDungScreen = () => {
 
                                 {formData.VaiTro === 'Bác sĩ' && (
                                     <>
-                                        <label>Chuyên môn *</label>
+                                        <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+
+                                        >Chuyên môn *</label>
                                         <input
                                             type="text"
                                             name="ChuyenMon"
+                                            placeholder="Nhập chuyên môn"
                                             value={formData.ChuyenMon}
                                             onChange={handleInputChange}
                                         />
-                                        <label>Phòng khám *</label>
+                                        <label
+                                              style={{
+                                               color: Cookies.get('Theme') === 'dark' ? '#000' : '#000',
+                                               fontWeight: 'normal'
+                                               }}
+
+                                        >Phòng khám *</label>
                                         <input
                                             type="text"
                                             name="PhongKham"
+                                            placeholder="Nhập khoa nội/khoa ngoại"
                                             value={formData.PhongKham}
                                             onChange={handleInputChange}
                                         />
@@ -471,93 +545,110 @@ const QuanLyNguoiDungScreen = () => {
                             </div>
                         </div>
                     )}
-
+                    <div className="role-switcher">
                     {/* Input tìm kiếm */}
-                    <div className="search-container">
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                        <div className="search-container">
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+
+                        <button
+                                className={`role-btn ${viewRole === 'Bệnh nhân' ? 'benhnhan' : ''}`}
+                                onClick={() => setViewRole('Bệnh nhân')}>
+                                Danh sách bệnh nhân
+                        </button>
+                        <button
+                                className={`role-btn ${viewRole === 'Bác sĩ' ? 'bacsi' : ''}`}
+                                onClick={() => setViewRole('Bác sĩ')}>
+                                Danh sách bác sĩ
+                        </button>
+
+                        <button className="add-button-nguoidung" onClick={() => openModal('add')}>Thêm người dùng</button>
                     </div>
 
                     {/* Bảng người dùng */}
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>#ID</th>
-                                <th>Hình</th>
-                                <th>Tên đầy đủ</th>
-                                <th>Email</th>
-                                <th>SĐT</th>
-                                <th>CCCD</th>
-                                <th>Vai trò</th>
-                                {viewRole === 'Bệnh nhân' && (
-                                    <>
-                                        <th>Địa chỉ</th>
-                                        <th>Tuổi</th>
-                                        <th>Giới tính</th>
-                                    </>
-                                )}
-                                {viewRole === 'Bác sĩ' && (
-                                    <>
-                                        <th>Chuyên môn</th>
-                                        <th>Phòng khám</th>
-                                    </>
-                                )}
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="13">Đang tải dữ liệu...</td>
-                                </tr>
-                            ) : (
-                                filteredResults.length > 0 ? (
-                                    currentUsers.map(user => (
-                                        <tr key={user.ID}>
-                                            <td>{user.ID}</td>
-                                            <td><img src={user.Hinh || 'default_image_url'} alt="Hình" className="user-image" /></td>
-                                            <td>{user.TenDayDu}</td>
-                                            <td>{user.Email}</td>
-                                            <td>{user.SDT}</td>
-                                            <td>{user.CCCD}</td>
-                                            <td>{user.VaiTro}</td>
-                                            {viewRole === 'Bệnh nhân' && (
-                                                <>
-                                                    <td>{user.DiaChi || ''}</td>
-                                                    <td>{user.Tuoi || ''}</td>
-                                                    <td>{user.GioiTinh || ''}</td>
-                                                </>
-                                            )}
-                                            {viewRole === 'Bác sĩ' && (
-                                                <>
-                                                    <td>{user.ChuyenMon || ''}</td>
-                                                    <td>{user.PhongKham || ''}</td>
-                                                </>
-                                            )}
-                                            <td>
-                                                <div className="actions">
-                                                    <button className="action-btn edit" onClick={() => openModal('edit', user)}><Edit /></button>
-                                                    <button className="action-btn remove" onClick={() => deleteUser(user.ID)}><Trash2 /></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="13">Không có kết quả tìm kiếm</td>
-                                    </tr>
-                                )
-                            )}
-                        </tbody>
 
-                    </table>
+                        <table className="table-quanlynguoidung">
+                            <thead>
+                                <tr >
+                                    <th >#ID</th>
+                                    <th>Hình</th>
+                                    <th>Tên đầy đủ</th>
+                                    <th>Email</th>
+                                    <th>SĐT</th>
+                                    <th>CCCD</th>
+                                    <th>Vai trò</th>
+                                    {viewRole === 'Bệnh nhân' && (
+                                        <>
+                                            <th>Địa chỉ</th>
+                                            <th>Tuổi</th>
+                                            <th>Giới tính</th>
+                                        </>
+                                    )}
+                                    {viewRole === 'Bác sĩ' && (
+                                        <>
+                                            <th>Chuyên môn</th>
+                                            <th>Phòng khám</th>
+                                        </>
+                                    )}
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="13">Đang tải dữ liệu...</td>
+                                    </tr>
+                                ) : (
+                                    filteredResults.length > 0 ? (
+                                        currentUsers.map(user => (
+                                            <tr key={user.ID}>
+                                                <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.ID}</td>
+                                                <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}><img src={user.Hinh || 'default_image_url'} alt="Hình" className="user-image" /></td>
+                                                <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.TenDayDu}</td>
+                                                <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.Email}</td>
+                                                <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.SDT}</td>
+                                                <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.CCCD}</td>
+                                                <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.VaiTro}</td>
+                                                {viewRole === 'Bệnh nhân' && (
+                                                    <>
+                                                        <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.DiaChi || ''}</td>
+                                                        <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.Tuoi || ''}</td>
+                                                        <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.GioiTinh || ''}</td>
+                                                    </>
+                                                )}
+                                                {viewRole === 'Bác sĩ' && (
+                                                    <>
+                                                        <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.ChuyenMon || ''}</td>
+                                                        <td style={{ color: Cookies.get('Theme') === 'dark' ? 'white' : '' }}>{user.PhongKham || ''}</td>
+                                                    </>
+                                                )}
+                                                <td>
+                                                    <div className="">
+                                                        <button className="action-btn-nguoidung" onClick={() => openModal('edit', user)}>Sửa</button>
+                                                        <button className="action-btn-bacsi" onClick={() => deleteUser(user.ID)}>Xóa</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="13">Không có kết quả tìm kiếm</td>
+                                        </tr>
+                                    )
+                                )}
+                            </tbody>
+
+                        </table>
+
+
 
                     {/* Phân trang */}
-                    <div className="pagination">
+                    <div className={Cookies.get('Theme') === 'dark' ?"pagination-dark":"pagination"}>
                         <button
                             onClick={() => paginate(currentPage - 1)}
                             disabled={currentPage === 1}>
@@ -570,6 +661,7 @@ const QuanLyNguoiDungScreen = () => {
                             Sau
                         </button>
                     </div>
+                </div>
                 </div>
             </main>
         </div>

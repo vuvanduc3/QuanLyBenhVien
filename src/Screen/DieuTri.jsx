@@ -17,7 +17,13 @@ const DieuTri = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // Trạng thái sắp xếp
-  const itemsPerPage = 10;
+  const [filter, setFilter] = useState({
+    MaDieuTri: '',
+    MaHoSo: '',
+    MaBenhNhan: '',
+  });
+
+  const itemsPerPage = 7;
 
   useEffect(() => {
     if (action === 'xem' && item) {
@@ -96,6 +102,38 @@ const DieuTri = () => {
     setFilteredData(sortedData);
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilter({
+      ...filter,
+      [name]: value,
+    });
+  };
+
+  const handleFilter = () => {
+    const filtered = originalData.filter(dieutri => {
+      const maDieuTri = String(dieutri.MaDieuTri);
+      const maHoSo = String(dieutri.MaHoSo);
+      const maBenhNhan = String(dieutri.MaBenhNhan);
+
+      return (
+        maDieuTri.includes(filter.MaDieuTri) &&
+        maHoSo.includes(filter.MaHoSo) &&
+        maBenhNhan.includes(filter.MaBenhNhan)
+      );
+    });
+    setFilteredData(filtered);
+  };
+
+  const resetFilter = () => {
+    setFilter({
+      MaDieuTri: '',
+      MaHoSo: '',
+      MaBenhNhan: '',
+    });
+    setFilteredData(originalData);
+  };
+
   useEffect(() => {
     fetchDieuTriData();
   }, []);
@@ -113,7 +151,37 @@ const DieuTri = () => {
         <div className="content">
           <div className="card-header">
             <h2>Điều trị {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}</h2>
-            <button className="add-btn" onClick={() => handleAdd(item?item:'')}>Thêm điều trị</button>
+
+          </div>
+
+          {/* Filter Section */}
+          <div className="filter-section">
+            <input
+              type="text"
+              name="MaDieuTri"
+              placeholder="Tìm theo Mã điều trị"
+              value={filter.MaDieuTri}
+              onChange={handleFilterChange}
+            />
+            <input
+              type="text"
+              name="MaHoSo"
+              placeholder="Tìm theo Mã hồ sơ"
+              value={filter.MaHoSo}
+              onChange={handleFilterChange}
+            />
+            <input
+              type="text"
+              name="MaBenhNhan"
+              placeholder="Tìm theo Mã bệnh nhân"
+              value={filter.MaBenhNhan}
+              onChange={handleFilterChange}
+            />
+            <button onClick={handleFilter}>Tìm</button>
+
+            <button onClick={resetFilter}>Reset</button>
+            <button className="add-btn" onClick={() => handleAdd(item ? item : '')}>Thêm điều trị</button>
+
           </div>
 
           <div className="table-container">
@@ -170,10 +238,10 @@ const DieuTri = () => {
             <span>Trang {currentPage} / {totalPages}</span>
             <div className="pagination-buttons">
               <button className="page-btn" onClick={() => handlePageChange(-1)} disabled={currentPage === 1}>
-                <ChevronLeft size={20} />
+                <i className="fas fa-chevron-left" style={{ fontSize: '20px' }}></i>
               </button>
               <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === totalPages}>
-                <ChevronRight size={20} />
+                <i className="fas fa-chevron-right" style={{ fontSize: '20px' }}></i>
               </button>
             </div>
           </div>

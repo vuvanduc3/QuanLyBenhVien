@@ -55,6 +55,8 @@ import Setting from './Screen/Setting';
 
 import QuenMatKhau from './Screen/QuenMatKhau';
 
+import ThongBao from './Screen/ThongBao';
+
 function App() {
   return (
     <Router>
@@ -116,6 +118,9 @@ function App() {
             <Route path="/CaiDat" element={<Setting/>} />
 
             <Route path="/QuenMatKhau" element={<QuenMatKhau/>} />
+
+
+            <Route path="/ThongBao" element={<ThongBao/>} />
 
 
           </Routes>

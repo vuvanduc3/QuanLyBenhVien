@@ -305,3 +305,59 @@ td {
   background: white;
 }
 
+/* Container cho phần bộ lọc */
+.filter-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Căn đều các phần tử trong hàng */
+  flex-wrap: wrap; /* Cho phép các phần tử bọc dòng khi không đủ không gian */
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section input {
+  flex-grow: 1; /* Các input sẽ giãn đều */
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: auto; /* Giảm chiều rộng cố định để các input giãn đầy */
+}
+
+.filter-section button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0; /* Đảm bảo các nút không bị thu nhỏ khi không gian chật */
+}
+
+/* Nút reset */
+.filter-section button[type="reset"] {
+  background-color: #f44336;
+}
+
+.filter-section button[type="reset"]:hover {
+  background-color: #e53935;
+}
+
+/* Cải thiện giao diện trên màn hình nhỏ */
+@media (max-width: 768px) {
+  .filter-section {
+    flex-direction: column; /* Các phần tử sẽ xếp theo chiều dọc trên màn hình nhỏ */
+    align-items: flex-start;
+  }
+
+  .filter-section input,
+  .filter-section button {
+    width: 100%; /* Các phần tử chiếm toàn bộ chiều rộng */
+  }
+}

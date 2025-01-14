@@ -207,30 +207,33 @@ const QuanLyThuoc = () => {
             <main className="main-content">
                 <Search1 />
 
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm theo tên, ID hoặc SĐT..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
-                />
-                <button className="add-button" onClick={handleChangeDMThuoc}>
-                    Thêm danh mục thuốc
-                </button>
+
+
                 <div className="content">
                     <div className="card-header">
                         <h2 className="card-title">Quản lý thuốc</h2>
-
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <button className="add-button" onClick={handleChangeDMThuoc}>
+                            Thêm danh mục thuốc
+                        </button>
                         <button className="add-button" onClick={handleChangeThuoc}>
-                            Thêm thuốc
+                              Thêm thuốc
                         </button>
                     </div>
-
                     <div className="filters">
                         <div className="filter-group">
                             <Filter />
 
                             {/* Thêm select box cho danh mục */}
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm theo tên, ID hoặc SĐT..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="search-input"
+                            />
+
                             <select
                                 value={filters.category}
                                 onChange={(e) => setFilters({ ...filters, category: e.target.value })}

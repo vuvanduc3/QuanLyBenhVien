@@ -105,27 +105,28 @@ const PaymentList = () => {
   return (
     <div className="container">
       <Menu1 />
-      <div className="main-content">
+      <div className="content">
         <Search1 />
 
         <h1 className="page-title">Danh sách thanh toán</h1>
-
-        <div className="filter-container">
-          <select onChange={handleFilterChange} className="status-filter">
-            <option value="all">Tất cả</option>
-            <option value="paid">Đơn đã thanh toán</option>
-            <option value="unpaid">Đơn không thành công</option>
-            <option value="wait">Đơn chờ xử lý</option>
-          </select>
-        </div>
-        <div className="filter-container">
-          <input
-            type="text"
-            placeholder="Tìm kiếm"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="payment_search-input"
-          />
+        <div className="filter-section">
+          <div className="filter-container">
+            <select onChange={handleFilterChange} className="status-filter">
+              <option value="all">Tất cả</option>
+              <option value="paid">Đơn đã thanh toán</option>
+              <option value="unpaid">Đơn không thành công</option>
+              <option value="wait">Đơn chờ xử lý</option>
+            </select>
+          </div>
+          <div className="filter-container">
+            <input
+              type="text"
+              placeholder="Tìm kiếm"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="payment_search-input"
+            />
+          </div>
         </div>
 
         {/* Hiển thị loading khi đang tải dữ liệu */}

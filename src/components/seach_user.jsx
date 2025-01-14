@@ -16,6 +16,14 @@ export default function Search1() {
     const [VaiTro, setVaiTro] = useState('');
     const navigate = useNavigate();
 
+    const [soThongBaoChuaDoc, setSoThongBaoChuaDoc] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const [chuaDocNotifications, setChuaDocNotifications] = useState([]); // Danh sách thông báo chưa đọc
+    const [notifications, setNotifications] = useState([]);
+
+
+
     const handleNavigateToCaiDatThongTinCaNhan = () => {
         navigate("/quan-ly-tai-khoan"); // Điều hướng đến trang đăng ký
     };
@@ -92,6 +100,33 @@ export default function Search1() {
         }
       }, [theme]);
 
+      useEffect(() => {
+        fetchNotifications();
+      }, []); // Chỉ chạy khi component được mount
+
+      const fetchNotifications = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api/thongbao"); // Gọi API
+            const data = await response.json();
+
+            if (data.success) {
+              setNotifications(data.data);
+
+              // Tính số lượng thông báo chưa đọc
+              const chuaDoc = data.data.filter((thongBao) => thongBao.DaDoc === 0);
+              setChuaDocNotifications(chuaDoc); // Lưu danh sách chưa đọc vào state
+              setSoThongBaoChuaDoc(chuaDoc.length); // Lưu số lượng chưa đọc vào state
+            } else {
+              console.error("❌ Lỗi lấy dữ liệu thông báo:", data.message);
+            }
+          } catch (err) {
+            console.error("❌ Lỗi khi gọi API:", err.message);
+          } finally {
+            setLoading(false); // Tắt trạng thái loading
+      }
+    };
+
+
       // Hàm chuyển đổi giữa các theme
       const toggleTheme = () => {
         setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -100,30 +135,92 @@ export default function Search1() {
       };
       const iconColor = theme === 'light' ? '#000' : '#000'; // Đảm bảo khai báo iconColor
 
+    const handleMarkAsRead = async (notificationID) => {
+      try {
+        // Gửi yêu cầu cập nhật trạng thái DaDoc của thông báo
+        const response = await fetch(`http://localhost:5000/api/thongbao/${notificationID}`, {
+          method: "PUT", // Cập nhật thông báo
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            DaDoc: 1, // Đánh dấu đã đọc
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Cập nhật lại danh sách thông báo đã đọc
+          setNotifications((prevNotifications) =>
+            prevNotifications.map((notification) =>
+              notification.ID === notificationID
+                ? { ...notification, DaDoc: 1 }
+                : notification
+            )
+          );
+          fetchNotifications();
+        } else {
+          console.error("❌ Lỗi khi cập nhật thông báo:", data.message);
+        }
+      } catch (err) {
+        console.error("❌ Lỗi khi gửi yêu cầu:", err.message);
+      }
+    };
+
+
     return (
 
     <div className="top-header">
-
-
         <div className="search-container">
-
         </div>
-        <div className="user-profile">
-            <div className="notification">
-                 <i class="fa-solid fa-phone-volume" style={{
-                       fontSize: '20px',
-                        color: iconColor,
-                       padding: '0px 0px',
+        <div className="user-profile"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        >
+            <div className="notification"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                >
+                     <i class="fa-solid fa-phone-volume" style={{
+                           fontSize: '20px',
+                           color: iconColor,
+                           padding: '0px 0px',
+                           }}></i>
+                <span className="notification-badge">{soThongBaoChuaDoc}</span>
+                {isHovered && (
+                  <div className="notification-popup">
+                    {chuaDocNotifications.length > 0 ? (
+                      chuaDocNotifications.map((notification) => (
+                        <div key={notification.ID} className="popup-notification-item">
+                          <div>
+                            <h4>{notification.Name}</h4>
+                            <span
+                                className="close-btn"
+                                onClick={() => handleMarkAsRead(notification.ID)} // Hàm đánh dấu đã đọc
+                              >
+                                &times; {/* Dấu X */}
+                            </span>
+
+                          </div>
+                          <p>{new Date(notification.Ngay).toLocaleString()}</p>
+
+                        </div>
+                      ))
+                    ) : (
+                      <p>Không có thông báo chưa đọc</p>
+                    )}
+                  </div>
+                )}
 
 
-                       }}></i>
-                    <span className="notification-badge">0</span>
-                </div>
-                <img src={ Hinh || 'default_image_url'} alt="Hình" className="user-image" onClick={handleNavigateToCaiDatThongTinCaNhan} />
+            </div>
 
-                <div className="user-info" onClick={handleNavigateToCaiDatThongTinCaNhan}>
-                    <span className="user-name-dark">{HoVaTen}</span>
-                    <span className="user-role" >{VaiTro}</span>
+            <img src={ Hinh || 'default_image_url'} alt="Hình" className="user-image" onClick={handleNavigateToCaiDatThongTinCaNhan} />
+
+            <div className="user-info" onClick={handleNavigateToCaiDatThongTinCaNhan}>
+                <span className="user-name-dark">{HoVaTen}</span>
+                <span className="user-role" >{VaiTro}</span>
             </div>
         </div>
 
