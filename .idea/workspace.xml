@@ -5,35 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0006d95e-39ec-46cc-b70a-4dec8b8d531b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/serve.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/serve.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/AddPayment.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/AddPayment.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDHoaDonChiTiet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDHoaDonChiTiet.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CaiDatThongTin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CaiDatThongTin.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/DieuTri.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DieuTri.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/EditPayment.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/EditPayment.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screen/HoSoBenhAn.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/HoSoBenhAn.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/InsuranceList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/InsuranceList.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/InvoiceForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/InvoiceForm.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screen/LichKham.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/LichKham.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/PaymentList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/PaymentList.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyHoaDonChiTiet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyHoaDonChiTiet.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyNguoiDung.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyNguoiDung.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyVatTu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyVatTu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/Setting.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/Setting.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/DieuTri.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/DieuTri.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/LichKham.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/LichKham.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/Login.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Login.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/PaymentList.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/PaymentList.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/QuanLyNguoiDung.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/QuanLyNguoiDung.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/Register.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Register.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/XetNghiem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/XetNghiem.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Styles/Setting.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Setting.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Menu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/seach_user.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/seach_user.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

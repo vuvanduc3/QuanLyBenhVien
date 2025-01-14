@@ -168,6 +168,13 @@ const CRUDLichKham = () => {
           const data = await response.json();
           if (data.success) {
             alert("Thêm lịch hẹn thành công!");
+
+            const tenThongBao = "Thông báo: Thêm lịch hẹn cho bệnh nhân "+ selectedPatient.TenDayDu +" với bác sĩ " + selectedDoctor.TenDayDu+ " thành công tại phòng khám " +formData.PhongKham +" !";
+            const loaiThongBao = "Lịch hẹn";
+            const chucNang = "Thêm dữ liệu";
+
+            themThongBao(tenThongBao, loaiThongBao, chucNang);
+
           } else {
             alert(data.message);
           }
@@ -183,6 +190,13 @@ const CRUDLichKham = () => {
           const data = await response.json();
           if (data.success) {
             alert("Cập nhật lịch hẹn thành công!");
+
+            const tenThongBao = "Thông báo: Sửa lịch hẹn cho bệnh nhân có Mã lịch khám: "+ item.MaLichKham +" - Họ tên:  " + selectedPatient.TenDayDu +" thành công!";
+            const loaiThongBao = "Lịch hẹn";
+            const chucNang = "Sửa dữ liệu";
+
+            themThongBao(tenThongBao, loaiThongBao, chucNang);
+
           } else {
             alert(data.message);
           }
@@ -192,6 +206,35 @@ const CRUDLichKham = () => {
         alert("Đã xảy ra lỗi, vui lòng thử lại!");
       }
   };
+
+  const themThongBao = async (name, type, feature ) => {
+    if (!name || !type || !feature) {
+      alert("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    const notification = { Name: name, Loai: type, ChucNang: feature };
+
+    try {
+            const response = await fetch("http://localhost:5000/api/thongbao", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(notification),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                window.location.reload(true);
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+          console.error("Lỗi khi thêm thông báo:", error);
+          alert("Có lỗi xảy ra!");
+        }
+  }
 
 
 

@@ -223,88 +223,96 @@ const QuanLyThuoc = () => {
                     </div>
                     <div className="filters">
                         <div className="filter-group">
-                            <Filter />
 
-                            {/* Thêm select box cho danh mục */}
                             <input
                                 type="text"
                                 placeholder="Tìm kiếm theo tên, ID hoặc SĐT..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="search-input"
+
                             />
 
-                            <select
-                                value={filters.category}
-                                onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                                className="filter-select"
-                            >
-                                <option value="">Tất cả danh mục</option>
-                                {categories.map(category => (
-                                    <option key={category.MaDanhMuc} value={category.MaDanhMuc}>
-                                        {category.TenDanhMuc}
-                                    </option>
-                                ))}
-                            </select>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                {/* Thêm select box cho danh mục */}
 
-                            <select
-                                value={filters.sortBy}
-                                onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-                            >
-                                <option value="">Sắp xếp theo</option>
-                                <option value="name">Tên thuốc</option>
-                                <option value="price">Giá thuốc</option>
-                                <option value="quantity">Số lượng</option>
-                            </select>
 
-                            <select
-                                value={filters.sortOrder}
-                                onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value })}
-                            >
-                                <option value="asc">Tăng dần</option>
-                                <option value="desc">Giảm dần</option>
-                            </select>
+                                <select
+                                    value={filters.category}
+                                    onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                                    className="filter-select"
+                                >
+                                    <option value="">Tất cả danh mục</option>
+                                    {categories.map(category => (
+                                        <option key={category.MaDanhMuc} value={category.MaDanhMuc}>
+                                            {category.TenDanhMuc}
+                                        </option>
+                                    ))}
+                                </select>
 
-                            <div className="filter-price">
-                                <input
-                                    type="number"
-                                    placeholder="Giá từ"
-                                    value={filters.minPrice}
-                                    onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                                    className="filter-input"
-                                />
-                                <input
-                                    type="number"
-                                    placeholder="Giá đến"
-                                    value={filters.maxPrice}
-                                    onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                                    className="filter-input"
-                                />
+                                <select
+                                    value={filters.sortBy}
+                                    onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+                                >
+                                    <option value="">Sắp xếp theo</option>
+                                    <option value="name">Tên thuốc</option>
+                                    <option value="price">Giá thuốc</option>
+                                    <option value="quantity">Số lượng</option>
+                                </select>
+
+                                <select
+                                    value={filters.sortOrder}
+                                    onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value })}
+                                >
+                                    <option value="asc">Tăng dần</option>
+                                    <option value="desc">Giảm dần</option>
+                                </select>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                                <div className="filter-price">
+                                    <input
+                                        type="number"
+                                        placeholder="Giá từ"
+                                        value={filters.minPrice}
+                                        onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                                        className="filter-input"
+                                    />
+                                    <input
+                                        type="number"
+                                        placeholder="Giá đến"
+                                        value={filters.maxPrice}
+                                        onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                                        className="filter-input"
+                                    />
+                                </div>
+
+
+                                <div className="filter-quantity">
+                                    <input
+                                        type="number"
+                                        placeholder="SL từ"
+                                        value={filters.minQuantity}
+                                        onChange={(e) => setFilters({ ...filters, minQuantity: e.target.value })}
+                                        className="filter-input"
+                                    />
+                                    <input
+                                        type="number"
+                                        placeholder="SL đến"
+                                        value={filters.maxQuantity}
+                                        onChange={(e) => setFilters({ ...filters, maxQuantity: e.target.value })}
+                                        className="filter-input"
+                                    />
+                                </div>
+                                 <button className="btn-reset" onClick={handleResetFilters}>
+                                      Reset Filter
+                                 </button>
                             </div>
 
-                            <div className="filter-quantity">
-                                <input
-                                    type="number"
-                                    placeholder="SL từ"
-                                    value={filters.minQuantity}
-                                    onChange={(e) => setFilters({ ...filters, minQuantity: e.target.value })}
-                                    className="filter-input"
-                                />
-                                <input
-                                    type="number"
-                                    placeholder="SL đến"
-                                    value={filters.maxQuantity}
-                                    onChange={(e) => setFilters({ ...filters, maxQuantity: e.target.value })}
-                                    className="filter-input"
-                                />
-                            </div>
                         </div>
 
                         <div className="actions">
-                            <button className="btn-reset" onClick={handleResetFilters}>
-                                Reset Filter
-                            </button>
+
                         </div>
+
                     </div>
 
                     <table className="table">

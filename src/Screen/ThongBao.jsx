@@ -25,26 +25,28 @@ const App = () => {
   }, [theme]);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/thongbao");
-        const data = await response.json();
 
-        if (data.success) {
-          setNotifications(data.data);
-          setFilteredNotifications(data.data); // Lưu tất cả thông báo ban đầu
-        } else {
-          console.error("❌ Lỗi lấy dữ liệu thông báo:", data.message);
-        }
-      } catch (err) {
-        console.error("❌ Lỗi khi gọi API:", err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchNotifications();
   }, []);
+
+  const fetchNotifications = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/api/thongbao");
+          const data = await response.json();
+
+          if (data.success) {
+            setNotifications(data.data);
+            setFilteredNotifications(data.data); // Lưu tất cả thông báo ban đầu
+          } else {
+            console.error("❌ Lỗi lấy dữ liệu thông báo:", data.message);
+          }
+        } catch (err) {
+          console.error("❌ Lỗi khi gọi API:", err.message);
+        } finally {
+          setLoading(false);
+        }
+  };
 
   const handleItemClick = (id) => {
     setActiveId(id); // Đặt ID của thông báo được nhấn
@@ -105,6 +107,42 @@ const App = () => {
     }
   };
 
+  const deleteNotification = async (notificationID) => {
+    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa thông báo này?");
+
+    if (!confirmDelete) {
+      return; // Nếu người dùng chọn Cancel, dừng hàm lại
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/thongbao/${notificationID}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setNotifications((prevNotifications) =>
+        prevNotifications.filter((notification) => notification.ID !== notificationID)
+
+        );
+        setFilteredNotifications((prevNotifications) =>
+          prevNotifications.filter((notification) => notification.ID !== notificationID)
+        );
+        fetchNotifications();
+      } else {
+        console.error("❌ Lỗi khi xóa thông báo:", data.message);
+      }
+    } catch (err) {
+      console.error("❌ Lỗi khi gửi yêu cầu xóa:", err.message);
+    }
+  };
+
+
+
   return (
     <div className="container">
       <Menu1 />
@@ -153,11 +191,26 @@ const App = () => {
                 <p>{notification.ChucNang}</p>
 
                 {/* Button để đánh dấu thông báo là đã đọc */}
-                {notification.DaDoc === 0 && (
-                  <button onClick={() => markAsRead(notification.ID)}>
-                    Đánh dấu đã đọc
-                  </button>
-                )}
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    {notification.DaDoc === 0 && (
+                      <div className="button-group">
+                          <button
+                          style={{ marginRight: "5px"}}
+                          onClick={() => markAsRead(notification.ID)}>
+                            Đánh dấu đã đọc
+                          </button>
+                      </div>
+                    )}
+                    <div className="button-group">
+                        <button
+                        style={{ background: "red" }}
+                        onClick={() => deleteNotification(notification.ID)}
+                        className="action-button red">
+                            Xóa thông báo
+                        </button>
+                    </div>
+                </div>
+
               </div>
             ))}
           </div>

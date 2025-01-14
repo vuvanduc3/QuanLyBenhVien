@@ -209,6 +209,7 @@ const MedicalRecordList = () => {
                                     <button
                                         className="clear-filters-button"
                                         onClick={clearFilters}
+
                                     >
                                         Xóa bộ lọc
                                     </button>

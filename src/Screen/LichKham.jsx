@@ -134,6 +134,35 @@ const LichKham = () => {
     setCurrentPage(1); // Reset to first page after reset
   };
 
+  const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
+
   return (
     <div className="container">
       <Menu1 />
@@ -181,6 +210,7 @@ const LichKham = () => {
                   <th onClick={() => handleSort('MaLichKham')}>Mã lịch khám {sort.column === 'MaLichKham' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>
                   <th onClick={() => handleSort('MaBenhNhan')}>Mã bệnh nhân {sort.column === 'MaBenhNhan' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>
                   <th onClick={() => handleSort('MaBacSi')}>Mã bác sĩ {sort.column === 'MaBacSi' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>
+                  <th onClick={() => handleSort('TenDayDu')}>Tên đầy đủ {sort.column === 'TenDayDu' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>
                   <th onClick={() => handleSort('MaBenhNhanKhamBenh')}>Mã khám bệnh {sort.column === 'MaBenhNhanKhamBenh' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>
                   <th onClick={() => handleSort('NgayKham')}>Ngày khám {sort.column === 'NgayKham' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>
                   <th onClick={() => handleSort('GioKham')}>Giờ khám {sort.column === 'GioKham' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>
@@ -214,6 +244,7 @@ const LichKham = () => {
                         <td>{lichKham.MaLichKham}</td>
                         <td>{lichKham.MaBenhNhan}</td>
                         <td>{lichKham.MaBacSi}</td>
+                        <td>{lichKham.TenDayDu}</td>
                         <td>{lichKham.MaBenhNhanKhamBenh}</td>
                         <td>{formattedDate}</td>
                         <td>{formattedTime}</td>
@@ -230,6 +261,13 @@ const LichKham = () => {
                                       { method: 'DELETE' }
                                     );
                                     fetchInvoicesFromAPI();
+
+                                    const tenThongBao = "Thông báo: Xóa lịch hẹn cho bệnh nhân có Mã lịch khám: "+ lichKham.MaLichKham +"- Họ tên: "+ lichKham.TenDayDu +" thành công!";
+                                    const loaiThongBao = "Lịch hẹn";
+                                    const chucNang = "Xóa dữ liệu";
+
+                                    themThongBao(tenThongBao, loaiThongBao, chucNang);
+
                                   }
                                 }}
                               >Xóa</button>
