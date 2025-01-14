@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Menu1 from '../components/Menu';
 import '../Styles/ChiTietThuoc.css';
+import Search1 from '../components/seach_user';
 
 const ChiTietThuoc = () => {
     const [thuoc, setThuoc] = useState(null);
@@ -63,6 +64,35 @@ const ChiTietThuoc = () => {
             [name]: value
         }));
     };
+const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     const handleSave = async () => {
         try {
@@ -85,10 +115,17 @@ const ChiTietThuoc = () => {
 
             if (data.success) {
                 toast.success('Cập nhật thuốc thành công!');
+
+                const tenThongBao = "Thông báo: Sửa thuốc có 'Mã : "+ id +" - Tên thuốc: "+editedData.TenThuoc+"' thành công!";
+                const loaiThongBao = "Thuốc";
+                const chucNang = "Sửa dữ liệu";
+                themThongBao(tenThongBao, loaiThongBao, chucNang);
+
                 setThuoc(editedData);
                 setIsEditing(false);
                 // Refresh dữ liệu để cập nhật tên danh mục
                 fetchThuocDetail();
+
             } else {
                 throw new Error(data.message);
             }
@@ -118,13 +155,37 @@ const ChiTietThuoc = () => {
         <div className="container">
             <ToastContainer position="top-right" />
             <Menu1 />
+
             <main className="main-content">
+                    <div style={{
+                        borderRadius: "10px",
+                        marginBottom: "10px",
+                        background: '#fff',
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width:"100%" }}>
+                        <button  style={{
+                                    marginLeft: "30px",
+                                    padding: "10px 20px",
+                                    backgroundColor: "#007bff",
+                                    color: "#fff",
+                                    height: "50px",
+                                    border: "none",
+                                    borderRadius: "5px",
+                                    cursor: "pointer",
+                                  }}
+                        onClick={() => navigate(-1)}
+                        >
+                        <ChevronLeft />
+                        </button>
+                        <div>
+                            <Search1 />
+                        </div>
+                    </div>
                 <div className="detail-container">
                     <div className="detail-header">
                         <div className="header-left">
-                            <button className="back-button" onClick={() => navigate('/quanlythuoc')}>
-                                <ChevronLeft />
-                            </button>
                             <h2>Chi tiết thuốc</h2>
                         </div>
 

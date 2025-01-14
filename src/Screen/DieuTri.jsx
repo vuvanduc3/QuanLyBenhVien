@@ -24,6 +24,35 @@ const DieuTri = () => {
   });
 
   const itemsPerPage = 7;
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
+
 
   useEffect(() => {
     if (action === 'xem' && item) {
@@ -75,11 +104,17 @@ const DieuTri = () => {
     navigate('/CRUDDieuTri', { state: { action: 'edit', item } });
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (item) => {
     if (window.confirm('Bạn có chắc muốn xóa?')) {
       try {
-        await fetch(`http://localhost:5000/api/DieuTri/${id}`, { method: 'DELETE' });
-        fetchDieuTriData();
+         await fetch(`http://localhost:5000/api/DieuTri/${item.MaDieuTri}`, { method: 'DELETE' });
+         const tenThongBao = "Thông báo: Xóa điều trị có 'Mã điều trị: "+item.MaDieuTri +" - Mã hồ sơ : "+ item.MaHoSo +" - Tên mô tả: "+ item.MoTa +"' thành công!";
+         const loaiThongBao = "Điều trị";
+         const chucNang = "Xóa dữ liệu";
+
+         fetchDieuTriData();
+         themThongBao(tenThongBao, loaiThongBao, chucNang);
+
       } catch (error) {
         console.error('Lỗi khi xóa điều trị:', error);
       }
@@ -147,104 +182,109 @@ const DieuTri = () => {
     <div className="container">
       <Menu1 />
       <main className="main-content">
-        <Search1 />
-        <div className="content">
-          <div className="card-header">
-            <h2>Điều trị {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}</h2>
+        <div
+         className="main-content"
+        >
+            <Search1 />
+        </div>
+        <div className="main-content" style={{ marginTop: "10px" }}>
+            <div className="content">
+              <div className="card-header">
+                <h2>Điều trị {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}</h2>
+              </div>
 
-          </div>
+              {/* Filter Section */}
+              <div className="filter-section">
+                <input
+                  type="text"
+                  name="MaDieuTri"
+                  placeholder="Tìm theo Mã điều trị"
+                  value={filter.MaDieuTri}
+                  onChange={handleFilterChange}
+                />
+                <input
+                  type="text"
+                  name="MaHoSo"
+                  placeholder="Tìm theo Mã hồ sơ"
+                  value={filter.MaHoSo}
+                  onChange={handleFilterChange}
+                />
+                <input
+                  type="text"
+                  name="MaBenhNhan"
+                  placeholder="Tìm theo Mã bệnh nhân"
+                  value={filter.MaBenhNhan}
+                  onChange={handleFilterChange}
+                />
+                <button onClick={handleFilter}>Tìm</button>
 
-          {/* Filter Section */}
-          <div className="filter-section">
-            <input
-              type="text"
-              name="MaDieuTri"
-              placeholder="Tìm theo Mã điều trị"
-              value={filter.MaDieuTri}
-              onChange={handleFilterChange}
-            />
-            <input
-              type="text"
-              name="MaHoSo"
-              placeholder="Tìm theo Mã hồ sơ"
-              value={filter.MaHoSo}
-              onChange={handleFilterChange}
-            />
-            <input
-              type="text"
-              name="MaBenhNhan"
-              placeholder="Tìm theo Mã bệnh nhân"
-              value={filter.MaBenhNhan}
-              onChange={handleFilterChange}
-            />
-            <button onClick={handleFilter}>Tìm</button>
+                <button onClick={resetFilter}>Reset</button>
+                <button className="add-btn" onClick={() => handleAdd(item ? item : '')}>Thêm điều trị</button>
 
-            <button onClick={resetFilter}>Reset</button>
-            <button className="add-btn" onClick={() => handleAdd(item ? item : '')}>Thêm điều trị</button>
+              </div>
 
-          </div>
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th onClick={() => sortData('MaDieuTri')}>Mã điều trị</th>
+                      <th onClick={() => sortData('MaBenhNhan')}>Mã bệnh nhân</th>
+                      <th onClick={() => sortData('MaHoSo')}>Hồ sơ bệnh án</th>
+                      <th onClick={() => sortData('MoTa')}>Mô tả</th>
+                      <th onClick={() => sortData('PhuongPhap')}>Phương pháp</th>
+                      <th onClick={() => sortData('KetQua')}>Kết quả</th>
+                      <th onClick={() => sortData('NgayDieuTri')}>Ngày điều trị</th>
+                      <th onClick={() => sortData('DaSuDung')}>Đã sử dụng</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr><td colSpan="9">Đang tải dữ liệu...</td></tr>
+                    ) : (
+                      displayedData.map((dieutri) => {
+                        const formattedDate = new Date(dieutri.NgayDieuTri).toLocaleDateString('vi-VN', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        });
 
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th onClick={() => sortData('MaDieuTri')}>Mã điều trị</th>
-                  <th onClick={() => sortData('MaBenhNhan')}>Mã bệnh nhân</th>
-                  <th onClick={() => sortData('MaHoSo')}>Hồ sơ bệnh án</th>
-                  <th onClick={() => sortData('MoTa')}>Mô tả</th>
-                  <th onClick={() => sortData('PhuongPhap')}>Phương pháp</th>
-                  <th onClick={() => sortData('KetQua')}>Kết quả</th>
-                  <th onClick={() => sortData('NgayDieuTri')}>Ngày điều trị</th>
-                  <th onClick={() => sortData('DaSuDung')}>Đã sử dụng</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr><td colSpan="9">Đang tải dữ liệu...</td></tr>
-                ) : (
-                  displayedData.map((dieutri) => {
-                    const formattedDate = new Date(dieutri.NgayDieuTri).toLocaleDateString('vi-VN', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    });
+                        return (
+                          <tr key={dieutri.MaDieuTri}>
+                            <td>{dieutri.MaDieuTri}</td>
+                            <td>{dieutri.MaBenhNhan}</td>
+                            <td>{dieutri.MaHoSo}</td>
+                            <td>{dieutri.MoTa}</td>
+                            <td>{dieutri.PhuongPhap}</td>
+                            <td>{dieutri.KetQua}</td>
+                            <td>{formattedDate}</td>
+                            <td>{dieutri.DaSuDung}</td>
+                            <td>
+                              <div className="action-buttons">
+                                <button className="action-btn green" onClick={() => handleEdit(dieutri)}>Sửa</button>
+                                <button className="action-btn red" onClick={() => handleDelete(dieutri)}>Xóa</button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
-                    return (
-                      <tr key={dieutri.MaDieuTri}>
-                        <td>{dieutri.MaDieuTri}</td>
-                        <td>{dieutri.MaBenhNhan}</td>
-                        <td>{dieutri.MaHoSo}</td>
-                        <td>{dieutri.MoTa}</td>
-                        <td>{dieutri.PhuongPhap}</td>
-                        <td>{dieutri.KetQua}</td>
-                        <td>{formattedDate}</td>
-                        <td>{dieutri.DaSuDung}</td>
-                        <td>
-                          <div className="action-buttons">
-                            <button className="action-btn green" onClick={() => handleEdit(dieutri)}>Sửa</button>
-                            <button className="action-btn red" onClick={() => handleDelete(dieutri.MaDieuTri)}>Xóa</button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="pagination">
-            <span>Trang {currentPage} / {totalPages}</span>
-            <div className="pagination-buttons">
-              <button className="page-btn" onClick={() => handlePageChange(-1)} disabled={currentPage === 1}>
-                <i className="fas fa-chevron-left" style={{ fontSize: '20px' }}></i>
-              </button>
-              <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === totalPages}>
-                <i className="fas fa-chevron-right" style={{ fontSize: '20px' }}></i>
-              </button>
+              <div className="pagination">
+                <span>Trang {currentPage} / {totalPages}</span>
+                <div className="pagination-buttons">
+                  <button className="page-btn" onClick={() => handlePageChange(-1)} disabled={currentPage === 1}>
+                    <i className="fas fa-chevron-left" style={{ fontSize: '20px' }}></i>
+                  </button>
+                  <button className="page-btn" onClick={() => handlePageChange(1)} disabled={currentPage === totalPages}>
+                    <i className="fas fa-chevron-right" style={{ fontSize: '20px' }}></i>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
         </div>
       </main>
     </div>

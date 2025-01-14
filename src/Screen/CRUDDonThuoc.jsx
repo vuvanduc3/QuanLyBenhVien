@@ -5,6 +5,7 @@ import '../Styles/CRUDDonThuoc.css';
 import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
 
 const ThemSuaXoaXetNghiem = () => {
     const navigate = useNavigate();
@@ -76,7 +77,34 @@ const ThemSuaXoaXetNghiem = () => {
         fetchThuocs();
     }, []);
 
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     // Lấy danh sách mã hồ sơ từ API
     useEffect(() => {
@@ -217,7 +245,21 @@ const ThemSuaXoaXetNghiem = () => {
             const result = await response.json();
 
             if (result.success) {
-                toast.success(action === 'edit' ? 'Sửa đơn thuốc thành công!' : 'Thêm đơn thuốc thành công!');
+                alert(action === 'edit' ? 'Sửa đơn thuốc thành công!' : 'Thêm đơn thuốc thành công!');
+                if(action === 'edit'){
+                     const tenThongBao = "Thông báo: Sửa đơn thuốc có 'Mã hồ sơ : "+ MaHoSo +" - Mã bệnh nhân: "+ MaBenhNhan +" - Tên thuốc "+ TenThuoc +" ' thành công!";
+                     const loaiThongBao = "Đơn thuốc";
+                     const chucNang = "Sửa dữ liệu";
+
+                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+                }
+                else{
+                     const tenThongBao = "Thông báo: Thêm đơn thuốc có 'Mã hồ sơ : "+ MaHoSo +" - Mã bệnh nhân: "+ MaBenhNhan +" - Tên thuốc "+ TenThuoc +" ' thành công!";
+                     const loaiThongBao = "Đơn thuốc";
+                     const chucNang = "Thêm dữ liệu";
+
+                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+                }
 
             } else {
                 setError(result.message);
@@ -259,8 +301,36 @@ const ThemSuaXoaXetNghiem = () => {
 
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+                <div
+                className="main-content"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+                <div className="main-content">
                     <div className="card-header">
                         <h2 className="card-title">{action === 'edit' ? 'Sửa đơn thuốc' : 'Thêm đơn thuốc'}</h2>
                     </div>

@@ -13,6 +13,9 @@ const App = () => {
   const [selectedType, setSelectedType] = useState(null); // Loại thông báo được chọn
   const [activeButton, setActiveButton] = useState(null); // Button đang được nhấn
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   useEffect(() => {
     const cookie = Cookies.get("Theme");
     if (cookie === "dark") {
@@ -25,27 +28,25 @@ const App = () => {
   }, [theme]);
 
   useEffect(() => {
-
-
     fetchNotifications();
   }, []);
 
   const fetchNotifications = async () => {
-        try {
-          const response = await fetch("http://localhost:5000/api/thongbao");
-          const data = await response.json();
+    try {
+      const response = await fetch("http://localhost:5000/api/thongbao");
+      const data = await response.json();
 
-          if (data.success) {
-            setNotifications(data.data);
-            setFilteredNotifications(data.data); // Lưu tất cả thông báo ban đầu
-          } else {
-            console.error("❌ Lỗi lấy dữ liệu thông báo:", data.message);
-          }
-        } catch (err) {
-          console.error("❌ Lỗi khi gọi API:", err.message);
-        } finally {
-          setLoading(false);
-        }
+      if (data.success) {
+        setNotifications(data.data);
+        setFilteredNotifications(data.data); // Lưu tất cả thông báo ban đầu
+      } else {
+        console.error("❌ Lỗi lấy dữ liệu thông báo:", data.message);
+      }
+    } catch (err) {
+      console.error("❌ Lỗi khi gọi API:", err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleItemClick = (id) => {
@@ -126,8 +127,7 @@ const App = () => {
 
       if (data.success) {
         setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification.ID !== notificationID)
-
+          prevNotifications.filter((notification) => notification.ID !== notificationID)
         );
         setFilteredNotifications((prevNotifications) =>
           prevNotifications.filter((notification) => notification.ID !== notificationID)
@@ -141,7 +141,14 @@ const App = () => {
     }
   };
 
+  const indexOfLastNotification = currentPage * itemsPerPage;
+  const indexOfFirstNotification = indexOfLastNotification - itemsPerPage;
+  const currentNotifications = filteredNotifications.slice(indexOfFirstNotification, indexOfLastNotification);
+  const totalPages = Math.ceil(filteredNotifications.length / itemsPerPage);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div className="container">
@@ -177,7 +184,7 @@ const App = () => {
           <p>Đang tải...</p>
         ) : (
           <div className="notification-list">
-            {filteredNotifications.map((notification) => (
+            {currentNotifications.map((notification) => (
               <div
                 key={notification.ID}
                 className={`notification-item ${
@@ -192,29 +199,47 @@ const App = () => {
 
                 {/* Button để đánh dấu thông báo là đã đọc */}
                 <div style={{ display: "flex", alignItems: "center" }}>
-                    {notification.DaDoc === 0 && (
-                      <div className="button-group">
-                          <button
-                          style={{ marginRight: "5px"}}
-                          onClick={() => markAsRead(notification.ID)}>
-                            Đánh dấu đã đọc
-                          </button>
-                      </div>
-                    )}
+                  {notification.DaDoc === 0 && (
                     <div className="button-group">
-                        <button
-                        style={{ background: "red" }}
-                        onClick={() => deleteNotification(notification.ID)}
-                        className="action-button red">
-                            Xóa thông báo
-                        </button>
+                      <button
+                        style={{ marginRight: "5px" }}
+                        onClick={() => markAsRead(notification.ID)}
+                      >
+                        Đánh dấu đã đọc
+                      </button>
                     </div>
+                  )}
+                  <div className="button-group">
+                    <button
+                      style={{ background: "red" }}
+                      onClick={() => deleteNotification(notification.ID)}
+                      className="action-button red"
+                    >
+                      Xóa thông báo
+                    </button>
+                  </div>
                 </div>
-
               </div>
             ))}
           </div>
         )}
+
+        {/* Phân trang */}
+        <div className="pagination">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <span>{currentPage}</span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </main>
     </div>
   );
