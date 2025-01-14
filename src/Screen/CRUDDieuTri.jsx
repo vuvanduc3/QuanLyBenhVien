@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../Styles/CRUDDieuTri.css';
 import Menu1 from '../components/Menu';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
+import Search1 from '../components/seach_user';
 
 const ThemSuaXoaDieuTri = () => {
   const [searchTermHoSo, setSearchTermHoSo] = useState('');
@@ -22,7 +24,34 @@ const ThemSuaXoaDieuTri = () => {
   const { state } = useLocation();
   const { action, item } = state || {};
   const navigate = useNavigate();
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
   useEffect(() => {
     const fetchHoSos = async () => {
       try {
@@ -120,7 +149,22 @@ const ThemSuaXoaDieuTri = () => {
       });
 
       if (response.ok) {
-        toast.success(action === 'edit' ? 'Sửa điều trị thành công!' : 'Thêm điều trị thành công!');
+        alert(action === 'edit' ? 'Sửa điều trị thành công!' : 'Thêm điều trị thành công!');
+        if(action === 'edit'){
+            const tenThongBao = "Thông báo: Sửa điều trị có 'Mã điều trị: "+item.MaDieuTri +" - Mã hồ sơ : "+ dieuTriData.MaHoSo +" - Mô tả: "+ dieuTriData.MoTa +"' thành công!";
+            const loaiThongBao = "Điều trị";
+            const chucNang = "Sửa dữ liệu";
+
+            themThongBao(tenThongBao, loaiThongBao, chucNang);
+
+        }
+        else{
+            const tenThongBao = "Thông báo: Thêm điều trị có 'Mã hồ sơ : "+ dieuTriData.MaHoSo +" - Mô tả: "+ dieuTriData.MoTa +"' thành công!";
+            const loaiThongBao = "Điều trị";
+            const chucNang = "Thêm dữ liệu";
+
+            themThongBao(tenThongBao, loaiThongBao, chucNang);
+        }
 
       } else {
         throw new Error('Lỗi khi thêm/sửa điều trị');
@@ -159,7 +203,35 @@ const ThemSuaXoaDieuTri = () => {
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} theme="light" />
       <Menu1 />
       <main className="main-content">
-        <div className="content">
+                <div
+                className="main-content"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+        <div className="main-content">
           <div className="card-header">
             <h2 className="card-title">{action === 'edit' ? 'Sửa điều trị' : 'Thêm điều trị'}</h2>
           </div>

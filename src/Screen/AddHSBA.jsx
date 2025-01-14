@@ -227,6 +227,13 @@ const AddMedicalRecord = () => {
                 const body2 = {
                      MaBenhNhanKhamBenh: formData.maBenhNhan,  // Sử dụng item.MaHoaDon nếu có
                 };
+
+                const tenThongBao = "Thông báo: Thêm hồ sơ bệnh án có 'Mã lịch khám : "+ formData.maLichHen +" - Mã bệnh nhân: "+formData.maBenhNhan+"' thành công!";
+                const loaiThongBao = "Hồ sơ bệnh án";
+                const chucNang = "Thêm dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang);
+
                 if (action === 'add' && item) {
                     try {
                         const updateResponse = await fetch(`http://localhost:5000/api/lichkhammabenhnhankhambenh/${item.MaLichKham}`, {
@@ -246,8 +253,8 @@ const AddMedicalRecord = () => {
 
                         const updateResult = await updateResponse.json();
                         if (updateResult.success) {
-                            alert('Cập nhập lịch hẹn thành công!');
-                            navigate('/hosobenhan');
+                            alert('Cập nhập lịch khám thành công!');
+
                         } else {
                            setError(updateResult.message || 'Có lỗi xảy ra khi cập nhật!');
                         }
@@ -256,6 +263,7 @@ const AddMedicalRecord = () => {
                         setError('Có lỗi xảy ra, vui lòng thử lại!');
                     }
                 }
+                navigate('/hosobenhan');
             } else {
                 setError(data.message || 'Có lỗi xảy ra khi thêm hồ sơ');
             }
@@ -266,6 +274,35 @@ const AddMedicalRecord = () => {
             setLoading(false);
         }
     };
+
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     return (
         <div className="container">

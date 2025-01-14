@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Edit, Trash } from 'lucide-react';
+import { Edit, Trash,ChevronLeft, X } from 'lucide-react';
 import '../Styles/CRUDLichKham.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+
 
 const CRUDLichKham = () => {
   const location = useLocation();
@@ -247,141 +248,173 @@ const CRUDLichKham = () => {
     <div className="container">
       <Menu1 />
       <div className="main-content">
-        <Search1 />
-        <div className="form-container">
-          <div className="form-header">
-            <h1 style={{ color: '#000' }}>{action === 'edit' ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'} {formData.NgayKham} {formData.GioKham}</h1>
-          </div>
+                <div
+                className="main-content"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
 
-          <form onSubmit={handleSubmit}>
-            {/* Tìm kiếm bệnh nhân */}
-            <div className="form-group">
-              <label style={{ color: '#000' }}>Tìm kiếm bệnh nhân *</label>
-              <input
-                type="text"
-                className="form-input"
-                value={patientSearchTerm}
-                onChange={handlePatientSearchChange}
-                placeholder="Tìm kiếm bệnh nhân bằng tên, CCCD, hoặc số điện thoại..."
-              />
-              {showPatientResults && (
-                <div className="search-results">
-                  {filteredPatients.map((user) => (
-                    <div
-                      key={user.ID}
-                      className="search-result-item"
-                      onClick={() => handleSelectPatient(user)}
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+
+                    <button  style={{
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
                     >
-                      <img src={user.Hinh} alt={user.TenDayDu} width="35" height="30" />
-                      <span>{user.TenDayDu} (SDT: {user.SDT}, CCCD: {user.CCCD})</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    <ChevronLeft />
+                    </button>
 
-            {selectedPatient && (
-              <div className="selected-medicine" onClick={handleExpandBenhNhanInfo}>
-                <span>Đã chọn bệnh nhân: {selectedPatient.TenDayDu}</span>
-                {isExpandedBN && (
-                  <div className="expanded-info">
-                    <span>CCCD: {selectedPatient.CCCD}</span>
-                    <span>SDT: {selectedPatient.SDT}</span>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+        <div className="main-content">
+            <div className="form-container">
+              <div className="form-header">
+                <h1 style={{ color: '#000' }}>{action === 'edit' ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'} {formData.NgayKham} {formData.GioKham}</h1>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                {/* Tìm kiếm bệnh nhân */}
+                <div className="form-group">
+                  <label style={{ color: '#000' }}>Tìm kiếm bệnh nhân *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={patientSearchTerm}
+                    onChange={handlePatientSearchChange}
+                    placeholder="Tìm kiếm bệnh nhân bằng tên, CCCD, hoặc số điện thoại..."
+                  />
+                  {showPatientResults && (
+                    <div className="search-results">
+                      {filteredPatients.map((user) => (
+                        <div
+                          key={user.ID}
+                          className="search-result-item"
+                          onClick={() => handleSelectPatient(user)}
+                        >
+                          <img src={user.Hinh} alt={user.TenDayDu} width="35" height="30" />
+                          <span>{user.TenDayDu} (SDT: {user.SDT}, CCCD: {user.CCCD})</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {selectedPatient && (
+                  <div className="selected-medicine" onClick={handleExpandBenhNhanInfo}>
+                    <span>Đã chọn bệnh nhân: {selectedPatient.TenDayDu}</span>
+                    {isExpandedBN && (
+                      <div className="expanded-info">
+                        <span>CCCD: {selectedPatient.CCCD}</span>
+                        <span>SDT: {selectedPatient.SDT}</span>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* Tìm kiếm bác sĩ */}
-            <div className="form-group">
-              <label style={{ color: '#000' }}>Tìm kiếm bác sĩ *</label>
-              <input
-                type="text"
-                className="form-input"
-                value={doctorSearchTerm}
-                onChange={handleDoctorSearchChange}
-                placeholder="Tìm kiếm bác sĩ bằng tên, CCCD, hoặc số điện thoại..."
-              />
-              {showDoctorResults && (
-                <div className="search-results">
-                  {filteredDoctors.map((user) => (
-                    <div
-                      key={user.ID}
-                      className="search-result-item"
-                      onClick={() => handleSelectDoctor(user)}
-                    >
-                      <img src={user.Hinh} alt={user.TenDayDu} width="35" height="30" />
-                      <span>{user.TenDayDu} (Chuyên môn: {user.ChuyenMon}, Phòng khám: {user.PhongKham})</span>
+                {/* Tìm kiếm bác sĩ */}
+                <div className="form-group">
+                  <label style={{ color: '#000' }}>Tìm kiếm bác sĩ *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={doctorSearchTerm}
+                    onChange={handleDoctorSearchChange}
+                    placeholder="Tìm kiếm bác sĩ bằng tên, CCCD, hoặc số điện thoại..."
+                  />
+                  {showDoctorResults && (
+                    <div className="search-results">
+                      {filteredDoctors.map((user) => (
+                        <div
+                          key={user.ID}
+                          className="search-result-item"
+                          onClick={() => handleSelectDoctor(user)}
+                        >
+                          <img src={user.Hinh} alt={user.TenDayDu} width="35" height="30" />
+                          <span>{user.TenDayDu} (Chuyên môn: {user.ChuyenMon}, Phòng khám: {user.PhongKham})</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
 
-            {selectedDoctor && (
-              <div className="selected-medicine" onClick={handleExpandDoctorInfo}>
-                <span>Đã chọn bác sĩ: {selectedDoctor.TenDayDu}</span>
-                {isExpanded && (
-                  <div className="expanded-info">
-                    <span>CCCD: {selectedDoctor.CCCD}</span>
-                    <span>Chuyên môn: {selectedDoctor.ChuyenMon}</span>
-                    <span>Phòng khám: {selectedDoctor.PhongKham}</span>
+                {selectedDoctor && (
+                  <div className="selected-medicine" onClick={handleExpandDoctorInfo}>
+                    <span>Đã chọn bác sĩ: {selectedDoctor.TenDayDu}</span>
+                    {isExpanded && (
+                      <div className="expanded-info">
+                        <span>CCCD: {selectedDoctor.CCCD}</span>
+                        <span>Chuyên môn: {selectedDoctor.ChuyenMon}</span>
+                        <span>Phòng khám: {selectedDoctor.PhongKham}</span>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* Các trường còn lại */}
+                {/* Các trường còn lại */}
 
-            <div className="form-group">
-              <label style={{ color: '#000' }}>Ngày khám *</label>
-              <input
-                type="date"
-                className="form-input"
-                value={formData.NgayKham}
-                onChange={(e) => setFormData({ ...formData, NgayKham: e.target.value })}
-              />
-            </div>
+                <div className="form-group">
+                  <label style={{ color: '#000' }}>Ngày khám *</label>
+                  <input
+                    type="date"
+                    className="form-input"
+                    value={formData.NgayKham}
+                    onChange={(e) => setFormData({ ...formData, NgayKham: e.target.value })}
+                  />
+                </div>
 
-            <div className="form-group">
-              <label style={{ color: '#000' }}>Giờ khám *</label>
-              <input
-                type="time"
-                className="form-input"
-                value={formData.GioKham}
-                onChange={(e) => setFormData({ ...formData, GioKham: e.target.value })}
-              />
-            </div>
+                <div className="form-group">
+                  <label style={{ color: '#000' }}>Giờ khám *</label>
+                  <input
+                    type="time"
+                    className="form-input"
+                    value={formData.GioKham}
+                    onChange={(e) => setFormData({ ...formData, GioKham: e.target.value })}
+                  />
+                </div>
 
-            <div className="form-group">
-              <label style={{ color: '#000' }}>Tình trạng *</label>
-              <select
-                className="form-input"
-                value={formData.TrangThai}
-                onChange={(e) => setFormData({ ...formData, TrangThai: e.target.value })}
-              >
-                <option value="Đang chờ khám">Đang chờ khám</option>
-                <option value="Hoàn thành">Hoàn thành</option>
-                <option value="Đã hủy">Đã hủy</option>
-              </select>
-            </div>
+                <div className="form-group">
+                  <label style={{ color: '#000' }}>Tình trạng *</label>
+                  <select
+                    className="form-input"
+                    value={formData.TrangThai}
+                    onChange={(e) => setFormData({ ...formData, TrangThai: e.target.value })}
+                  >
+                    <option value="Đang chờ khám">Đang chờ khám</option>
+                    <option value="Hoàn thành">Hoàn thành</option>
+                    <option value="Đã hủy">Đã hủy</option>
+                  </select>
+                </div>
 
-            <div className="form-group">
-              <label style={{ color: '#000' }}>Phòng khám *</label>
-              <input
-                type="text"
-                className="form-input"
-                value={formData.PhongKham}
-                onChange={(e) => setFormData({ ...formData, PhongKham: e.target.value })}
-              />
-            </div>
+                <div className="form-group">
+                  <label style={{ color: '#000' }}>Phòng khám *</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.PhongKham}
+                    onChange={(e) => setFormData({ ...formData, PhongKham: e.target.value })}
+                  />
+                </div>
 
-            <div className="form-actions">
-              <button type="submit" className="add-btn">
-                {action === 'edit' ? 'Cập nhật' : 'Thêm'}
-              </button>
-            </div>
-          </form>
+                <div className="form-actions">
+                  <button type="submit" className="add-btn">
+                    {action === 'edit' ? 'Cập nhật' : 'Thêm'}
+                  </button>
+                </div>
+              </form>
+           </div>
         </div>
       </div>
     </div>

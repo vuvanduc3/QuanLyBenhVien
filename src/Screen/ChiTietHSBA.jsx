@@ -213,6 +213,11 @@ const MedicalRecordDetail = () => {
                 setRecord(data.data);
                 setIsEditing(false);
                 alert('Cập nhật thành công!');
+                const tenThongBao = "Thông báo: Sửa hồ sơ bệnh án có 'Mã lịch khám : "+ editedData.maLichHen +" - Mã bệnh nhân: "+ id +"' thành công!";
+                const loaiThongBao = "Hồ sơ bệnh án";
+                const chucNang = "Sửa dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang);
             } else {
                 setError(data.message);
             }
@@ -220,6 +225,34 @@ const MedicalRecordDetail = () => {
             setError('Lỗi khi cập nhật hồ sơ');
         }
     };
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     const formatDate = (dateString) => {
         if (!dateString) return '';

@@ -6,7 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="0006d95e-39ec-46cc-b70a-4dec8b8d531b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/AddHSBA.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/AddHSBA.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDDieuTri.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDDieuTri.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDDonThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDDonThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDXetNghiem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDXetNghiem.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/ChiTietHSBA.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ChiTietHSBA.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/ChiTietThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ChiTietThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/DieuTri.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DieuTri.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/HoSoBenhAn.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/HoSoBenhAn.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/XetNghiem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/XetNghiem.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

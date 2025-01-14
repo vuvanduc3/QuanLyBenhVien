@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../Styles/CRUDXetNghiem.css';
 import Menu1 from '../components/Menu';
 import { useLocation } from 'react-router-dom';
+import Search1 from '../components/seach_user';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
 
 const ThemSuaXoaXetNghiem = () => {
+    const navigate = useNavigate();
     const [searchTermHoSo, setSearchTermHoSo] = useState('');
     const [filteredHoSos, setFilteredHoSos] = useState([]);
     const [isSearchVisibleHoSo, setIsSearchVisibleHoSo] = useState(false);
@@ -39,6 +43,34 @@ const ThemSuaXoaXetNghiem = () => {
         };
         fetchHoSos();
     }, []);
+    const themThongBao = async (name, type, feature ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     useEffect(() => {
         const fetchHoSos = async () => {
@@ -151,7 +183,23 @@ const ThemSuaXoaXetNghiem = () => {
             });
 
             if (response.ok) {
-                toast.success(action === 'edit' ? 'Sửa xét nghiệm thành công!' : 'Thêm xét nghiệm thành công!');
+                alert(action === 'edit' ? 'Sửa xét nghiệm thành công!' : 'Thêm xét nghiệm thành công!');
+                if(action === 'edit'){
+                    const tenThongBao = "Thông báo: Sửa xét nghiệm có 'Mã xét nghiệm: "+item.MaXetNghiem +" - Mã hồ sơ : "+ xetNghiemData.MaHoSo +" - Tên xét nghiệm: "+ xetNghiemData.TenXetNghiem +"' thành công!";
+                    const loaiThongBao = "Xét nghiệm";
+                    const chucNang = "Sửa dữ liệu";
+
+                    themThongBao(tenThongBao, loaiThongBao, chucNang);
+                }
+                else{
+                     const tenThongBao = "Thông báo: Thêm xét nghiệm có 'Mã hồ sơ : "+ xetNghiemData.MaHoSo +" - Tên xét nghiệm: "+ xetNghiemData.TenXetNghiem +"' thành công!";
+                     const loaiThongBao = "Xét nghiệm";
+                     const chucNang = "Thêm dữ liệu";
+
+                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+
+                }
+
             } else {
                 throw new Error('Lỗi khi thêm/sửa xét nghiệm');
             }
@@ -202,96 +250,127 @@ const ThemSuaXoaXetNghiem = () => {
             />
             <Menu1 />
             <main className="main-content">
-                <div className="content">
-                    <div className="card-header">
-                        <h2 className="card-title">{action === 'edit' ? 'Sửa xét nghiệm' : 'Thêm xét nghiệm'}</h2>
+                <div
+                className="main-content"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
                     </div>
-                    <form className="medicine-form" onSubmit={handleSubmit}>
-                        {/* Tìm kiếm và chọn mã hồ sơ */}
-                        <div className="form-group">
-                            <label>Mã hồ sơ <span className="required">*</span></label>
-                            <input
-                                type="text"
-                                value={searchTermHoSo}
-                                onChange={handleSearchChange}
-                                onFocus={() => setIsSearchVisibleHoSo(true)}
-                                placeholder="Tìm kiếm mã hồ sơ..."
-                                className="form-control"
-                            />
-                            {selectedHoSo && (
-                                <div className="selected-hososo" onClick={() => setIsSearchVisibleHoSo(!isSearchVisibleHoSo)}>
-                                    <div className="selected-hososo-row">
-                                        <label><strong>Mã hồ sơ đã chọn:</strong> {selectedHoSo.ID}</label>
-                                    </div>
-                                    {!isSearchVisibleHoSo && (
-                                        <>
-                                            <label><strong>Mã bệnh nhân:</strong> {selectedHoSo.MaBenhNhan}</label>
-                                            <label><strong>Họ và tên:</strong> {selectedHoSo.HoVaTen}</label>
-                                            <label><strong>Ngày sinh:</strong> {formatNgaySinh(selectedHoSo.NgaySinh)}</label>
-                                            <label><strong>Số CCCD và Hộ chiếu:</strong> {selectedHoSo.SoCCCD_HoChieu}</label>
-                                        </>
-                                    )}
-                                </div>
-                            )}
+                </div>
 
-                            {isSearchVisibleHoSo && searchTermHoSo && (
-                                <div className="search-results">
-                                    {filteredHoSos.map((hoSo) => (
-                                        <div
-                                            key={hoSo.ID}
-                                            onClick={() => handleHoSoSelect(hoSo)}
-                                            className="search-item"
-                                        >
-                                            <div><strong>{hoSo.ID}</strong></div>
-                                            <div><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</div>
-                                            <div><strong>Họ và tên:</strong> {hoSo.HoVaTen}</div>
-                                            <div><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</div>
-                                            <div><strong>Số CCCD_HoChieu:</strong> {hoSo.SoCCCD_HoChieu}</div>
+                <div>
+                    <div className="main-content">
+                        <div className="card-header">
+                            <h2 className="card-title">{action === 'edit' ? 'Sửa xét nghiệm' : 'Thêm xét nghiệm'}</h2>
+                        </div>
+                        <form className="medicine-form" onSubmit={handleSubmit}>
+                            {/* Tìm kiếm và chọn mã hồ sơ */}
+                            <div className="form-group">
+                                <label>Mã hồ sơ <span className="required">*</span></label>
+                                <input
+                                    type="text"
+                                    value={searchTermHoSo}
+                                    onChange={handleSearchChange}
+                                    onFocus={() => setIsSearchVisibleHoSo(true)}
+                                    placeholder="Tìm kiếm mã hồ sơ..."
+                                    className="form-control"
+                                />
+                                {selectedHoSo && (
+                                    <div className="selected-hososo" onClick={() => setIsSearchVisibleHoSo(!isSearchVisibleHoSo)}>
+                                        <div className="selected-hososo-row">
+                                            <label><strong>Mã hồ sơ đã chọn:</strong> {selectedHoSo.ID}</label>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                                        {!isSearchVisibleHoSo && (
+                                            <>
+                                                <label><strong>Mã bệnh nhân:</strong> {selectedHoSo.MaBenhNhan}</label>
+                                                <label><strong>Họ và tên:</strong> {selectedHoSo.HoVaTen}</label>
+                                                <label><strong>Ngày sinh:</strong> {formatNgaySinh(selectedHoSo.NgaySinh)}</label>
+                                                <label><strong>Số CCCD và Hộ chiếu:</strong> {selectedHoSo.SoCCCD_HoChieu}</label>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
 
-                        {/* Các trường dữ liệu khác */}
-                        <div className="form-group">
-                            <label>Tên thử nghiệm <span className="required">*</span></label>
-                            <input
-                                type="text"
-                                value={tenXetNghiem}
-                                onChange={(e) => setTenXetNghiem(e.target.value)}
-                                placeholder="Nhập tên thử nghiệm"
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Kết quả <span className="required">*</span></label>
-                            <input
-                                type="text"
-                                value={ketQua}
-                                onChange={(e) => setKetQua(e.target.value)}
-                                placeholder="Nhập kết quả"
-                                className="form-control"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Ngày xét nghiệm: <span className="required"></span></label>
-                            <input
-                                type="date"
-                                value={ngayXetNghiem}
-                                onChange={(e) => setNgayXetNghiem(e.target.value)}
-                                className="form-control"
-                            />
-                        </div>
+                                {isSearchVisibleHoSo && searchTermHoSo && (
+                                    <div className="search-results">
+                                        {filteredHoSos.map((hoSo) => (
+                                            <div
+                                                key={hoSo.ID}
+                                                onClick={() => handleHoSoSelect(hoSo)}
+                                                className="search-item"
+                                            >
+                                                <div><strong>{hoSo.ID}</strong></div>
+                                                <div><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</div>
+                                                <div><strong>Họ và tên:</strong> {hoSo.HoVaTen}</div>
+                                                <div><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</div>
+                                                <div><strong>Số CCCD_HoChieu:</strong> {hoSo.SoCCCD_HoChieu}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Các trường dữ liệu khác */}
+                            <div className="form-group">
+                                <label>Tên thử nghiệm <span className="required">*</span></label>
+                                <input
+                                    type="text"
+                                    value={tenXetNghiem}
+                                    onChange={(e) => setTenXetNghiem(e.target.value)}
+                                    placeholder="Nhập tên thử nghiệm"
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Kết quả <span className="required">*</span></label>
+                                <input
+                                    type="text"
+                                    value={ketQua}
+                                    onChange={(e) => setKetQua(e.target.value)}
+                                    placeholder="Nhập kết quả"
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Ngày xét nghiệm: <span className="required"></span></label>
+                                <input
+                                    type="date"
+                                    value={ngayXetNghiem}
+                                    onChange={(e) => setNgayXetNghiem(e.target.value)}
+                                    className="form-control"
+                                />
+                            </div>
 
 
-                        <div className="form-actions">
-                            <button type="submit" className="add-button btn-primary">
-                                {action === 'edit' ? 'Cập nhật' : 'Thêm'}
-                            </button>
+                            <div className="form-actions">
+                                <button type="submit" className="add-button btn-primary">
+                                    {action === 'edit' ? 'Cập nhật' : 'Thêm'}
+                                </button>
 
-                        </div>
-                    </form>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </main>
         </div>
