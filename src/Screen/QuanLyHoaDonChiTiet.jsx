@@ -90,16 +90,17 @@ const HoaDonChiTiet = () => {
         <div className="container">
             <Menu1 />
             <main className="main-content">
+
                 <Search1 />
 
 
-                <div className="content">
+
+                <div className="main-content">
                     <div className="card-header">
                         <h2 className="page-title">Danh sách hóa đơn chi tiết</h2>
 
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-
                         <button className="filter-toggle-button" onClick={() => setFilterVisible(!filterVisible)}>
                             {filterVisible ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
                         </button>
@@ -118,19 +119,23 @@ const HoaDonChiTiet = () => {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                         <input
+                            style ={{width: "18%"}}
                             type="text"
                             placeholder="Lọc theo mã bệnh nhân"
                             value={filters.maBenhNhan}
                             onChange={(e) => setFilters({ ...filters, maBenhNhan: e.target.value })}
                         />
                         <input
+                            style ={{width: "18%"}}
                             type="text"
                             placeholder="Lọc theo mã bác sĩ"
                             value={filters.maBacSi}
                             onChange={(e) => setFilters({ ...filters, maBacSi: e.target.value })}
                         />
                         <select
+                            style ={{width: "18%"}}
                             value={filters.sortBy}
                             onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
                         >
@@ -139,6 +144,7 @@ const HoaDonChiTiet = () => {
                             <option value="DonGia">Đơn giá</option>
                         </select>
                         <select
+                            style ={{width: "18%"}}
                             value={filters.sortOrder}
                             onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value })}
                         >
@@ -146,9 +152,12 @@ const HoaDonChiTiet = () => {
                             <option value="asc">Tăng dần</option>
                             <option value="desc">Giảm dần</option>
                         </select>
-                        <button className="reset-button" onClick={resetFilters}>
+                        <button
+                        style ={{width: "18%"}}
+                        className="reset-button" onClick={resetFilters}>
                             Reset bộ lọc
                         </button>
+                        </div>
                     </div>
                 )}
 

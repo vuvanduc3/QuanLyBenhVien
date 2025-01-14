@@ -1,23 +1,22 @@
-import React, { useState } from 'react';
-import { 
-  Calendar, 
-  Pill, 
-  FileText, 
-  ClipboardList, 
-  TestTube, 
-  History, 
-  Receipt, 
+import React, { useState, useEffect } from 'react';
+import {
+  Calendar,
+  Pill,
+  FileText,
+  ClipboardList,
+  TestTube,
+  History,
+  Receipt,
   Stethoscope,
-  FileSpreadsheet, 
-  Shield, 
-  Wallet, 
-  BadgeDollarSign, 
-  UserCircle, 
-  Settings, 
-  LogOut, 
-  Table2
+  FileSpreadsheet,
+  Shield,
+  Wallet,
+  BadgeDollarSign,
+  UserCircle,
+  Settings,
+  LogOut
 } from 'lucide-react';
-
+import Cookies from 'js-cookie';
 import './Menu.css';
 
 const menuItems = [
@@ -33,15 +32,13 @@ const menuItems = [
 const pageItems = [
   { text: "Page", header: true },
   { text: "Hóa đơn", icon: <Receipt size={20} />, path: "/invoices" },
-  { text: "Hóa đơn chi tiết", icon: <FileSpreadsheet size={20} />, path: "/hoa-don-chi-tiet" },  
+  { text: "Hóa đơn chi tiết", icon: <FileSpreadsheet size={20} />, path: "/hoa-don-chi-tiet" },
   { text: "Bảo hiểm y tế", icon: <Shield size={20} />, path: "/medicines" },
   { text: "Vật tư y tế", icon: <Stethoscope size={20} />, path: "/quanlyvattu" },
   { text: "Quản lý BHYT chi trả", icon: <BadgeDollarSign size={20} />, path: "/insurance-payment" },
   { text: "Thanh toán", icon: <Wallet size={20} />, path: "/payments" },
-
   { text: "Quản lý người dùng", icon: <UserCircle size={20} />, path: "/quanlynguoidung" },
-
-  { text: "Thông báo", icon: <i class="fa-regular fa-paper-plane"></i>, path: "/ThongBao" }
+  { text: "Thông báo", icon: <i className="fa-regular fa-paper-plane"></i>, path: "/ThongBao" }
 ];
 
 const bottomItems = [
@@ -55,23 +52,44 @@ export default function Menu() {
 
   const handleSelect = (path) => {
     setSelectedPath(path);
+    Cookies.set('selectedPath', path, { expires: 7 });
   };
+
+  const [theme, setTheme] = useState('light');
+  useEffect(() => {
+    const cookiePath = Cookies.get('selectedPath');
+    if (cookiePath) {
+      setSelectedPath(cookiePath);
+    }
+
+    const cookieTheme = Cookies.get('Theme');
+    if (cookieTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+      document.body.classList.remove('light-theme');
+      setTheme('dark');
+    } else {
+      document.body.classList.add('light-theme');
+      document.body.classList.remove('dark-theme');
+      setTheme('light');
+    }
+  }, []);
 
   return (
     <div className="sidebar">
       <div className="sidebar-header">
         <h1 className="brand">
           <span className="brand-blue">Benh</span>
-          <span>Vien</span>
+          <span style={{color:"#000"}}>Vien</span>
         </h1>
       </div>
-      
+
       <nav className="sidebar-nav">
         <div className="nav-section">
+          <div className="nav-section-title">Tác vụ</div>
           {menuItems.map((item, index) => (
-            <a 
-              key={index} 
-              href={item.path} 
+            <a
+              key={index}
+              href={item.path}
               className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
               onClick={() => handleSelect(item.path)}
             >
@@ -82,12 +100,12 @@ export default function Menu() {
         </div>
 
         <div className="nav-section">
-          <div className="nav-section-title">Page</div>
+          <div className="nav-section-title">Chi phí</div>
           {pageItems.map((item, index) => (
             !item.header && (
-              <a 
-                key={index} 
-                href={item.path} 
+              <a
+                key={index}
+                href={item.path}
                 className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
                 onClick={() => handleSelect(item.path)}
               >
@@ -101,9 +119,9 @@ export default function Menu() {
 
       <div className="sidebar-footer">
         {bottomItems.map((item, index) => (
-          <a 
-            key={index} 
-            href={item.path} 
+          <a
+            key={index}
+            href={item.path}
             className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
             onClick={() => handleSelect(item.path)}
           >

@@ -2,10 +2,12 @@ import Menu1 from "../components/Menu";
 import Search1 from "../components/seach_user";
 import React, { useState, useEffect } from "react";
 import "../Styles/EditPayment.css";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
 
 const EditPayment = () => {
+  const navigate = useNavigate();
   const { paymentId } = useParams();
   const [paymentData, setPaymentData] = useState({});
   const [NgayBHYTChiTra, setNgayBHYTChiTra] = useState('');
@@ -174,7 +176,35 @@ const EditPayment = () => {
     <div className="container">
       <Menu1 />
       <div className="main-content">
-        <Search1 />
+         <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+         </div>
          <div className="form-container">
           <h2 style={{ color: '#000' }}>Thanh toán</h2>
           <div>

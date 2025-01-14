@@ -108,6 +108,14 @@ body.dark-theme h2 {
     color: #fff;
 }
 
+
+body.dark-theme h3 {
+    color: #fff;
+}
+body.dark-theme h4 {
+    color: #fff;
+}
+
 /* Tai khoan */
 
 body.dark-theme user-name {

@@ -228,7 +228,7 @@ const ThemSuaXoaThuoc = () => {
             <Menu1 />
             <main className="main-content">
                 <div
-                className="main-content"
+                className="form-container"
                 style={{
                     borderRadius: "10px",
                     marginBottom: "10px",
@@ -239,6 +239,7 @@ const ThemSuaXoaThuoc = () => {
                     width:"100%" }}>
 
                     <button  style={{
+                                marginTop: "-20px",
                                 marginLeft: "30px",
                                 padding: "10px 20px",
                                 backgroundColor: "#007bff",
@@ -257,16 +258,16 @@ const ThemSuaXoaThuoc = () => {
                         <Search1 />
                     </div>
                 </div>
-                <div className="main-content">
+                <div className="form-container">
                     <div className="card-header">
-                        <h2 className="card-title">Thêm thuốc</h2>
+                        <h2 style={{color : "#000"}} className="card-title">Thêm thuốc</h2>
                     </div>
 
                     {error && <div className="error-message">{error}</div>}
 
                     <form onSubmit={handleSubmit} className="medicine-form">
                         <div className="form-group">
-                            <label>Mã thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Mã thuốc <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="code"
@@ -278,7 +279,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Tên thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Tên thuốc <span className="required">*</span></label>
                             <input
                                 type="text"
                                 name="name"
@@ -291,7 +292,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Danh mục thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Danh mục thuốc <span className="required">*</span></label>
                             <select
                                 name="maDanhMuc"
                                 value={formData.maDanhMuc}
@@ -309,7 +310,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Mô tả</label>
+                            <label style={{color : "#000"}}>Mô tả</label>
                             <textarea
                                 name="description"
                                 placeholder="Mô tả"
@@ -321,7 +322,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Số lượng <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Số lượng <span className="required">*</span></label>
                             <input
                                 type="number"
                                 name="quantity"
@@ -335,7 +336,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Giá thuốc <span className="required">*</span></label>
+                            <label style={{color : "#000"}}>Giá thuốc <span className="required">*</span></label>
                             <input
                                 type="number"
                                 name="price"
@@ -349,7 +350,7 @@ const ThemSuaXoaThuoc = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Phone</label>
+                            <label style={{color : "#000"}}>Phone</label>
                             <input
                                 type="tel"
                                 name="phone"

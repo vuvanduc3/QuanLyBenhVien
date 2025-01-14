@@ -251,7 +251,7 @@ const ThemSuaXoaXetNghiem = () => {
             <Menu1 />
             <main className="main-content">
                 <div
-                className="main-content"
+                className="form-container"
                 style={{
                     borderRadius: "10px",
                     marginBottom: "10px",
@@ -261,6 +261,7 @@ const ThemSuaXoaXetNghiem = () => {
                     justifyContent: "space-between",
                     width:"100%" }}>
                     <button  style={{
+                                marginTop: "-20px",
                                 marginLeft: "30px",
                                 padding: "10px 20px",
                                 backgroundColor: "#007bff",
@@ -280,14 +281,14 @@ const ThemSuaXoaXetNghiem = () => {
                 </div>
 
                 <div>
-                    <div className="main-content">
+                    <div className="form-container">
                         <div className="card-header">
-                            <h2 className="card-title">{action === 'edit' ? 'Sửa xét nghiệm' : 'Thêm xét nghiệm'}</h2>
+                            <h2 style={{color: "#000"}}   className="card-title">{action === 'edit' ? 'Sửa xét nghiệm' : 'Thêm xét nghiệm'}</h2>
                         </div>
                         <form className="medicine-form" onSubmit={handleSubmit}>
                             {/* Tìm kiếm và chọn mã hồ sơ */}
                             <div className="form-group">
-                                <label>Mã hồ sơ <span className="required">*</span></label>
+                                <label style={{color: "#000"}}  >Mã hồ sơ <span className="required">*</span></label>
                                 <input
                                     type="text"
                                     value={searchTermHoSo}
@@ -299,14 +300,14 @@ const ThemSuaXoaXetNghiem = () => {
                                 {selectedHoSo && (
                                     <div className="selected-hososo" onClick={() => setIsSearchVisibleHoSo(!isSearchVisibleHoSo)}>
                                         <div className="selected-hososo-row">
-                                            <label><strong>Mã hồ sơ đã chọn:</strong> {selectedHoSo.ID}</label>
+                                            <label style={{color: "#000"}}  ><strong>Mã hồ sơ đã chọn:</strong> {selectedHoSo.ID}</label>
                                         </div>
                                         {!isSearchVisibleHoSo && (
                                             <>
-                                                <label><strong>Mã bệnh nhân:</strong> {selectedHoSo.MaBenhNhan}</label>
-                                                <label><strong>Họ và tên:</strong> {selectedHoSo.HoVaTen}</label>
-                                                <label><strong>Ngày sinh:</strong> {formatNgaySinh(selectedHoSo.NgaySinh)}</label>
-                                                <label><strong>Số CCCD và Hộ chiếu:</strong> {selectedHoSo.SoCCCD_HoChieu}</label>
+                                                <label style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Mã bệnh nhân:</strong> {selectedHoSo.MaBenhNhan}</label>
+                                                <label style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Họ và tên:</strong> {selectedHoSo.HoVaTen}</label>
+                                                <label style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Ngày sinh:</strong> {formatNgaySinh(selectedHoSo.NgaySinh)}</label>
+                                                <label style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Số CCCD và Hộ chiếu:</strong> {selectedHoSo.SoCCCD_HoChieu}</label>
                                             </>
                                         )}
                                     </div>
@@ -320,11 +321,11 @@ const ThemSuaXoaXetNghiem = () => {
                                                 onClick={() => handleHoSoSelect(hoSo)}
                                                 className="search-item"
                                             >
-                                                <div><strong>{hoSo.ID}</strong></div>
-                                                <div><strong>Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</div>
-                                                <div><strong>Họ và tên:</strong> {hoSo.HoVaTen}</div>
-                                                <div><strong>Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</div>
-                                                <div><strong>Số CCCD_HoChieu:</strong> {hoSo.SoCCCD_HoChieu}</div>
+                                                <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >{hoSo.ID}</strong></div>
+                                                <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Mã bệnh nhân:</strong> {hoSo.MaBenhNhan}</div>
+                                                <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Họ và tên:</strong> {hoSo.HoVaTen}</div>
+                                                <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Ngày sinh:</strong> {formatNgaySinh(hoSo.NgaySinh)}</div>
+                                                <div style={{color: "#000"}}  ><strong style={{color: "#000"}}  >Số CCCD_HoChieu:</strong> {hoSo.SoCCCD_HoChieu}</div>
                                             </div>
                                         ))}
                                     </div>
@@ -333,7 +334,7 @@ const ThemSuaXoaXetNghiem = () => {
 
                             {/* Các trường dữ liệu khác */}
                             <div className="form-group">
-                                <label>Tên thử nghiệm <span className="required">*</span></label>
+                                <label style={{color: "#000"}}  >Tên thử nghiệm <span className="required">*</span></label>
                                 <input
                                     type="text"
                                     value={tenXetNghiem}
@@ -343,7 +344,7 @@ const ThemSuaXoaXetNghiem = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Kết quả <span className="required">*</span></label>
+                                <label style={{color: "#000"}}  >Kết quả <span className="required">*</span></label>
                                 <input
                                     type="text"
                                     value={ketQua}
@@ -353,7 +354,7 @@ const ThemSuaXoaXetNghiem = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Ngày xét nghiệm: <span className="required"></span></label>
+                                <label style={{color: "#000"}}  >Ngày xét nghiệm: <span className="required"></span></label>
                                 <input
                                     type="date"
                                     value={ngayXetNghiem}

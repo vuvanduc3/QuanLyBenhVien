@@ -248,8 +248,9 @@ const CRUDLichKham = () => {
     <div className="container">
       <Menu1 />
       <div className="main-content">
+          <div className="">
                 <div
-                className="main-content"
+                className="form-container"
                 style={{
                     borderRadius: "10px",
                     marginBottom: "10px",
@@ -260,7 +261,7 @@ const CRUDLichKham = () => {
                     width:"100%" }}>
 
                     <button  style={{
-                                marginLeft: "30px",
+                                 marginTop: "-20px",
                                 padding: "10px 20px",
                                 backgroundColor: "#007bff",
                                 color: "#fff",
@@ -279,7 +280,7 @@ const CRUDLichKham = () => {
                     </div>
                 </div>
 
-        <div className="main-content">
+
             <div className="form-container">
               <div className="form-header">
                 <h1 style={{ color: '#000' }}>{action === 'edit' ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'} {formData.NgayKham} {formData.GioKham}</h1>

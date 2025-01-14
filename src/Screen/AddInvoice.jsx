@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../Styles/AddInvoice.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
+import { Edit, Trash,ChevronLeft, X } from 'lucide-react';
 
 const AddInvoice = () => {
   const location = useLocation();
@@ -160,7 +161,38 @@ const AddInvoice = () => {
     <div className="container">
       <Menu1 />
       <div className="main-content">
-        <Search1 />
+          <div className="">
+                <div
+                className="form-container"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+
+                    <button  style={{
+                                marginTop: "-20px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+        </div>
         <div className="form-container">
           <h1 style={{ color: '#000' }}>{action === 'edit' ? 'Sửa hóa đơn' : 'Thêm hóa đơn'}</h1>
           <form onSubmit={handleSubmit}>
