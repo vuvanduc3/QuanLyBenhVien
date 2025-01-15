@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Login.css";
 import videoSource from './login_video2.mp4';
-
+import Cookies from 'js-cookie';
 const Login = () => {
   const [formData, setFormData] = useState({
     Email: '',
@@ -58,7 +58,7 @@ const Login = () => {
                 },
                 body: JSON.stringify({ DangDangNhap: user.ID }),
             });
-
+         Cookies.set('selectedPath', '/dashboard', { expires: 7 });
           navigate("/dashboard"); // Chuyển hướng đến trang dashboard
           } else {
             console.log("Thông tin đăng nhập không chính xác.");

@@ -26,6 +26,7 @@ export default function Search1() {
 
     const handleNavigateToCaiDatThongTinCaNhan = () => {
         navigate("/quan-ly-tai-khoan"); // Điều hướng đến trang đăng ký
+        Cookies.set('selectedPath', '/quan-ly-tai-khoan', { expires: 7 });
     };
 
 
@@ -94,10 +95,17 @@ export default function Search1() {
         if (cookie === 'dark') {
           document.body.classList.add('dark-theme');
           document.body.classList.remove('light-theme');
-        } else {
+          document.body.classList.remove('blue-theme');
+        } else  if (cookie === 'light')  {
           document.body.classList.add('light-theme');
           document.body.classList.remove('dark-theme');
+          document.body.classList.remove('blue-theme');
+        } else {
+          document.body.classList.remove('light-theme');
+          document.body.classList.remove('dark-theme');
+          document.body.classList.add('blue-theme');
         }
+
       }, [theme]);
 
       useEffect(() => {

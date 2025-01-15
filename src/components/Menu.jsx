@@ -57,6 +57,28 @@ export default function Menu() {
 
   const [theme, setTheme] = useState('light');
   useEffect(() => {
+
+    menuItems.forEach((item) => {
+      if (window.location.pathname === item.path) {
+        // Thực hiện hành động khi tìm thấy phần tử phù hợp
+        Cookies.set('selectedPath', window.location.pathname, { expires: 7 });
+      }
+    });
+
+    pageItems.forEach((item) => {
+      if (window.location.pathname === item.path) {
+        // Thực hiện hành động khi tìm thấy phần tử phù hợp
+         Cookies.set('selectedPath', window.location.pathname, { expires: 7 });
+      }
+    });
+
+    bottomItems.forEach((item) => {
+      if (window.location.pathname === item.path) {
+        // Thực hiện hành động khi tìm thấy phần tử phù hợp
+        Cookies.set('selectedPath', window.location.pathname, { expires: 7 });
+      }
+    });
+
     const cookiePath = Cookies.get('selectedPath');
     if (cookiePath) {
       setSelectedPath(cookiePath);
