@@ -1,5 +1,47 @@
-body.dark-theme {
-  background-color: #000000;
-  color: #ffffff;
+body.blue-theme {
+  background-color: #e0f7fa;
+  color: #006064;
 }
-/* Các kiểu khác cho chủ đề tối */
+/* Các kiểu khác cho chủ đề màu xanh */
+
+body.blue-theme main-content{
+  background-color: #e0f7fa;
+  color: #006064;
+
+}
+body.blue-theme h1 {
+    color: #006064;
+}
+
+body.blue-theme h2 {
+    color: #006064;
+}
+
+body.blue-theme h3 {
+    color: #006064;
+}
+
+body {
+    background-color: #e0f7fa; /* Màu xanh dương nhạt */
+}
+
+body.blue-theme a {
+    color: #0288d1; /* Màu xanh dương cho liên kết */
+}
+body.blue-theme body.blue-theme a:hover {
+    color: #01579b; /* Màu xanh dương đậm khi hover */
+}
+
+body.blue-theme button {
+    background-color: #00790; /* Màu nền xanh cho nút */
+    color: #fff; /* Màu xanh dương cho liên kết */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+body.blue-theme button:hover {
+    background-color: #004d40; /* Màu nền đậm hơn khi hover */
+}
+body.blue-theme th,td,tr {
+ background-color: #00790; /* Màu nền xanh cho nút */
+}
