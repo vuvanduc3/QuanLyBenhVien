@@ -260,67 +260,69 @@ const DonThuoc = () => {
                     )}
 
                     {/* Bảng dữ liệu */}
-                    <div className="table-container">
-                        <table className="prescription-table">
-                            <thead>
-                                <tr>
-                                    <th>#ID</th>
-                                    <th>Mã bệnh nhân</th>
-                                    <th>Mã bác sĩ</th>
-                                    <th>Mã hồ sơ bệnh án</th>
-                                    <th>Mã thuốc</th>
-                                    <th>Hướng dẫn sử dụng</th>
-                                    <th>Số lượng</th>
-                                    <th>Đã nhập hóa đơn</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {paginatedPrescriptions.map((prescription, index) => (
-                                    <tr key={index}>
-                                        <td>{prescription.MaDonThuoc}</td>
-                                        <td>{prescription.MaBenhNhan}</td>
-                                        <td>{prescription.BacSi}</td>
-                                        <td>{prescription.MaHoSo}</td>
-                                        <td>{prescription.MaThuoc}</td>
-                                        <td>{prescription.HuongDanSuDung}</td>
-                                        <td>x{prescription.SoLuongDonThuoc}</td>
-                                        <td>
-                                            {prescription.DaNhapHoaDon === 1 ? 'Đã nhập' : 'Chưa nhập'}
-                                        </td>
-                                        <td>
-                                            <div className="action-buttons-container">
-                                            <div className="action-buttons-row">
-                                            <button className="edit-nut" onClick={() => handleEdit(prescription)}>
-                                                Sửa dữ liệu
-                                            </button>
-                                            <button className="delete-button"
-                                                onClick={async () => {
-                                                    if (window.confirm('Bạn có chắc muốn xóa?')) {
-                                                        await fetch(
-                                                            `http://localhost:5000/api/donthuoc/${prescription.MaDonThuoc}`,
-                                                            { method: 'DELETE' }
-                                                        );
 
-                                                        const tenThongBao = "Thông báo: Xóa đơn thuốc có 'Mã đơn thuốc: "+prescription.MaDonThuoc +" - Mã hồ sơ : "+ prescription.MaHoSo +" - Tên thuốc: "+ prescription.TenThuoc +"' thành công!";
-                                                        const loaiThongBao = "Đơn thuốc";
-                                                        const chucNang = "Xóa dữ liệu";
-
-                                                        themThongBao(tenThongBao, loaiThongBao, chucNang, prescription);
-                                                        fetchData();
-                                                    }
-                                                }}
-                                            >
-                                                Xóa dữ liệu
-                                            </button>
-                                            </div>
-                                            </div>
-                                        </td>
+                        <div className="table-container-cuonngang">
+                            <table className="table-container">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Mã bệnh nhân</th>
+                                        <th>Mã bác sĩ</th>
+                                        <th>Mã hồ sơ bệnh án</th>
+                                        <th>Mã thuốc</th>
+                                        <th>Hướng dẫn sử dụng</th>
+                                        <th>Số lượng</th>
+                                        <th>Đã nhập hóa đơn</th>
+                                        <th>Action</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {paginatedPrescriptions.map((prescription, index) => (
+                                        <tr key={index}>
+                                            <td>{prescription.MaDonThuoc}</td>
+                                            <td>{prescription.MaBenhNhan}</td>
+                                            <td>{prescription.BacSi}</td>
+                                            <td>{prescription.MaHoSo}</td>
+                                            <td>{prescription.MaThuoc}</td>
+                                            <td>{prescription.HuongDanSuDung}</td>
+                                            <td>x{prescription.SoLuongDonThuoc}</td>
+                                            <td>
+                                                {prescription.DaNhapHoaDon === 1 ? 'Đã nhập' : 'Chưa nhập'}
+                                            </td>
+                                            <td>
+                                                <div className="action-buttons-container">
+                                                <div className="action-buttons-row">
+                                                <button className="edit-nut" onClick={() => handleEdit(prescription)}>
+                                                    Sửa dữ liệu
+                                                </button>
+                                                <button className="delete-button"
+                                                    onClick={async () => {
+                                                        if (window.confirm('Bạn có chắc muốn xóa?')) {
+                                                            await fetch(
+                                                                `http://localhost:5000/api/donthuoc/${prescription.MaDonThuoc}`,
+                                                                { method: 'DELETE' }
+                                                            );
+
+                                                            const tenThongBao = "Thông báo: Xóa đơn thuốc có 'Mã đơn thuốc: "+prescription.MaDonThuoc +" - Mã hồ sơ : "+ prescription.MaHoSo +" - Tên thuốc: "+ prescription.TenThuoc +"' thành công!";
+                                                            const loaiThongBao = "Đơn thuốc";
+                                                            const chucNang = "Xóa dữ liệu";
+
+                                                            themThongBao(tenThongBao, loaiThongBao, chucNang, prescription);
+                                                            fetchData();
+                                                        }
+                                                    }}
+                                                >
+                                                    Xóa dữ liệu
+                                                </button>
+                                                </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
 
                     {/* Phân trang */}
                     <div className="pagination">
