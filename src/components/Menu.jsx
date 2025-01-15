@@ -102,6 +102,18 @@ export default function Menu() {
     }
   }, []);
 
+  const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(true);
+  const [isCostMenuOpen, setIsCostMenuOpen] = useState(true);
+
+  const toggleTaskMenu = () => {
+    setIsTaskMenuOpen(!isTaskMenuOpen);
+  };
+
+  const toggleCostMenu = () => {
+    setIsCostMenuOpen(!isCostMenuOpen);
+  };
+
+
   return (
     <div>
         <button className="menu-toggle" onClick={toggleSidebar}>
@@ -118,24 +130,11 @@ export default function Menu() {
 
           <nav className="sidebar-nav">
             <div className="nav-section">
-              <div className="nav-section-title">Tác vụ</div>
-              {menuItems.map((item, index) => (
-                <a
-                  key={index}
-                  href={item.path}
-                  className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
-                  onClick={() => handleSelect(item.path)}
-                >
-                  {item.icon}
-                  <span className="nav-item-text">{item.text}</span>
-                </a>
-              ))}
-            </div>
-
-            <div className="nav-section">
-              <div className="nav-section-title">Chi phí</div>
-              {pageItems.map((item, index) => (
-                !item.header && (
+              <div className="nav-section-title" onClick={toggleTaskMenu}>
+                Tác vụ
+              </div>
+              {isTaskMenuOpen && (
+                menuItems.map((item, index) => (
                   <a
                     key={index}
                     href={item.path}
@@ -145,9 +144,31 @@ export default function Menu() {
                     {item.icon}
                     <span className="nav-item-text">{item.text}</span>
                   </a>
-                )
-              ))}
+                ))
+              )}
             </div>
+
+            <div className="nav-section">
+              <div className="nav-section-title" onClick={toggleCostMenu}>
+               Chi phí
+              </div>
+              {isCostMenuOpen && (
+                pageItems.map((item, index) => (
+                  !item.header && (
+                    <a
+                      key={index}
+                      href={item.path}
+                      className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
+                      onClick={() => handleSelect(item.path)}
+                    >
+                      {item.icon}
+                      <span className="nav-item-text">{item.text}</span>
+                    </a>
+                  )
+                ))
+              )}
+            </div>
+
           </nav>
 
           <div className="sidebar-footer">
