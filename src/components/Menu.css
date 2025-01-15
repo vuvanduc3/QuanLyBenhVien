@@ -113,5 +113,51 @@
 }
 
 
-/*  Giao diện tôis   */
+/*  Giao diện sidebar    */
 
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: var(--sidebar-bg-color, #f8fafc);
+  border-right: 1px solid var(--sidebar-border-color, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+  position: absolute; /* Đẩy sidebar ra khỏi luồng */
+  visibility: hidden; /* Đảm bảo nó không hiển thị */
+}
+
+
+.sidebar.visible {
+  transform: translateX(0); /* Move sidebar back into view */
+}
+
+.menu-toggle {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000; /* Ensure button is above other content */
+  background-color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none; /* Hide sidebar on small screens */
+  }
+
+  .sidebar.visible {
+    display: block; /* Show sidebar if it's visible */
+  }
+
+  .menu-toggle {
+    display: block; /* Ensure the toggle button is visible */
+  }
+}
