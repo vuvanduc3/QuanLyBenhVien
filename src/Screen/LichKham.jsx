@@ -204,7 +204,7 @@ const LichKham = () => {
 
           </div>
 
-          <div className="filter-container">
+          <div className="filter-container-chuyendoi">
             <input
               type="text"
               placeholder="Mã bệnh nhân"
@@ -225,14 +225,14 @@ const LichKham = () => {
               value={filter.date}
               onChange={handleFilterChange}
             />
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",width: "100%" }}>
-            <button className="reset-btn" onClick={handleReset}>Reset</button>
+
+            <button className="add-btn" onClick={handleReset}>Reset</button>
             <button className="add-btn" onClick={handleAdd}>Thêm lịch hẹn</button>
-            </div>
+
           </div>
 
-          <div className="table-container">
-            <table>
+          <div className="table-container-cuonngang">
+            <table className="table-container">
               <thead>
                 <tr>
                   <th onClick={() => handleSort('MaLichKham')}>Mã lịch khám {sort.column === 'MaLichKham' && (sort.direction === 'asc' ? ' ↑' : ' ↓')}</th>

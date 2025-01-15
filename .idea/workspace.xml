@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0006d95e-39ec-46cc-b70a-4dec8b8d531b" name="Changes" comment="update thong bao">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/LichKham.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/LichKham.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Menu.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Menu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
