@@ -26,6 +26,7 @@ export default function Search1() {
 
     const handleNavigateToCaiDatThongTinCaNhan = () => {
         navigate("/quan-ly-tai-khoan"); // Điều hướng đến trang đăng ký
+        Cookies.set('selectedPath', '/quan-ly-tai-khoan', { expires: 7 });
     };
 
 

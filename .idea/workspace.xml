@@ -6,49 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0006d95e-39ec-46cc-b70a-4dec8b8d531b" name="Changes" comment="update thong bao">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/serve.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/serve.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/ADDBHYT.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ADDBHYT.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/AddHSBA.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/AddHSBA.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/AddInvoice.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/AddInvoice.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/AddPayment.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/AddPayment.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDDieuTri.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDDieuTri.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDDonThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDDonThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDHoaDonChiTiet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDHoaDonChiTiet.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDLichKham.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDTraCuuVaNhapHoaDonChiTiet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDTraCuuVaNhapHoaDonChiTiet.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDVatTu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDVatTu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/CRUDXetNghiem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/CRUDXetNghiem.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/ChiTietHSBA.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ChiTietHSBA.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/ChiTietThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ChiTietThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/ChiTietVatTu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ChiTietVatTu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/DanhMucThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DanhMucThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/DieuTri.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DieuTri.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/DonThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/EditPayment.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/EditPayment.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/HoSoBenhAn.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/HoSoBenhAn.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/InsuranceList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/InsuranceList.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/InsurancePayment.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/InsurancePayment.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/InvoiceForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/InvoiceForm.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/LichKham.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/LichKham.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/PaymentList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/PaymentList.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyBaoHiemNguoiDung.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyBaoHiemNguoiDung.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyHoaDonChiTiet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyHoaDonChiTiet.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyNguoiDung.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyNguoiDung.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyThuoc.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyThuoc.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/QuanLyVatTu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/QuanLyVatTu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/Setting.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/Setting.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/ThongBao.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/TraCuuVaNhapHoaDonCT.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/TraCuuVaNhapHoaDonCT.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/XetNghiem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/XetNghiem.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/XuatHoaDon.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/XuatHoaDon.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/dashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/dashboard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/InsuranceList.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/InsuranceList.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/InvoiceForm.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/InvoiceForm.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/Login.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Login.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/QuanLyHoaDonChiTiet.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/QuanLyHoaDonChiTiet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/Register.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Register.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Styles/Setting.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/Setting.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Screen/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/Login.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/seach_user.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/seach_user.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,19 +40,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;TranTuan__Ver2&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/DoAn_reactnative/quanlybenhvien/src/Screen&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "quanlybenhvien__v1",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/DoAn_reactnative/quanlybenhvien/src/Screen",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\DoAn_reactnative\quanlybenhvien\src\Screen" />
