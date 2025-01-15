@@ -4038,7 +4038,7 @@ app.put("/api/thongbao/:notificationID", async (req, res) => {
 
 // API thêm thông báo
 app.post("/api/thongbao", async (req, res) => {
-  const { Name, Loai, ChucNang } = req.body;
+  const { Name, Loai, ChucNang, Data } = req.body;
 
   // Kiểm tra các trường dữ liệu đầu vào
   if (!Name || !Loai || !ChucNang) {
@@ -4048,8 +4048,8 @@ app.post("/api/thongbao", async (req, res) => {
   try {
     // Truy vấn SQL để thêm thông báo vào bảng
     const query = `
-      INSERT INTO ThongBao (Name, Loai, ChucNang)
-      VALUES (@Name, @Loai, @ChucNang)
+      INSERT INTO ThongBao (Name, Loai, ChucNang, DuLieu)
+      VALUES (@Name, @Loai, @ChucNang, @Data)
     `;
 
     // Thực hiện truy vấn SQL
@@ -4058,6 +4058,7 @@ app.post("/api/thongbao", async (req, res) => {
       .input("Name", sql.NVarChar, Name)
       .input("Loai", sql.NVarChar, Loai)
       .input("ChucNang", sql.NVarChar, ChucNang)
+      .input("Data", sql.NVarChar, JSON.stringify(Data))
       .query(query);
 
     // Nếu thành công, trả về thông báo đã được thêm

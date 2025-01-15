@@ -4,8 +4,9 @@ import '../Styles/QuanLyNguoiDung.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 import Cookies from 'js-cookie';
-
+import { useNavigate } from "react-router-dom";
 const QuanLyNguoiDungScreen = () => {
+     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -132,6 +133,12 @@ const QuanLyNguoiDungScreen = () => {
             });
             const data = await response.json();
             if (data.success) {
+                alert(data.message);
+                const tenThongBao = "Thông báo: Thêm người dùng có 'Tên đầy đủ: "+ formData.TenDayDu +"- CCCD: "+ formData.CCCD +" - với vai trò: "+ formData.VaiTro +"'' thành công!";
+                const loaiThongBao = "Người dùng";
+                const chucNang = "Thêm dữ liệu";
+                themThongBao(tenThongBao, loaiThongBao, chucNang, formData);
+
                 setUsers([...users, data.data]);
                 setShowModal(false);
                 setFormData({
@@ -167,6 +174,13 @@ const QuanLyNguoiDungScreen = () => {
             });
             const data = await response.json();
             if (data.success) {
+
+                alert(data.message);
+                const tenThongBao = "Thông báo: Sửa người dùng có 'Tên đầy đủ: "+ formData.TenDayDu +"- CCCD: "+ formData.CCCD +" - với vai trò: "+ formData.VaiTro +"'' thành công!";
+                const loaiThongBao = "Người dùng";
+                const chucNang = "Sửa dữ liệu";
+                themThongBao(tenThongBao, loaiThongBao, chucNang, formData);
+
                 setUsers(users.map(user => (user.ID === currentUserId ? data.data : user)));
                 setShowModal(false);
                 setFormData({
@@ -190,14 +204,25 @@ const QuanLyNguoiDungScreen = () => {
         }
     };
 
-    const deleteUser = async (id) => {
+    const deleteUser = async (items) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/nguoidung/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/nguoidung/${items.ID}`, {
                 method: 'DELETE',
             });
             const data = await response.json();
-            if (data.success) setUsers(users.filter(user => user.ID !== id));
-            else alert(data.message);
+            if (data.success){
+                alert(data.message);
+                const tenThongBao = "Thông báo: Xóa người dùng có 'TenDayDu: "+ items.TenDayDu +"- CCCD: "+ items.CCCD +" - với vai trò: "+ items.VaiTro +"' thành công!";
+                const loaiThongBao = "Người dùng";
+                const chucNang = "Xóa dữ liệu";
+                themThongBao(tenThongBao, loaiThongBao, chucNang, items);
+
+             setUsers(users.filter(user => user.ID !== items.ID));
+            }
+            else {
+
+                alert(data.message);
+            }
         } catch (error) {
             console.error('Lỗi khi xóa người dùng:', error);
         }
@@ -253,8 +278,34 @@ const QuanLyNguoiDungScreen = () => {
             )
         );
     };
+  const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
-    // Kết quả tìm kiếm hoặc lọc theo vai trò
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }    // Kết quả tìm kiếm hoặc lọc theo vai trò
     const filteredResults = searchTerm ? searchUsers(searchTerm) : filterUsersByRole(viewRole);
     // Phân trang
     const indexOfLastUser = currentPage * itemsPerPage;
@@ -274,13 +325,41 @@ const QuanLyNguoiDungScreen = () => {
         <div className="container">
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+          <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+                <div className="content-chuyendoi">
                     <div class={Cookies.get('Theme') === 'dark'? "dark-theme" : "light-theme"}>
+
                     <div className="card-header">
                         <h2 className="card-title">Quản lý người dùng</h2>
-
                     </div>
+
                     {showModal && (
                         <div className="modal3">
                             <div className="modal-content">
@@ -571,7 +650,7 @@ const QuanLyNguoiDungScreen = () => {
                     </div>
 
                     {/* Bảng người dùng */}
-
+                    <div className="table-container-cuonngang">
                         <table className="table-quanlynguoidung">
                             <thead>
                                 <tr >
@@ -630,7 +709,7 @@ const QuanLyNguoiDungScreen = () => {
                                                 <td>
                                                     <div className="">
                                                         <button className="action-btn-nguoidung" onClick={() => openModal('edit', user)}>Sửa</button>
-                                                        <button className="action-btn-bacsi" onClick={() => deleteUser(user.ID)}>Xóa</button>
+                                                        <button className="action-btn-bacsi" onClick={() => deleteUser(user)}>Xóa</button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -644,6 +723,7 @@ const QuanLyNguoiDungScreen = () => {
                             </tbody>
 
                         </table>
+                    </div>
 
 
 

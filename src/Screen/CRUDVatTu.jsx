@@ -18,7 +18,34 @@ const CRUDVatTu = () => {
         SoLuong: '',
         GiaTien: ''
     });
+   const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -137,6 +164,13 @@ const CRUDVatTu = () => {
             const nextCodeData = await nextCodeResponse.json();
 
             if (nextCodeData.success) {
+
+               const tenThongBao = "Thông báo: Thêm vật tư có 'Mã vật tư : "+formData.MaVatTu +" - Tên vật tư : "+ formData.TenVatTu +"' thành công!";
+               const loaiThongBao = "Vật tư";
+               const chucNang = "Thêm dữ liệu";
+               themThongBao(tenThongBao, loaiThongBao, chucNang, formData);
+
+
                 setFormData({
                     MaVatTu: nextCodeData.nextCode,
                     TenVatTu: '',
@@ -145,7 +179,8 @@ const CRUDVatTu = () => {
                     SoLuong: '',
                     GiaTien: ''
                 });
-                toast.success('🎉 Thêm thuốc thành công!');
+                toast.success('🎉 Thêm vật tư thành công!');
+
             } else {
                 throw new Error('Không thể lấy mã thuốc mới');
             }

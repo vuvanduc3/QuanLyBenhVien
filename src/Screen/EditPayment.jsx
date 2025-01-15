@@ -133,7 +133,34 @@ const EditPayment = () => {
       return "";
     }
   };
+  const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
   const formatCurrency = (value) => {
     return value.toLocaleString("vi-VN");
   };
@@ -159,6 +186,11 @@ const EditPayment = () => {
         if (data.success) {
           setCount(count + 1);
           alert('Cập nhật thông tin thanh toán thành công!');
+            const tenThongBao = "Thông báo: Cập nhập thanh toán có 'Mã hóa đơn: "+paymentId +" - Mã bệnh nhân : "+ paymentData.patientId +" - với số tiền  "+ paymentData.amount +" đ' thành công!";
+            const loaiThongBao = "Thanh toán";
+            const chucNang = "Sửa dữ liệu";
+            themThongBao(tenThongBao, loaiThongBao, chucNang, paymentData);
+
           console.log('Payment information updated:', data);
         } else {
           alert('Cập nhật thất bại: ' + data.message);

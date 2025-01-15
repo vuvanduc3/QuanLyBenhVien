@@ -24,13 +24,13 @@ const DieuTri = () => {
   });
 
   const itemsPerPage = 7;
-    const themThongBao = async (name, type, feature ) => {
+    const themThongBao = async (name, type, feature, data ) => {
       if (!name || !type || !feature) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
       }
 
-      const notification = { Name: name, Loai: type, ChucNang: feature };
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
 
       try {
               const response = await fetch("http://localhost:5000/api/thongbao", {
@@ -43,7 +43,7 @@ const DieuTri = () => {
 
               const result = await response.json();
               if (response.ok) {
-                  window.location.reload(true);
+                  //window.location.reload(true);
               } else {
                   alert(result.message);
               }
@@ -113,7 +113,7 @@ const DieuTri = () => {
          const chucNang = "Xóa dữ liệu";
 
          fetchDieuTriData();
-         themThongBao(tenThongBao, loaiThongBao, chucNang);
+         themThongBao(tenThongBao, loaiThongBao, chucNang, item);
 
       } catch (error) {
         console.error('Lỗi khi xóa điều trị:', error);
@@ -182,12 +182,36 @@ const DieuTri = () => {
     <div className="container">
       <Menu1 />
       <main className="main-content">
-        <div
-         className="main-content"
-        >
-            <Search1 />
-        </div>
-        <div className="main-content" style={{ marginTop: "10px" }}>
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+        <div className="content-chuyendoi" style={{ marginTop: "10px" }}>
             <div className="content">
               <div className="card-header">
                 <h2>Điều trị {MaBenhNhans ? `(Mã bệnh nhân: ${MaBenhNhans})` : ''}</h2>

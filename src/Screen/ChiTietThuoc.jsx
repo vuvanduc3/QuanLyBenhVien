@@ -64,13 +64,13 @@ const ChiTietThuoc = () => {
             [name]: value
         }));
     };
-const themThongBao = async (name, type, feature ) => {
+const themThongBao = async (name, type, feature , data) => {
       if (!name || !type || !feature) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
       }
 
-      const notification = { Name: name, Loai: type, ChucNang: feature };
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
 
       try {
               const response = await fetch("http://localhost:5000/api/thongbao", {
@@ -83,7 +83,7 @@ const themThongBao = async (name, type, feature ) => {
 
               const result = await response.json();
               if (response.ok) {
-                  window.location.reload(true);
+                  //window.location.reload(true);
 
               } else {
                   alert(result.message);
@@ -119,7 +119,7 @@ const themThongBao = async (name, type, feature ) => {
                 const tenThongBao = "Thông báo: Sửa thuốc có 'Mã : "+ id +" - Tên thuốc: "+editedData.TenThuoc+"' thành công!";
                 const loaiThongBao = "Thuốc";
                 const chucNang = "Sửa dữ liệu";
-                themThongBao(tenThongBao, loaiThongBao, chucNang);
+                themThongBao(tenThongBao, loaiThongBao, chucNang, editedData);
 
                 setThuoc(editedData);
                 setIsEditing(false);

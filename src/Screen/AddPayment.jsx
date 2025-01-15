@@ -65,7 +65,7 @@ const AddPayment = () => {
 
   console.log(count,"count")
 
-  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -123,6 +123,13 @@ const AddPayment = () => {
       if (response.ok) {
         alert(result.message); // Hiển thị thông báo thành công
         // Tiếp tục gửi chi phí bảo hiểm nếu có
+
+            const tenThongBao = "Thông báo: Thêm thanh toán có 'Mã hóa đơn: "+paymentData.id +" - Mã bệnh nhân : "+ paymentData.patientId +" - với số tiền  "+ paymentData.amount +" đ' thành công!";
+            const loaiThongBao = "Thanh toán";
+            const chucNang = "Thêm dữ liệu";
+            themThongBao(tenThongBao, loaiThongBao, chucNang, paymentData);
+
+
         if (formData.maBaoHiem && formData.soTienBaoHiemChiTra) {
           const insuranceData = {
             MaChiPhiBHYT: formData.maBaoHiemChiTra,
@@ -141,6 +148,13 @@ const AddPayment = () => {
           const insuranceResult = await insuranceResponse.json();
           if (insuranceResponse.ok) {
             alert(insuranceResult.message);
+
+            const tenThongBao = "Thông báo: Thêm chi phí bảo hiểm y tế chi trả có 'Mã hóa đơn: "+paymentData.id +" - Mã bệnh nhân : "+ paymentData.patientId +" - với số tiền  "+ insuranceData.SoTienBHYTChiTra +" đ' thành công!";
+            const loaiThongBao = "Chi phí BHYT";
+            const chucNang = "Thêm dữ liệu";
+            themThongBao(tenThongBao, loaiThongBao, chucNang, insuranceData);
+
+
             const updateResponse2 = await fetch('http://localhost:5000/api/capnhaptinhtrangthanhtoan', {
                        method: 'PUT', // Sử dụng phương thức POST nếu cần
                        headers: {
@@ -154,7 +168,8 @@ const AddPayment = () => {
                      if (!updateData2.success) {
                        console.error('Lỗi khi cập nhật tình trạng thanh toán');
                        return;
-             }
+                     }
+
           } else {
             throw new Error(insuranceResult.message);
           }
@@ -167,9 +182,36 @@ const AddPayment = () => {
       alert('Đã có lỗi xảy ra khi lưu thanh toán: ' + error.message); // Hiển thị lỗi chi tiết
     }
   };
+   const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
 
-  
 
   return (
     <div className="container">

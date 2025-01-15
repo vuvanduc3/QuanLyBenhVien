@@ -668,7 +668,7 @@ input[type="date"] {
     justify-content: center;
     position: fixed; /* Cố định vị trí */
     top: 50%; /* Đẩy phần tử xuống 50% chiều cao màn hình */
-    left: 50%; /* Đẩy phần tử sang 50% chiều rộng màn hình */
+    left: 58%; /* Đẩy phần tử sang 50% chiều rộng màn hình */
     transform: translate(-50%, -50%); /* Căn chỉnh lại để phần tử ở giữa thực sự */
     width: 100%;
     max-width: 500px;

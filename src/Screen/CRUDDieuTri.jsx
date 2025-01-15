@@ -24,13 +24,13 @@ const ThemSuaXoaDieuTri = () => {
   const { state } = useLocation();
   const { action, item } = state || {};
   const navigate = useNavigate();
-    const themThongBao = async (name, type, feature ) => {
+    const themThongBao = async (name, type, feature, data ) => {
       if (!name || !type || !feature) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
       }
 
-      const notification = { Name: name, Loai: type, ChucNang: feature };
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
 
       try {
               const response = await fetch("http://localhost:5000/api/thongbao", {
@@ -43,7 +43,7 @@ const ThemSuaXoaDieuTri = () => {
 
               const result = await response.json();
               if (response.ok) {
-                  window.location.reload(true);
+                  //window.location.reload(true);
               } else {
                   alert(result.message);
               }
@@ -63,8 +63,8 @@ const ThemSuaXoaDieuTri = () => {
           toast.error('Không thể tải danh sách hồ sơ');
         }
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu hồ sơ:", error);
-        toast.error('Lỗi khi tải danh sách hồ sơ');
+        //console.error("Lỗi khi lấy dữ liệu hồ sơ:", error);
+        //toast.error('Lỗi khi tải danh sách hồ sơ');
       }
     };
     fetchHoSos();
@@ -155,7 +155,7 @@ const ThemSuaXoaDieuTri = () => {
             const loaiThongBao = "Điều trị";
             const chucNang = "Sửa dữ liệu";
 
-            themThongBao(tenThongBao, loaiThongBao, chucNang);
+            themThongBao(tenThongBao, loaiThongBao, chucNang, item);
 
         }
         else{
@@ -163,7 +163,7 @@ const ThemSuaXoaDieuTri = () => {
             const loaiThongBao = "Điều trị";
             const chucNang = "Thêm dữ liệu";
 
-            themThongBao(tenThongBao, loaiThongBao, chucNang);
+            themThongBao(tenThongBao, loaiThongBao, chucNang, item);
         }
 
       } else {

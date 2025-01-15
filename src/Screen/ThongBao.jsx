@@ -3,9 +3,12 @@ import "../Styles/Setting.css";
 import Menu1 from "../components/Menu";
 import Search1 from "../components/seach_user";
 import Cookies from "js-cookie";
+import { ChevronLeft, Edit, Save, X } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const App = () => {
   const [theme, setTheme] = useState("light");
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -154,7 +157,37 @@ const App = () => {
     <div className="container">
       <Menu1 />
       <main className="main-content">
-        <Search1 />
+
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
         <div className="content-chuyendoi">
           <h2>
             <p>Danh sách thông báo</p>
@@ -196,6 +229,7 @@ const App = () => {
                 <p>{new Date(notification.Ngay).toLocaleString()}</p>
                 <p>{notification.Loai}</p>
                 <p>{notification.ChucNang}</p>
+                <p>{notification.DuLieu}</p>
 
                 {/* Button để đánh dấu thông báo là đã đọc */}
                 <div style={{ display: "flex", alignItems: "center" }}>

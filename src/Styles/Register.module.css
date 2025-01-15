@@ -59,7 +59,7 @@
   display: block;
   font-size: 12px; /* Giảm font size cho label */
   color: #555;
-  margin-bottom: 4px; /* Giảm khoảng cách dưới label */
+  margin-bottom: 2px; /* Giảm khoảng cách dưới label */
 }
 
 .input {
@@ -163,7 +163,7 @@
 /* Media Queries - Điều chỉnh cho màn hình cực nhỏ */
 @media (max-width: 1200px) {
   .loginBox {
-    max-width: 85%; /* Giảm chiều rộng của login box */
+    max-width: 100%; /* Giảm chiều rộng của login box */
     padding: 15px; /* Giảm padding để tạo không gian */
   }
 
@@ -218,11 +218,11 @@
 }
 
 .inputGroup {
-  margin-bottom: 10px;
+  margin-bottom: 3px;
 }
 
 .inputGroup label {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .input {

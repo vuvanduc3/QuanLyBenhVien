@@ -6,8 +6,10 @@ import Search1 from '../components/seach_user';
 import Menu1 from '../components/Menu';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+
 const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
      const { state } = useLocation();
+         const navigate = useNavigate();
      const { MaHoaDon, action, item } = state || {};
 
     const [quantity, setQuantity] = useState(1); // Mặc định số lượng là 1
@@ -93,6 +95,11 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
             const result = await response.json();
             if (result.success) {
                 toast.success('Thêm hóa đơn chi tiết thành công!');
+                const tenThongBao = "Thông báo: Thêm hóa đơn có 'Mã hóa đơn: "+body?.MaHoaDon +" - TenDichVu : "+ body?.TenDichVu +"' thành công!";
+                const loaiThongBao = "Hóa đơn chi tiết";
+                const chucNang = "Thêm dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang, body);
 
                 // Sau khi thêm hóa đơn chi tiết, cập nhật trạng thái DaNhapHoaDon
                 try {
@@ -131,6 +138,35 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
         }
     };
 
+        const themThongBao = async (name, type, feature, data ) => {
+          if (!name || !type || !feature) {
+            alert("Vui lòng nhập đầy đủ thông tin!");
+            return;
+          }
+
+          const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+          try {
+                  const response = await fetch("http://localhost:5000/api/thongbao", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(notification),
+                  });
+
+                  const result = await response.json();
+                  if (response.ok) {
+                      //window.location.reload(true);
+                  } else {
+                      alert(result.message);
+                  }
+              } catch (error) {
+                console.error("Lỗi khi thêm thông báo:", error);
+                alert("Có lỗi xảy ra!");
+              }
+     }
+
 
 
 
@@ -151,16 +187,44 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
 
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+                <div className="content-chuyendoi">
                     <div className="card-header">
                         <h2 className="card-title">Thêm hóa đơn chi tiết {item.MoTa}</h2>
                     </div>
 
                     <form onSubmit={handleSubmit} className="medicine-form">
-                        <label>Mã hóa đơn: <span className="required">{MaHoaDon}</span></label>
+                        <label>Mã hóa đơn: {MaHoaDon}<span className="required">*</span></label>
 
-                        <label>Tên thuốc/dịch vụ: <span className="required">{TenDichVu}</span></label>
+                        <label>Tên thuốc/dịch vụ: {TenDichVu}<span className="required">*</span></label>
 
                         <div className="form-group">
                         <label>Số lượng: <span className="required"></span></label>
@@ -187,7 +251,7 @@ const CRUDTraCuuVaNhapHoaDonChiTiet = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Thành tiền: <span className="required">{thanhTien.toLocaleString('vi-VN')} VND</span></label>
+                            <label>Thành tiền: {thanhTien.toLocaleString('vi-VN')} VND<span className="required">*</span></label>
                         </div>
 
                         <div className="form-actions">

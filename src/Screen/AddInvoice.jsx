@@ -137,6 +137,19 @@ const AddInvoice = () => {
       data = await response.json();
       alert(data.success ? 'Thành công!' : data.message);
 
+      if(action === 'edit'){
+        const tenThongBao = "Thông báo: Sửa hóa đơn có Mã hóa đơn: "+ updatedFormData.MaHoaDon +"- Mã bệnh nhân: "+ updatedFormData.MaBenhNhan +" thành công!";
+        const loaiThongBao = "Hóa đơn";
+        const chucNang = "Sửa dữ liệu";
+        themThongBao(tenThongBao, loaiThongBao, chucNang, updatedFormData);
+      }
+      else{
+        const tenThongBao = "Thông báo: Thêm hóa đơn có Mã hồ sơ: "+ updatedFormData.MaHoSo +"- Mã bệnh nhân: "+ updatedFormData.MaBenhNhan +" thành công!";
+        const loaiThongBao = "Hóa đơn";
+        const chucNang = "Thêm dữ liệu";
+        themThongBao(tenThongBao, loaiThongBao, chucNang, updatedFormData);
+      }
+
     } catch (error) {
       console.error('❌ Lỗi khi thực hiện thao tác:', error.message);
       alert('Đã xảy ra lỗi, vui lòng thử lại!');
@@ -156,6 +169,34 @@ const AddInvoice = () => {
       doctor.SDT?.includes(doctorSearchTerm) ||
       doctor.CCCD?.includes(doctorSearchTerm)
   );
+  const themThongBao = async (name, type, feature, data ) => {
+        if (!name || !type || !feature) {
+          alert("Vui lòng nhập đầy đủ thông tin!");
+          return;
+        }
+
+        const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+        try {
+                const response = await fetch("http://localhost:5000/api/thongbao", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(notification),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    //window.location.reload(true);
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+              console.error("Lỗi khi thêm thông báo:", error);
+              alert("Có lỗi xảy ra!");
+            }
+      }
 
   return (
     <div className="container">

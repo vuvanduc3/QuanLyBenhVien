@@ -112,14 +112,14 @@ const QuanLyVatTu = () => {
         setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
     }, [searchTerm, filters, vattu]);
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (item) => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa vật tư này không?')) {
             return;
         }
     
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/vattu/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/vattu/${item.MaVatTu}`, {
                 method: 'DELETE',
             });
     
@@ -129,6 +129,7 @@ const QuanLyVatTu = () => {
             if (!response.ok) {
                 throw new Error(`Lỗi từ API: ${response.statusText}`);
             }
+
     
             // Kiểm tra xem phản hồi có phải là JSON không
             const contentType = response.headers.get('Content-Type');
@@ -136,6 +137,10 @@ const QuanLyVatTu = () => {
                 const data = await response.json();
                 if (data.success) {
                     toast.success('Xóa vật tư thành công!');
+                   const tenThongBao = "Thông báo: Xóa vật tư có 'Mã vật tư : "+item.MaVatTu +" - Tên vật tư : "+ item.TenVatTu +"' thành công!";
+                   const loaiThongBao = "Vật tư";
+                   const chucNang = "Xóa dữ liệu";
+                   themThongBao(tenThongBao, loaiThongBao, chucNang, item);
                     fetchvattus();
                 } else {
                     throw new Error(data.message || 'Có lỗi xảy ra khi xóa vật tư');
@@ -151,7 +156,34 @@ const QuanLyVatTu = () => {
         }
     };
     
-    
+     const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
     const handleChangevattu = () => {
         navigate('/them-vat-tu');
@@ -202,12 +234,40 @@ const QuanLyVatTu = () => {
             <Menu1 />
 
             <main className="main-content">
-                <Search1 />
+           <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
 
 
 
 
-                <div className="content">
+                <div className="content-chuyendoi">
                     <div className="card-header">
                         <h2 className="card-title">Quản lý vật tư</h2>
                         <button className="add-button" onClick={handleChangevattu}>
@@ -285,7 +345,7 @@ const QuanLyVatTu = () => {
                         </div>
                     </div>
 
-                    <table className="table">
+                    <table className="table-container">
                         <thead>
                             <tr>
                                 <th>#ID</th>
@@ -328,7 +388,7 @@ const QuanLyVatTu = () => {
                                                     className="action-btn red"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handleDelete(vattu.MaVatTu);
+                                                        handleDelete(vattu);
                                                     }}
                                                     disabled={isDeleting}
                                                 >

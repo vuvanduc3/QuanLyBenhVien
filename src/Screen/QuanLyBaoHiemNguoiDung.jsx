@@ -30,7 +30,7 @@ const QuanLyNguoiDungScreen = () => {
     const [viewRole, setViewRole] = useState('Bệnh nhân'); // Default view is "Bệnh nhân"
     const [searchTerm, setSearchTerm] = useState(""); // State để lưu từ khóa tìm kiếm
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const itemsPerPage = 2; // Số lượng người dùng trên mỗi trang
+    const itemsPerPage = 5; // Số lượng người dùng trên mỗi trang
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -283,8 +283,37 @@ const QuanLyNguoiDungScreen = () => {
         <div className="container">
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <div className="content">
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+                <div className="content-chuyendoi">
                     <div className="card-header">
                         <h2 className="card-title">Quản lý người dùng</h2>
                         <div className="role-switcher">
@@ -489,83 +518,84 @@ const QuanLyNguoiDungScreen = () => {
                     </div>
 
                     {/* Bảng người dùng */}
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>#ID</th>
-                                <th>Hình</th>
-                                <th>Tên đầy đủ</th>
-                                <th>Email</th>
-                                <th>SĐT</th>
-                                <th>CCCD</th>
-                                <th>Vai trò</th>
-                                {viewRole === 'Bệnh nhân' && (
-                                    <>
-                                        <th>Địa chỉ</th>
-                                        <th>Tuổi</th>
-                                        <th>Giới tính</th>
-                                    </>
-                                )}
-                                {viewRole === 'Bác sĩ' && (
-                                    <>
-                                        <th>Chuyên môn</th>
-                                        <th>Phòng khám</th>
-                                    </>
-                                )}
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+                    <div className="table-container-cuonngang">
+                        <table className="table-container">
+                            <thead>
                                 <tr>
-                                    <td colSpan="13">Đang tải dữ liệu...</td>
+                                    <th>#ID</th>
+                                    <th>Hình</th>
+                                    <th>Tên đầy đủ</th>
+                                    <th>Email</th>
+                                    <th>SĐT</th>
+                                    <th>CCCD</th>
+                                    <th>Vai trò</th>
+                                    {viewRole === 'Bệnh nhân' && (
+                                        <>
+                                            <th>Địa chỉ</th>
+                                            <th>Tuổi</th>
+                                            <th>Giới tính</th>
+                                        </>
+                                    )}
+                                    {viewRole === 'Bác sĩ' && (
+                                        <>
+                                            <th>Chuyên môn</th>
+                                            <th>Phòng khám</th>
+                                        </>
+                                    )}
+                                    <th>Action</th>
                                 </tr>
-                            ) : (
-                                filteredResults.length > 0 ? (
-                                    currentUsers.map(user => (
-                                        <tr key={user.ID}>
-                                            <td>{user.ID}</td>
-                                            <td><img src={user.Hinh || 'default_image_url'} alt="Hình" className="user-image" /></td>
-                                            <td>{user.TenDayDu}</td>
-                                            <td>{user.Email}</td>
-                                            <td>{user.SDT}</td>
-                                            <td>{user.CCCD}</td>
-                                            <td>{user.VaiTro}</td>
-                                            {viewRole === 'Bệnh nhân' && (
-                                                <>
-                                                    <td>{user.DiaChi || ''}</td>
-                                                    <td>{user.Tuoi || ''}</td>
-                                                    <td>{user.GioiTinh || ''}</td>
-                                                </>
-                                            )}
-                                            {viewRole === 'Bác sĩ' && (
-                                                <>
-                                                    <td>{user.ChuyenMon || ''}</td>
-                                                    <td>{user.PhongKham || ''}</td>
-                                                </>
-                                            )}
-                                            <td>
-                                              <div className="action-buttons-container">
-                                                <button
-                                                  onClick={() => user.MaBenhNhan ? handleEdit(user) : handleAdd(user)}
-                                                  className={`action-btn ${user.MaBenhNhan ? 'brown' : 'green'}`}
-                                                >
-                                                  {user.MaBenhNhan ? 'Sửa thông tin bảo hiểm' : 'Nhập thông tin bảo hiểm'}
-                                                </button>
-                                              </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
+                            </thead>
+                            <tbody>
+                                {loading ? (
                                     <tr>
-                                        <td colSpan="13">Không có kết quả tìm kiếm</td>
+                                        <td colSpan="13">Đang tải dữ liệu...</td>
                                     </tr>
-                                )
-                            )}
-                        </tbody>
+                                ) : (
+                                    filteredResults.length > 0 ? (
+                                        currentUsers.map(user => (
+                                            <tr key={user.ID}>
+                                                <td>{user.ID}</td>
+                                                <td><img src={user.Hinh || 'default_image_url'} alt="Hình" className="user-image" /></td>
+                                                <td>{user.TenDayDu}</td>
+                                                <td>{user.Email}</td>
+                                                <td>{user.SDT}</td>
+                                                <td>{user.CCCD}</td>
+                                                <td>{user.VaiTro}</td>
+                                                {viewRole === 'Bệnh nhân' && (
+                                                    <>
+                                                        <td>{user.DiaChi || ''}</td>
+                                                        <td>{user.Tuoi || ''}</td>
+                                                        <td>{user.GioiTinh || ''}</td>
+                                                    </>
+                                                )}
+                                                {viewRole === 'Bác sĩ' && (
+                                                    <>
+                                                        <td>{user.ChuyenMon || ''}</td>
+                                                        <td>{user.PhongKham || ''}</td>
+                                                    </>
+                                                )}
+                                                <td>
+                                                  <div className="action-buttons-container">
+                                                    <button
+                                                      onClick={() => user.MaBenhNhan ? handleEdit(user) : handleAdd(user)}
+                                                      className={`action-btn ${user.MaBenhNhan ? 'brown' : 'green'}`}
+                                                    >
+                                                      {user.MaBenhNhan ? 'Sửa thông tin bảo hiểm' : 'Nhập thông tin bảo hiểm'}
+                                                    </button>
+                                                  </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="13">Không có kết quả tìm kiếm</td>
+                                        </tr>
+                                    )
+                                )}
+                            </tbody>
 
-                    </table>
-
+                        </table>
+                    </div>
                     {/* Phân trang */}
                     <div className="pagination">
                         <button

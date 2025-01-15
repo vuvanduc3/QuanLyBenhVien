@@ -77,13 +77,13 @@ const ThemSuaXoaXetNghiem = () => {
         fetchThuocs();
     }, []);
 
-    const themThongBao = async (name, type, feature ) => {
+    const themThongBao = async (name, type, feature, data ) => {
       if (!name || !type || !feature) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
       }
 
-      const notification = { Name: name, Loai: type, ChucNang: feature };
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
 
       try {
               const response = await fetch("http://localhost:5000/api/thongbao", {
@@ -96,7 +96,7 @@ const ThemSuaXoaXetNghiem = () => {
 
               const result = await response.json();
               if (response.ok) {
-                  window.location.reload(true);
+                  //window.location.reload(true);
               } else {
                   alert(result.message);
               }
@@ -250,15 +250,29 @@ const ThemSuaXoaXetNghiem = () => {
                      const tenThongBao = "Thông báo: Sửa đơn thuốc có 'Mã hồ sơ : "+ MaHoSo +" - Mã bệnh nhân: "+ MaBenhNhan +" - Tên thuốc "+ TenThuoc +" ' thành công!";
                      const loaiThongBao = "Đơn thuốc";
                      const chucNang = "Sửa dữ liệu";
+                     const data = {
+                         MaThuoc,
+                         SoLuongDonThuoc,
+                         HuongDanSuDung,
+                         MaHoSo,
+                         DaNhapHoaDon
+                     };
 
-                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+                     themThongBao(tenThongBao, loaiThongBao, chucNang, data);
                 }
                 else{
                      const tenThongBao = "Thông báo: Thêm đơn thuốc có 'Mã hồ sơ : "+ MaHoSo +" - Mã bệnh nhân: "+ MaBenhNhan +" - Tên thuốc "+ TenThuoc +" ' thành công!";
                      const loaiThongBao = "Đơn thuốc";
                      const chucNang = "Thêm dữ liệu";
+                     const data = {
+                         MaThuoc,
+                         SoLuongDonThuoc,
+                         HuongDanSuDung,
+                         MaHoSo,
+                         DaNhapHoaDon
+                     };
 
-                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+                     themThongBao(tenThongBao, loaiThongBao, chucNang, data);
                 }
 
             } else {
