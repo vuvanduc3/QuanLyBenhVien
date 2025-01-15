@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0006d95e-39ec-46cc-b70a-4dec8b8d531b" name="Changes" comment="update thong bao">
-      <change afterPath="$PROJECT_DIR$/src/Styles/blue-theme.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Styles/dark-theme.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Styles/light-theme.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Screen/Setting.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Screen/Setting.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Menu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/seach_user.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/seach_user.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Styles/blue-theme.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Styles/blue-theme.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +49,7 @@
     "git-widget-placeholder": "quanlybenhvien__v1",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/DoAn_reactnative/quanlybenhvien/src/Styles",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+    "settings.editor.selected.configurable": "preferences.editor"
   }
 }]]></component>
   <component name="RecentsManager">

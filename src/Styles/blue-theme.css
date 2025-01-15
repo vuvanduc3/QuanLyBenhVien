@@ -34,7 +34,7 @@ body.blue-theme body.blue-theme a:hover {
 
 body.blue-theme button {
     background-color: #00790; /* Màu nền xanh cho nút */
-    color: #fff; /* Màu xanh dương cho liên kết */
+
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -44,4 +44,12 @@ body.blue-theme button:hover {
 }
 body.blue-theme th,td,tr {
  background-color: #00790; /* Màu nền xanh cho nút */
+}
+
+body.blue-theme content-chuyendoi{
+    background-color: #00790; /* Màu nền xanh cho nút */
+}
+
+body.blue-theme table{
+  background-color: #e0flll;
 }
