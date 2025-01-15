@@ -15,6 +15,7 @@ import {
   UserCircle,
   Settings,
   LogOut
+
 } from 'lucide-react';
 import Cookies from 'js-cookie';
 import './Menu.css';
@@ -49,10 +50,15 @@ const bottomItems = [
 
 export default function Menu() {
   const [selectedPath, setSelectedPath] = useState(window.location.pathname);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
   const handleSelect = (path) => {
     setSelectedPath(path);
     Cookies.set('selectedPath', path, { expires: 7 });
+  };
+
+  const toggleSidebar = () => {
+      setSidebarVisible(!sidebarVisible);
   };
 
   const [theme, setTheme] = useState('light');
@@ -97,34 +103,55 @@ export default function Menu() {
   }, []);
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <h1 className="brand">
-          <span className="brand-blue">Benh</span>
-          <span style={{color:"#000"}}>Vien</span>
-        </h1>
-      </div>
+    <div>
+        <button className="menu-toggle" onClick={toggleSidebar}>
+           <i className="fa fa-bars"></i> {/* This will show a hamburger icon */}
+        </button>
 
-      <nav className="sidebar-nav">
-        <div className="nav-section">
-          <div className="nav-section-title">Tác vụ</div>
-          {menuItems.map((item, index) => (
-            <a
-              key={index}
-              href={item.path}
-              className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
-              onClick={() => handleSelect(item.path)}
-            >
-              {item.icon}
-              <span className="nav-item-text">{item.text}</span>
-            </a>
-          ))}
-        </div>
+        <div className={`sidebar ${sidebarVisible ? 'visible' : 'hidden'}`}>
+          <div className="sidebar-header">
+            <h1 className="brand">
+              <span className="brand-blue">Benh</span>
+              <span style={{color:"#000"}}>Vien</span>
+            </h1>
+          </div>
 
-        <div className="nav-section">
-          <div className="nav-section-title">Chi phí</div>
-          {pageItems.map((item, index) => (
-            !item.header && (
+          <nav className="sidebar-nav">
+            <div className="nav-section">
+              <div className="nav-section-title">Tác vụ</div>
+              {menuItems.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.path}
+                  className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
+                  onClick={() => handleSelect(item.path)}
+                >
+                  {item.icon}
+                  <span className="nav-item-text">{item.text}</span>
+                </a>
+              ))}
+            </div>
+
+            <div className="nav-section">
+              <div className="nav-section-title">Chi phí</div>
+              {pageItems.map((item, index) => (
+                !item.header && (
+                  <a
+                    key={index}
+                    href={item.path}
+                    className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
+                    onClick={() => handleSelect(item.path)}
+                  >
+                    {item.icon}
+                    <span className="nav-item-text">{item.text}</span>
+                  </a>
+                )
+              ))}
+            </div>
+          </nav>
+
+          <div className="sidebar-footer">
+            {bottomItems.map((item, index) => (
               <a
                 key={index}
                 href={item.path}
@@ -134,24 +161,9 @@ export default function Menu() {
                 {item.icon}
                 <span className="nav-item-text">{item.text}</span>
               </a>
-            )
-          ))}
+            ))}
+          </div>
         </div>
-      </nav>
-
-      <div className="sidebar-footer">
-        {bottomItems.map((item, index) => (
-          <a
-            key={index}
-            href={item.path}
-            className={`nav-item ${selectedPath === item.path ? 'active' : ''}`}
-            onClick={() => handleSelect(item.path)}
-          >
-            {item.icon}
-            <span className="nav-item-text">{item.text}</span>
-          </a>
-        ))}
-      </div>
     </div>
   );
 }
