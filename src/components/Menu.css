@@ -1,4 +1,7 @@
 .sidebar {
+  position: -webkit-sticky; /* Đối với các trình duyệt WebKit */
+  position: sticky;
+  top: 0;
   width: 260px;
   min-height: 100vh;
   background-color: var(--sidebar-bg-color, #f8fafc);
@@ -161,3 +164,23 @@
     display: block; /* Ensure the toggle button is visible */
   }
 }
+
+.nav-section-title {
+  user-select: none; /* Ngăn chặn chọn văn bản */
+}
+
+
+/*  Đóng mở menu  */
+.nav-section-items {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.nav-section-items.collapsed {
+  max-height: 0;
+}
+
+.nav-section-items.expanded {
+  max-height: 500px; /* Giá trị lớn hơn chiều cao thực tế của các mục */
+}
+
