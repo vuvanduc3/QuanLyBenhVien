@@ -233,3 +233,16 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+
+.table-container-cuonngang {
+  overflow-x: auto;
+}
+
+
+.table-container {
+  width: 100%;
+  border-collapse: collapse; /* Đảm bảo các đường viền không gây ảnh hưởng đến kích thước */
+}
+
+

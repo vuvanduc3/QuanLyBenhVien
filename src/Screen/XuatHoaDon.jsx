@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../Styles/QuanLyHoaDonChiTiet.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 import { Printer, Send } from 'lucide-react';
+import { ChevronLeft,ChevronRight, Edit, Save, X } from 'lucide-react';
 
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -160,7 +161,15 @@ const HoaDonChiTiet = () => {
 
         doc.text(`Tong tien: ${ formatNumberWithSplit(item.TongTien)+" VND"}`, 140, doc.lastAutoTable.finalY + 10);
         doc.save(`HoaDon_${removeDiacritics(item.MaHoaDon)}.pdf`); // Tên file cũng được chuẩn hóa
+
+        const tenThongBao = "Thông báo: Xuất file có 'Mã bệnh nhân: "+item?.MaBenhNhan +" - Mã hóa đơn : "+ item?.MaHoaDon +"' thành công!";
+        const loaiThongBao = "Hóa đơn";
+        const chucNang = "Xuất file";
+
+        themThongBao(tenThongBao, loaiThongBao, chucNang, null);
+
     };
+
     const recipientEmail = item?.Email || "tuanbmt753753@gmail.com"; // Nếu có email trong item thì sử dụng, nếu không thì lấy mặc định
 
 
@@ -403,6 +412,11 @@ const HoaDonChiTiet = () => {
                      // Gửi thành công
                      alert('Email sent successfully');
                      console.log('Email sent successfully:', result.text);
+                     const tenThongBao = "Thông báo: Gửi file có 'Mã bệnh nhân: "+item?.MaBenhNhan +" - Mã hóa đơn : "+ item?.MaHoaDon +" vào email: "+ emailInput  +"' thành công!";
+                     const loaiThongBao = "Hóa đơn";
+                     const chucNang = "Gửi file";
+
+                     themThongBao(tenThongBao, loaiThongBao, chucNang, null);
                  } else {
                      // Nếu không phải status 200, có thể xảy ra lỗi
                      alert('Email gửi bị lỗi. Tôi đang dùng thêm tài khoản khác để gửi !.');
@@ -492,26 +506,82 @@ const HoaDonChiTiet = () => {
     if (error) {
         return <div className="error">Lỗi: {error}</div>;
     }
+        const themThongBao = async (name, type, feature, data ) => {
+          if (!name || !type || !feature) {
+            alert("Vui lòng nhập đầy đủ thông tin!");
+            return;
+          }
 
+          const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+          try {
+                  const response = await fetch("http://localhost:5000/api/thongbao", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(notification),
+                  });
+
+                  const result = await response.json();
+                  if (response.ok) {
+                      //window.location.reload(true);
+                  } else {
+                      alert(result.message);
+                  }
+              } catch (error) {
+                console.error("Lỗi khi thêm thông báo:", error);
+                alert("Có lỗi xảy ra!");
+              }
+     }
     return (
         <div className="container" >
             <Menu1 />
-            <main className="main-content">
-                <Search1 />
+            <main className="form-container">
+               <div
+                className="content"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+
+                    <button  style={{
+                                marginTop: "-20px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                    <ChevronLeft />
+                    </button>
+
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
                 <div className="content">
                     <div className="card-header">
-                        <h2 className="page-title">Chi tiết hóa đơn</h2>
+                        <h2 style={{color: "#000"}} className="page-title">Chi tiết hóa đơn</h2>
                     </div>
                     <div className="card-header">
-                        <span>Mã bệnh nhân: {normalizeText(item?.MaBenhNhan || 'Không có')}</span>
-                        <span>Ngày tạo hóa đơn: {normalizeText(formatNgaySinh(item?.NgayLapHoaDon) || 'Không có')}</span>
+                        <span style={{color: "#000"}}>Mã bệnh nhân: {normalizeText(item?.MaBenhNhan || 'Không có')}</span>
+                        <span style={{color: "#000"}}>Ngày tạo hóa đơn: {normalizeText(formatNgaySinh(item?.NgayLapHoaDon) || 'Không có')}</span>
                     </div>
                     <div className="card-header">
-                        <span>Mã hóa đơn: {normalizeText(item?.MaHoaDon || 'Không có')}</span>
+                        <span style={{color: "#000"}}>Mã hóa đơn: {normalizeText(item?.MaHoaDon || 'Không có')}</span>
                     </div>
                     <div className="table-container">
                         {displayedData.length === 0 ? (
-                            <p>Không có chi tiết nào cho mã hóa đơn này.</p>
+                            <p style={{color: "#000"}}>Không có chi tiết nào cho mã hóa đơn này.</p>
                         ) : (
                             <table>
                                 <thead>

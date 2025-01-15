@@ -37,6 +37,35 @@ const ChiTietVatTu = () => {
             setLoading(false);
         }
     };
+   const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -65,7 +94,12 @@ const ChiTietVatTu = () => {
             const data = await response.json();
 
             if (data.success) {
-                toast.success('Cập nhật thuốc thành công!');
+                toast.success('Cập nhật vật tư thành công!');
+               const tenThongBao = "Thông báo: Sửa vật tư có 'Mã vật tư : "+id +" - Tên vật tư : "+ editedData.TenVatTu +"' thành công!";
+               const loaiThongBao = "Vật tư";
+               const chucNang = "Sửa dữ liệu";
+               themThongBao(tenThongBao, loaiThongBao, chucNang, editedData);
+
                 setVatTu(editedData);
                 setIsEditing(false);
             } else {

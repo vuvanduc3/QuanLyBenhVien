@@ -88,24 +88,40 @@ const MedicalRecordList = () => {
             hanhDong: ''
         });
     };
+    const handleDelete = async (e, item) => {
+        e.stopPropagation(); // Ngừng sự kiện click dòng bảng
 
-    const handleDelete = (e, item) => {
-        e.stopPropagation(); // Prevent row click event
         if (window.confirm('Bạn có chắc chắn muốn xóa hồ sơ này?')) {
             try {
-                // Handle delete logic
-                alert('Xóa hồ sơ thành công');
-                const tenThongBao = "Thông báo: Xóa hồ sơ bệnh án có 'Mã lịch khám : "+ item.MaLichHen +" - Mã bệnh nhân: "+item.MaBenhNhan+"' thành công!";
-                const loaiThongBao = "Hồ sơ bệnh án";
-                const chucNang = "Xóa dữ liệu";
+                // Gửi yêu cầu xóa đến API
+                const response = await fetch(`http://localhost:5000/api/medical-records/${item.MaBenhNhan}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                });
 
-                themThongBao(tenThongBao, loaiThongBao, chucNang);
+                if (response.ok) {
+                    // Cập nhật lại danh sách hồ sơ sau khi xóa
+                    fetchRecords();
+
+                    // Thông báo thành công
+                    alert('Xóa hồ sơ thành công');
+                    const tenThongBao = "Thông báo: Xóa hồ sơ bệnh án có 'Mã lịch khám : "+ item.MaLichHen +" - Mã bệnh nhân: "+item.MaBenhNhan+"' thành công!";
+                    const loaiThongBao = "Hồ sơ bệnh án";
+                    const chucNang = "Xóa dữ liệu";
+
+                    themThongBao(tenThongBao, loaiThongBao, chucNang, item);
+                } else {
+                    // Thông báo lỗi nếu không thành công
+                    alert('Lỗi khi xóa hồ sơ');
+                }
             } catch (err) {
-                console.error('Error deleting record:', err);
+                console.error('Lỗi khi xóa hồ sơ:', err);
                 alert('Lỗi khi xóa hồ sơ');
             }
         }
     };
+
+
 
     const handleButtonClick = (e, action, maBenhNhan) => {
         e.stopPropagation();
@@ -127,13 +143,13 @@ const MedicalRecordList = () => {
         navigate('/lich-su-dieu-tri', { state: { action: 'xem', item } });
     };
 
-    const themThongBao = async (name, type, feature ) => {
+    const themThongBao = async (name, type, feature, data ) => {
       if (!name || !type || !feature) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
       }
 
-      const notification = { Name: name, Loai: type, ChucNang: feature };
+      const notification = { Name: name, Loai: type, ChucNang: feature , Data: data};
 
       try {
               const response = await fetch("http://localhost:5000/api/thongbao", {
@@ -146,7 +162,7 @@ const MedicalRecordList = () => {
 
               const result = await response.json();
               if (response.ok) {
-                  window.location.reload(true);
+                  //window.location.reload(true);
               } else {
                   alert(result.message);
               }
@@ -161,10 +177,38 @@ const MedicalRecordList = () => {
         <div className="container">
             <Menu1 />
             <main className="main-content">
-                <Search1 />
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
 
 
-                <div className="content">
+                <div className="content-chuyendoi">
                     <div className="card-header">
                         <h2 className="card-title">Hồ sơ bệnh án</h2>
 

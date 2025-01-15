@@ -102,7 +102,7 @@ export default function Search1() {
 
       useEffect(() => {
         fetchNotifications();
-      }, []); // Chỉ chạy khi component được mount
+      }, ); // Chỉ chạy khi component được mount
 
       const fetchNotifications = async () => {
         try {

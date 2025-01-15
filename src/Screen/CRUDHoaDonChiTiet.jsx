@@ -74,6 +74,20 @@ const ThemSuaXoaHoaDonChiTiet = () => {
             if (!response.ok) throw new Error(data.message || 'Lỗi khi xử lý dữ liệu');
 
             toast.success(formData.MaChiTiet ? 'Cập nhật thành công!' : 'Thêm mới thành công!');
+            if(state.action === "add"){
+                const tenThongBao = "Thông báo: Thêm hóa đơn có 'Mã hóa đơn: "+formData?.MaHoaDon +" - TenDichVu : "+ formData?.TenDichVu +"' thành công!";
+                const loaiThongBao = "Hóa đơn chi tiết";
+                const chucNang = "Thêm dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang, formData);
+            }
+            else{
+                const tenThongBao = "Thông báo: Sửa hóa đơn có 'Mã hóa đơn: "+formData?.MaHoaDon +" - TenDichVu : "+ formData?.TenDichVu +"' thành công!";
+                const loaiThongBao = "Hóa đơn chi tiết";
+                const chucNang = "Sửa dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang, formData);
+            }
             if(state?.action === "add"){
                  setFormData({
                      MaChiTiet: null,
@@ -91,6 +105,35 @@ const ThemSuaXoaHoaDonChiTiet = () => {
             setLoading(false);
         }
     };
+
+        const themThongBao = async (name, type, feature, data ) => {
+          if (!name || !type || !feature) {
+            alert("Vui lòng nhập đầy đủ thông tin!");
+            return;
+          }
+
+          const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+          try {
+                  const response = await fetch("http://localhost:5000/api/thongbao", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(notification),
+                  });
+
+                  const result = await response.json();
+                  if (response.ok) {
+                      //window.location.reload(true);
+                  } else {
+                      alert(result.message);
+                  }
+              } catch (error) {
+                console.error("Lỗi khi thêm thông báo:", error);
+                alert("Có lỗi xảy ra!");
+              }
+     }
 
     return (
         <div className="container">
@@ -111,7 +154,6 @@ const ThemSuaXoaHoaDonChiTiet = () => {
 
                     <button  style={{
                                 marginTop: "-20px",
-                                marginLeft: "30px",
                                 padding: "10px 20px",
                                 backgroundColor: "#007bff",
                                 color: "#fff",

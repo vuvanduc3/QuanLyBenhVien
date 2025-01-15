@@ -9,7 +9,7 @@ body.light-theme .container {
 }
 
 body.light-theme .main-content {
-  background-color: #efeaea;
+  background-color: #f8f9fa;
 
   border-radius: 8px;
   width: 100%; /* Đảm bảo main-content chiếm toàn bộ chiều rộng của container */

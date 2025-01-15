@@ -67,7 +67,34 @@ const CRUDBHYT = () => {
         }
         return true;
     };
+  const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
 
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -101,6 +128,12 @@ const CRUDBHYT = () => {
                 }
 
                 toast.success('🎉 Sửa Bảo Hiểm Y Tế thành công!');
+
+                const tenThongBao = "Thông báo: Sửa bảo hiểm y tế có 'Mã bảo hiểm: "+item.MaBaoHiem +" - Mã bệnh nhân : "+ formData.MaBenhNhan +" - với số thẻ bảo hiểm  "+ formData.SoHopDongBaoHiem +"' thành công!";
+                const loaiThongBao = "Bảo hiểm y tế";
+                const chucNang = "Sửa dữ liệu";
+                themThongBao(tenThongBao, loaiThongBao, chucNang, item);
+
             } catch (error) {
                 console.error('Error in form submission:', error);
                 toast.error(`Lỗi: ${error.message}`);
@@ -138,6 +171,11 @@ const CRUDBHYT = () => {
                 }
 
                 toast.success('🎉 Thêm Bảo Hiểm Y Tế thành công!');
+                const tenThongBao = "Thông báo: Thêm bảo hiểm y tế có 'Mã bệnh nhân : "+ formData.MaBenhNhan +" - với số thẻ bảo hiểm  "+ formData.SoHopDongBaoHiem +"' thành công!";
+                const loaiThongBao = "Bảo hiểm y tế";
+                const chucNang = "Thêm dữ liệu";
+
+                themThongBao(tenThongBao, loaiThongBao, chucNang, item);
                 setFormData({
                     MaBenhNhan: '',
                     DonViCungCap: '',

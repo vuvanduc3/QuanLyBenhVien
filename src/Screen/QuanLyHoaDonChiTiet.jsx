@@ -85,17 +85,73 @@ const HoaDonChiTiet = () => {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+        const themThongBao = async (name, type, feature, data ) => {
+          if (!name || !type || !feature) {
+            alert("Vui lòng nhập đầy đủ thông tin!");
+            return;
+          }
+
+          const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+          try {
+                  const response = await fetch("http://localhost:5000/api/thongbao", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(notification),
+                  });
+
+                  const result = await response.json();
+                  if (response.ok) {
+                      //window.location.reload(true);
+                  } else {
+                      alert(result.message);
+                  }
+              } catch (error) {
+                console.error("Lỗi khi thêm thông báo:", error);
+                alert("Có lỗi xảy ra!");
+              }
+     }
 
     return (
         <div className="container">
             <Menu1 />
             <main className="main-content">
 
-                <Search1 />
+<div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
 
 
 
-                <div className="main-content">
+                <div className="content-chuyendoi">
                     <div className="card-header">
                         <h2 className="page-title">Danh sách hóa đơn chi tiết</h2>
 
@@ -166,8 +222,8 @@ const HoaDonChiTiet = () => {
                             <thead>
                                 <tr>
                                     <th>#ID</th>
-                                    <th>Mã hóa đơn</th>
                                     <th>Mã bệnh nhân</th>
+                                    <th>Mã hóa đơn</th>
                                     <th>Tên dịch vụ/loại thuốc</th>
                                     <th>Số lượng</th>
                                     <th>Đơn giá</th>
@@ -195,6 +251,11 @@ const HoaDonChiTiet = () => {
                                                             .then(data => {
                                                                 if (data.success) {
                                                                     setHoaDonChiTiet(hoaDonChiTiet.filter(hd => hd.MaChiTiet !== item.MaChiTiet));
+                                                                       const tenThongBao = "Thông báo: Xóa hóa đơn có 'Mã hóa đơn: "+item?.MaHoaDon +" - TenDichVu : "+ item?.TenDichVu +"' thành công!";
+                                                                       const loaiThongBao = "Hóa đơn chi tiết";
+                                                                       const chucNang = "Xóa dữ liệu";
+
+                                                                       themThongBao(tenThongBao, loaiThongBao, chucNang, item);
                                                                 } else {
                                                                     throw new Error(data.message);
                                                                 }

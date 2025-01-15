@@ -217,7 +217,7 @@ const MedicalRecordDetail = () => {
                 const loaiThongBao = "Hồ sơ bệnh án";
                 const chucNang = "Sửa dữ liệu";
 
-                themThongBao(tenThongBao, loaiThongBao, chucNang);
+                themThongBao(tenThongBao, loaiThongBao, chucNang, editedData);
             } else {
                 setError(data.message);
             }
@@ -225,13 +225,13 @@ const MedicalRecordDetail = () => {
             setError('Lỗi khi cập nhật hồ sơ');
         }
     };
-    const themThongBao = async (name, type, feature ) => {
+    const themThongBao = async (name, type, feature, data ) => {
       if (!name || !type || !feature) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
       }
 
-      const notification = { Name: name, Loai: type, ChucNang: feature };
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
 
       try {
               const response = await fetch("http://localhost:5000/api/thongbao", {
@@ -244,7 +244,7 @@ const MedicalRecordDetail = () => {
 
               const result = await response.json();
               if (response.ok) {
-                  window.location.reload(true);
+                  //window.location.reload(true);
               } else {
                   alert(result.message);
               }

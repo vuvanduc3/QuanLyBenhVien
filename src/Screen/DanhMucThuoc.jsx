@@ -3,10 +3,12 @@ import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
 import { toast, ToastContainer } from 'react-toastify';
 import '../Styles/DanhMucThuoc.css';
+import { useNavigate } from "react-router-dom";
 
 const API_URL = 'http://localhost:5000';
 
 const DanhMucThuoc = () => {
+     const navigate = useNavigate();
     const [danhMucList, setDanhMucList] = useState([]);
     const [formData, setFormData] = useState({
         MaDanhMuc: '',
@@ -127,7 +129,36 @@ const DanhMucThuoc = () => {
         <div className="container">
             <Menu1 />
             <div className="content-wrapper">
-                <Search1 />
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
                 <div className="danh-muc-container">
                     <ToastContainer />
                     

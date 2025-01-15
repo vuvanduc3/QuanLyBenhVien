@@ -43,13 +43,13 @@ const ThemSuaXoaXetNghiem = () => {
         };
         fetchHoSos();
     }, []);
-    const themThongBao = async (name, type, feature ) => {
+    const themThongBao = async (name, type, feature, data ) => {
       if (!name || !type || !feature) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
       }
 
-      const notification = { Name: name, Loai: type, ChucNang: feature };
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
 
       try {
               const response = await fetch("http://localhost:5000/api/thongbao", {
@@ -62,7 +62,7 @@ const ThemSuaXoaXetNghiem = () => {
 
               const result = await response.json();
               if (response.ok) {
-                  window.location.reload(true);
+                  //window.location.reload(true);
               } else {
                   alert(result.message);
               }
@@ -189,14 +189,14 @@ const ThemSuaXoaXetNghiem = () => {
                     const loaiThongBao = "Xét nghiệm";
                     const chucNang = "Sửa dữ liệu";
 
-                    themThongBao(tenThongBao, loaiThongBao, chucNang);
+                    themThongBao(tenThongBao, loaiThongBao, chucNang, item);
                 }
                 else{
                      const tenThongBao = "Thông báo: Thêm xét nghiệm có 'Mã hồ sơ : "+ xetNghiemData.MaHoSo +" - Tên xét nghiệm: "+ xetNghiemData.TenXetNghiem +"' thành công!";
                      const loaiThongBao = "Xét nghiệm";
                      const chucNang = "Thêm dữ liệu";
 
-                     themThongBao(tenThongBao, loaiThongBao, chucNang);
+                     themThongBao(tenThongBao, loaiThongBao, chucNang, item);
 
                 }
 

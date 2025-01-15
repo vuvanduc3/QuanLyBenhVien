@@ -110,16 +110,38 @@ const DonThuoc = () => {
         <div className="container">
             <Menu1 />
             <main className="main-content">
-                <Search1 />
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm theo mã bệnh nhân..."
-                    className="search-input"
-                    value={filterMaBenhNhan}
-                    onChange={(e) => setFilterMaBenhNhan(e.target.value)} // Cập nhật bộ lọc
-                />
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
 
-                <div className="content">
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+                                marginLeft: "30px",
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+
+                <div className="content-chuyendoi">
                     <div className="card-header">
                         <h2 className="card-title">Tra cứu và nhập hóa đơn chi tiết</h2>
                     </div>
@@ -127,7 +149,13 @@ const DonThuoc = () => {
                         <span>Mã hóa đơn: {MaHoaDon}</span>
                         <span> - Mã bệnh nhân: {MaBenhNhan}</span>
                     </div>
-
+                    <input
+                            type="text"
+                            placeholder="Tìm kiếm theo mã bệnh nhân..."
+                            className="search-input"
+                            value={filterMaBenhNhan}
+                            onChange={(e) => setFilterMaBenhNhan(e.target.value)} // Cập nhật bộ lọc
+                    />
                     <div className="div-buttons">
                         <button
                             className={`danhmuc-button ${activeButton === 'history' ? 'active' : ''}`}
@@ -147,6 +175,7 @@ const DonThuoc = () => {
                         >
                             Xét nghiệm
                         </button>
+
                     </div>
 
                     <div className="table-container">

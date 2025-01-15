@@ -5,6 +5,7 @@ import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { Chart as ChartJS, Title, Tooltip as ChartTooltip, Legend as ChartLegend, ArcElement, CategoryScale } from 'chart.js';
 import Cookies from 'js-cookie';
 import { Pie } from 'react-chartjs-2';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import '../Styles/Dashboard.css';
 import Menu1 from '../components/Menu';
@@ -62,6 +63,7 @@ function SecondaryStatCard({ title, value, change, isPositive }) {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [statsData, setStatsData] = useState([]);
   const [secondaryStats, setSecondaryStats] = useState([]);
   const [SoLuongBN, setSoLuongBN] = useState('');
@@ -567,15 +569,45 @@ export default function Dashboard() {
      <div className="container">
        <Menu1 />
        <div className="main-content">
-         <Search1 />
-         <h1 className="page-title">Dashboard {SoLuongBN}</h1>
+            <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
 
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+
+         <h1 className="page-title">Dashboard {SoLuongBN}</h1>
+        <div className="content-chuyendoi"style={{marginBottom:"10px"}}>
          <div className="stats-grid">
            {statsData.map((stat, index) => (
              <StatCard key={index} {...stat} />
            ))}
          </div>
-
+         </div>
+        <div className="content-chuyendoi">
          <div style={{
                 color: myCookieValue ? '#000' : '#fff',
                 backgroundColor: myCookieValue ? '#fff' : '#fff',
@@ -701,7 +733,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-
+      </div>
       </div>
     </div>
   );

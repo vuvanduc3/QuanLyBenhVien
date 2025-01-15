@@ -3,8 +3,9 @@ import { Edit, Trash, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../Styles/InsurancePayment.css';
 import Menu1 from '../components/Menu';
 import Search1 from '../components/seach_user';
-
+import { useNavigate } from 'react-router-dom';
 const InsurancePayment = () => {
+        const navigate = useNavigate();
   const [paymentData, setPaymentData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Dữ liệu đã lọc theo tìm kiếm
   const [editingData, setEditingData] = useState(null); // Lưu thông tin đang sửa
@@ -46,8 +47,8 @@ const InsurancePayment = () => {
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   // Hàm xóa dữ liệu
-  const handleDelete = (id) => {
-    const api = `http://localhost:5000/api/ChiPhiBHYT/${id}`;
+  const handleDelete = (item) => {
+    const api = `http://localhost:5000/api/ChiPhiBHYT/${item.MaChiPhiBHYT}`;
 
     if (window.confirm('Bạn có chắc muốn xóa dữ liệu này không?')) {
       fetch(api, { method: 'DELETE' })
@@ -55,7 +56,14 @@ const InsurancePayment = () => {
         .then((data) => {
           if (data.success) {
             alert('Xóa dữ liệu thành công!');
-            setPaymentData(paymentData.filter((item) => item.MaChiPhiBHYT !== id));
+
+            const tenThongBao = "Thông báo: Xóa chi phí bảo hiểm y tế chi trả có 'Mã hóa đơn: "+item.MaChiPhiBHYT +" với số thẻ  "+ item.MaSoTheBHYT +"' thành công!";
+            const loaiThongBao = "Chi phí BHYT";
+            const chucNang = "Xóa dữ liệu";
+            themThongBao(tenThongBao, loaiThongBao, chucNang, item);
+
+            window.location.reload(true);
+
           } else {
             console.error('Xóa thất bại:', data.message);
           }
@@ -77,12 +85,18 @@ const InsurancePayment = () => {
       .then((data) => {
         if (data.success) {
           alert('Cập nhật thành công!');
+          const tenThongBao = "Thông báo: Cập nhập chi phí bảo hiểm y tế chi trả có 'MaSoTheBHYT: "+editingData.MaSoTheBHYT +" - SoTienBHYTChiTra : "+ editingData.SoTienBHYTChiTra +" - với MaChiPhiBHYT: "+ editingData.MaChiPhiBHYT +"' thành công!";
+          const loaiThongBao = "Chi phí BHYT";
+          const chucNang = "Sửa dữ liệu";
+          themThongBao(tenThongBao, loaiThongBao, chucNang, editingData);
+
           setPaymentData(
             paymentData.map((item) =>
               item.MaChiPhiBHYT === editingData.MaChiPhiBHYT ? editingData : item
             )
           );
           setEditingData(null);
+          window.location.reload(true);
         } else {
           console.error('Cập nhật thất bại:', data.message);
         }
@@ -103,12 +117,69 @@ const InsurancePayment = () => {
       setCurrentPage(currentPage + 1);
     }
   };
+   const themThongBao = async (name, type, feature, data ) => {
+      if (!name || !type || !feature) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const notification = { Name: name, Loai: type, ChucNang: feature, Data: data };
+
+      try {
+              const response = await fetch("http://localhost:5000/api/thongbao", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(notification),
+              });
+
+              const result = await response.json();
+              if (response.ok) {
+                  //window.location.reload(true);
+              } else {
+                  alert(result.message);
+              }
+          } catch (error) {
+            console.error("Lỗi khi thêm thông báo:", error);
+            alert("Có lỗi xảy ra!");
+          }
+    }
 
   return (
     <div className="container">
       <Menu1 />
       <div className="main-content">
-        <Search1 />
+           <div
+                className="content-chuyendoi"
+                style={{
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width:"100%" }}>
+                    <button  style={{
+                                marginTop: "-20px",
+
+                                padding: "10px 20px",
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                height: "50px",
+                                border: "none",
+                                borderRadius: "5px",
+                                cursor: "pointer",
+                              }}
+                    onClick={() => navigate(-1)}
+                    >
+                   <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
+                    </button>
+                    <div>
+                        <Search1 />
+                    </div>
+                </div>
+      <div className="content-chuyendoi" >
         {/* Tìm kiếm */}
         <div className="search-container">
           <input
@@ -168,7 +239,7 @@ const InsurancePayment = () => {
         )}
 
         <div className="table-container">
-          <table className="table">
+          <table className="table-container">
             <thead>
               <tr>
                 <th>ID</th>
@@ -183,7 +254,7 @@ const InsurancePayment = () => {
               {currentItems.map((item) => (
                 <tr key={item.MaChiPhiBHYT}>
                   <td>{item.MaChiPhiBHYT}</td>
-                  <td>{item.MaSoTheBHYT}</td>
+                  <td>{item.MaChiPhiBHYT}</td>
                   <td>{item.MaSoTheBHYT}</td>
                   <td>{item.SoTienBHYTChiTra}</td>
                   <td>{new Date(item.NgayBHYTThanhToan).toLocaleDateString()}</td>
@@ -197,7 +268,7 @@ const InsurancePayment = () => {
                       </button>
                       <button
                         className="action-btn delete"
-                        onClick={() => handleDelete(item.MaChiPhiBHYT)}
+                        onClick={() => handleDelete(item)}
                       >
                         <Trash size={16} /> Xóa
                       </button>
@@ -227,6 +298,7 @@ const InsurancePayment = () => {
             <ChevronRight size={16} />
           </button>
         </div>
+      </div>
       </div>
     </div>
   );
