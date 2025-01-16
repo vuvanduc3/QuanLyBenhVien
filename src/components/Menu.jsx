@@ -62,8 +62,10 @@ export default function Menu() {
   };
 
   const [theme, setTheme] = useState('light');
-  useEffect(() => {
+  const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(true);
+  const [isCostMenuOpen, setIsCostMenuOpen] = useState(true);
 
+  useEffect(() => {
     menuItems.forEach((item) => {
       if (window.location.pathname === item.path) {
         // Thực hiện hành động khi tìm thấy phần tử phù hợp
@@ -100,17 +102,37 @@ export default function Menu() {
       document.body.classList.remove('dark-theme');
       setTheme('light');
     }
+
+    //taskMenuOpen
+    // Giả sử Cookies.get('TaskMenuOpen') trả về 'true' hoặc 'false' dưới dạng chuỗi
+    const taskMenuOpen = Cookies.get('TaskMenuOpen');
+    // Chuyển đổi chuỗi thành boolean
+    const isTaskMenuOpen = taskMenuOpen === 'true';
+    // Sử dụng giá trị boolean để cập nhật trạng thái
+    setIsTaskMenuOpen(isTaskMenuOpen);
+
+
+    //taskCostMenuOpen
+    // Giả sử Cookies.get('CostMenuOpen') trả về 'true' hoặc 'false' dưới dạng chuỗi
+    const taskCostMenuOpen = Cookies.get('CostMenuOpen');
+    // Chuyển đổi chuỗi thành boolean
+    const isTaskCostMenuOpen = taskCostMenuOpen === 'true';
+    // Sử dụng giá trị boolean để cập nhật trạng thái
+    setIsCostMenuOpen(isTaskCostMenuOpen);
+
+
   }, []);
 
-  const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(true);
-  const [isCostMenuOpen, setIsCostMenuOpen] = useState(true);
+
 
   const toggleTaskMenu = () => {
     setIsTaskMenuOpen(!isTaskMenuOpen);
+    Cookies.set('TaskMenuOpen', !isTaskMenuOpen, { expires: 1, path: '' });
   };
 
   const toggleCostMenu = () => {
     setIsCostMenuOpen(!isCostMenuOpen);
+    Cookies.set('CostMenuOpen', !isCostMenuOpen, { expires: 1, path: '' });
   };
 
 
@@ -131,7 +153,10 @@ export default function Menu() {
           <nav className="sidebar-nav">
             <div className="nav-section">
               <div className="nav-section-title" onClick={toggleTaskMenu}>
-                Tác vụ
+                <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ width: "95%" }}>Tác vụ</span>
+                  <i class="fa-solid fa-arrow-turn-down" style={{ width: "5%" }}></i>
+                </div>
               </div>
               {isTaskMenuOpen && (
                 menuItems.map((item, index) => (
@@ -150,7 +175,10 @@ export default function Menu() {
 
             <div className="nav-section">
               <div className="nav-section-title" onClick={toggleCostMenu}>
-               Chi phí
+                <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ width: "95%" }}>Chi phí</span>
+                  <i class="fa-solid fa-arrow-turn-down" style={{ width: "5%" }}></i>
+                </div>
               </div>
               {isCostMenuOpen && (
                 pageItems.map((item, index) => (

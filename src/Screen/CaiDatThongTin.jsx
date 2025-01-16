@@ -386,7 +386,7 @@ const QuanLyNguoiDungScreen = () => {
 
                                 <div style={{ fontSize: "15px", paddingBottom: "15px", color: '#000', fontWeight: 'bolder',marginTop: "10px" }}>Thông tin chính
                                    <div style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "8px", marginTop: "10px" }}>
-                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                             <div className="input-container2">
                                                 <label>Mã người dùng</label>
                                                 <input
