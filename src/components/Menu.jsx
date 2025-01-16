@@ -155,7 +155,12 @@ export default function Menu() {
               <div className="nav-section-title" onClick={toggleTaskMenu}>
                 <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ width: "95%" }}>Tác vụ</span>
-                  <i class="fa-solid fa-arrow-turn-down" style={{ width: "5%" }}></i>
+                    {isTaskMenuOpen && (
+                      <i className="fa-solid fa-angles-up"></i>
+                    )}
+                    {!isTaskMenuOpen && (
+                      <i className="fa-solid fa-angles-down"></i>
+                    )}
                 </div>
               </div>
               {isTaskMenuOpen && (
@@ -177,7 +182,12 @@ export default function Menu() {
               <div className="nav-section-title" onClick={toggleCostMenu}>
                 <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ width: "95%" }}>Chi phí</span>
-                  <i class="fa-solid fa-arrow-turn-down" style={{ width: "5%" }}></i>
+                    {isCostMenuOpen && (
+                      <i className="fa-solid fa-angles-up"></i>
+                    )}
+                    {!isCostMenuOpen && (
+                      <i className="fa-solid fa-angles-down"></i>
+                    )}
                 </div>
               </div>
               {isCostMenuOpen && (
