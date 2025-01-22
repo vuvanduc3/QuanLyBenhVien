@@ -180,6 +180,7 @@ const Login = () => {
 
         {isOTPSent && !isOTPVerified && (
           <form onSubmit={handleOTPSubmit}>
+            {timer != 0 && (
             <div className="inputGroup">
               <label htmlFor="otp">Mã OTP: </label>
               <input
@@ -191,6 +192,7 @@ const Login = () => {
                 onChange={(e) => setMaOTP(e.target.value)}
               />
             </div>
+            )}
              {timer != 0 && (
                 <button type="submit" className="signInButton">
                   Xác nhận OTP ({timer})
@@ -224,6 +226,9 @@ const Login = () => {
             </button>
           </form>
         )}
+        <p className= "createAccount" >
+              Already have an account? <a href="/login">Login here</a>
+        </p>
       </div>
     </div>
   );
