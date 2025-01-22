@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import emailjs from "emailjs-com";
+import crypto from "crypto-js";
 import "../Styles/Login.css";
 import videoSource from './login_video2.mp4';
 
@@ -12,24 +13,29 @@ const Login = () => {
 
   const [MaOTP, setMaOTP] = useState('');
   const [MaOTPSendEmail, setMaOTPSendEmail] = useState('');
-
   const [newPassword, setNewPassword] = useState('');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isOTPSent, setIsOTPSent] = useState(false);
   const [isOTPVerified, setIsOTPVerified] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("Vui lòng nhập e-mail để đặt lại mật khẩu");
-  const [isEmailSent, setIsEmailSent] = useState(false);
-
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);  // State để quản lý ẩn/hiện mật khẩu
+  const [timer, setTimer] = useState(-1); // Thời gian đếm ngược
 
   const navigate = useNavigate();
 
-  const handleNavigateToRegister = () => {
-    navigate("/Register");
-  };
+  // Bắt đầu đếm ngược 60 giây
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      setMessage("Mã OTP đã được gửi đến email của bạn.");
+      return () => clearInterval(interval);
+    }
+    else if(timer == 0){
+        setMessage("Mã OTP đã hết hạn vui lòng gửi lại!");
+    }
+  }, [timer]);
 
-  // Xử lý input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -38,7 +44,10 @@ const Login = () => {
     }));
   };
 
-  // Xử lý gửi OTP qua email
+  const encryptOTP = (otp) => {
+    return crypto.AES.encrypt(otp, "secret_key").toString(); // Mã hóa OTP
+  };
+
   const sendOTPToEmail = async (email, otp) => {
     try {
       const templateParams = {
@@ -47,15 +56,14 @@ const Login = () => {
       };
 
       const response = await emailjs.send(
-        'service_0bg8uts', // Thay bằng service ID của bạn
-        'template_kad9owa', // Thay bằng template ID của bạn
+        'service_0bg8uts',
+        'template_kad9owa',
         templateParams,
-        'ZlYajkYUVCOi2u_wL' // Thay bằng user ID của bạn
+        'ZlYajkYUVCOi2u_wL'
       );
 
       if (response.status === 200) {
         setMessage("Mã OTP đã được gửi đến email của bạn.");
-        setIsEmailSent(true);
       } else {
         alert("Lỗi khi gửi email. Vui lòng thử lại sau.");
       }
@@ -65,7 +73,6 @@ const Login = () => {
     }
   };
 
-  // Xử lý kiểm tra email và gửi OTP
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     const { Email } = formData;
@@ -82,7 +89,8 @@ const Login = () => {
             const otp = Math.floor(100000 + Math.random() * 900000);
             setMaOTPSendEmail(otp);
             sendOTPToEmail(Email, otp);
-            setIsOTPSent(true); // Sau khi gửi OTP thành công
+            setIsOTPSent(true);
+            setTimer(60); // Bắt đầu đếm ngược 60 giây
           } else {
             alert("E-mail không tồn tại");
           }
@@ -95,18 +103,28 @@ const Login = () => {
     }
   };
 
-  // Xử lý nhập OTP
-  const handleOTPSubmit = async (e) => {
+  const handleResendOTP = () => {
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    setMaOTPSendEmail(otp);
+    sendOTPToEmail(formData.Email, otp);
+    setTimer(60); // Reset thời gian đếm ngược
+  };
+
+  const handleOTPSubmit = (e) => {
     e.preventDefault();
-    if (MaOTP == MaOTPSendEmail) {
+    if (MaOTP === MaOTPSendEmail.toString()) {
+      const encryptedOTP = encryptOTP(MaOTP);
+      console.log("Mã OTP sau khi mã hóa:", encryptedOTP);
+      setMaOTPSendEmail(encryptedOTP);
       setIsOTPVerified(true);
+      setTimer(-1);
       setMessage("Mã OTP đúng. Vui lòng nhập mật khẩu mới.");
     } else {
       alert("Mã OTP không chính xác.");
     }
   };
 
-  // Xử lý nhập mật khẩu mới
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (newPassword) {
@@ -129,11 +147,6 @@ const Login = () => {
     } else {
       alert("Vui lòng nhập mật khẩu mới");
     }
-  };
-
-  // Hàm toggle ẩn/hiện mật khẩu
-  const togglePasswordVisibility = () => {
-      setIsPasswordVisible(!isPasswordVisible);
   };
 
   return (
@@ -159,69 +172,58 @@ const Login = () => {
                 required
               />
             </div>
-            <button type="submit" className="signInButton">
-              Send OTP
+            <button type="submit" className="signInButton" disabled={timer > 0}>
+              {timer > 0 ? `Gửi lại OTP sau ${timer}s` : "Gửi OTP"}
             </button>
           </form>
         )}
 
-{/*         {isEmailSent && !isOTPVerified && ( */}
-{/*           <div className="emailSentMessage"> */}
-{/*             <p style={{ color: 'green', fontWeight: 'bold' }}>Mã OTP đã được gửi đến email của bạn!</p> */}
-{/*           </div> */}
-{/*         )} */}
-
         {isOTPSent && !isOTPVerified && (
           <form onSubmit={handleOTPSubmit}>
             <div className="inputGroup">
-              <label htmlFor="otp">Mã OTP:</label>
+              <label htmlFor="otp">Mã OTP: </label>
               <input
                 type="text"
                 id="otp"
-                name="MatKhau"
                 className="input"
                 placeholder="Nhập mã OTP"
                 value={MaOTP}
                 onChange={(e) => setMaOTP(e.target.value)}
               />
             </div>
-            <button type="submit" className="signInButton">
-              Xác nhận OTP
-            </button>
+             {timer != 0 && (
+                <button type="submit" className="signInButton">
+                  Xác nhận OTP ({timer})
+                </button>
+             )}
+
+            {timer === 0 && (
+              <button type="button" onClick={handleResendOTP} className="signInButton">
+                Gửi lại OTP
+              </button>
+            )}
           </form>
         )}
 
         {isOTPVerified && (
           <form onSubmit={handlePasswordSubmit}>
             <div className="inputGroup">
-                 <label htmlFor="newPassword">Mật khẩu mới</label>
-                 <div className="inputGroup2">
-                       <input
-                       type={isPasswordVisible ? "text" : "password"}
-                       className="input"
-                       placeholder="Nhập mật khẩu"
-                       value={newPassword}
-                       onChange={(e) => setNewPassword(e.target.value)}
-                       required
-                       />
-
-                       <div className="inputGroup_togglePasswordBtn">
-                         <button type="button" onClick={togglePasswordVisibility} className="togglePasswordBtn">
-                           <i className={isPasswordVisible ? "fas fa-eye-slash" : "fas fa-eye"}></i>
-                         </button>
-                       </div>
-                 </div>
-
+              <label htmlFor="newPassword">Mật khẩu mới</label>
+              <input
+                type="password"
+                id="newPassword"
+                className="input"
+                placeholder="Nhập mật khẩu mới"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
             </div>
             <button type="submit" className="signInButton">
               Đặt lại mật khẩu
             </button>
           </form>
         )}
-
-        <p className="createAccount">
-          Already have an account? <a href="/login">Login here</a>
-        </p>
       </div>
     </div>
   );
