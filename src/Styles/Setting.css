@@ -535,3 +535,126 @@ body.dark-theme form-label2{
   background-color: #f1f1f1; /* Màu nền của thanh cuộn */
   border-radius: 10px; /* Bo góc của track */
 }
+
+
+/* User*/
+
+
+/* CSS cơ bản */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width:100%;
+
+}
+
+=
+
+.user-profile {
+  display: flex;
+  align-items: center;
+
+}
+
+.notification {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 2px 5px;
+}
+
+.notification-popup {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  z-index: 1000;
+}
+
+.popup-notification-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.user-name-dark {
+  font-weight: bold;
+  color: #333;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Responsive: Màn hình tablet */
+@media (max-width: 768px) {
+  .top-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-profile {
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .notification-popup {
+    left: 0;
+    right: 0;
+  }
+}
+
+/* Responsive: Màn hình điện thoại */
+@media (max-width: 480px) {
+  .top-header {
+    padding: 10px;
+  }
+
+  .user-profile {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .user-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  .user-info {
+    align-items: center;
+  }
+
+  .notification-popup {
+    font-size: 14px;
+  }
+
+  .popup-notification-item {
+    padding: 8px;
+  }
+}

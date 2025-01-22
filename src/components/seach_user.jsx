@@ -178,7 +178,6 @@ export default function Search1() {
 
 
     return (
-
     <div className="top-header">
         <div className="search-container">
         </div>
@@ -221,9 +220,7 @@ export default function Search1() {
                   </div>
                 )}
 
-
             </div>
-
             <img src={ Hinh || 'default_image_url'} alt="Hình" className="user-image" onClick={handleNavigateToCaiDatThongTinCaNhan} />
 
             <div className="user-info" onClick={handleNavigateToCaiDatThongTinCaNhan}>
@@ -234,7 +231,6 @@ export default function Search1() {
 
 
     </div>
-
 
   );
 }

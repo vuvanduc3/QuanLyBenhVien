@@ -231,23 +231,16 @@ const InvoiceForm = () => {
     <div className="container">
       <Menu1 />
       <main className="main-content">
-<div
+        <div
                 className="content-chuyendoi"
                 style={{
-                    borderRadius: "10px",
-                    marginBottom: "10px",
-
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    width:"100%" }}>
+                      }}>
                     <button  style={{
-                                marginTop: "-20px",
-
+                                marginTop: "10px",
                                 padding: "10px 20px",
                                 backgroundColor: "#007bff",
                                 color: "#fff",
-                                height: "50px",
                                 border: "none",
                                 borderRadius: "5px",
                                 cursor: "pointer",
@@ -256,10 +249,12 @@ const InvoiceForm = () => {
                     >
                    <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg"></i>
                     </button>
+                      <Search1 />
                     <div>
-                        <Search1 />
+
                     </div>
                 </div>
+
 
         <div className="content-chuyendoi">
           <div className="content-header">
